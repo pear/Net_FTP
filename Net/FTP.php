@@ -1834,7 +1834,7 @@ class Net_FTP extends PEAR
     
     function _rm_file($file)
     {
-        if (substr($ifile, 0, 1) != "/") {
+        if (substr($file, 0, 1) != "/") {
             $actual_dir = @ftp_pwd($this->_handle);
             if (substr($actual_dir, (strlen($actual_dir) - 2), 1) != "/") {
                 $actual_dir .= "/";
