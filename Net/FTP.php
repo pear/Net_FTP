@@ -255,7 +255,7 @@
         function pwd () {
             $res = @ftp_pwd($this->_handle);
             if (!$res) {
-                return $this->raiseErrro("Could not determine the actual path.", 0);
+                return $this->raiseError("Could not determine the actual path.", 0);
             } else {
                 return $res;
             }
@@ -306,6 +306,24 @@
 
         function execute ( $command ) {
             $res = @ftp_exec($this->_handle, $command);
+            if (!$res) {
+                return $this->raiseError("Execution of command '$command' faild.", 0);
+            } else {
+                return $res;
+            }
+        }
+
+        /**
+        * Execute a SITE command on the server
+        * This method tries to execute a SITE command on the ftp server.
+        *
+        * @access public
+        * @param string $command The command with parameters to execute
+        * @return mixed $res true if successful, otherwise PEAR::Error
+        */
+
+        function site ( $command ) {
+            $res = @ftp_site($this->_handle, $command);
             if (!$res) {
                 return $this->raiseError("Execution of command '$command' faild.", 0);
             } else {
@@ -506,7 +524,7 @@
                 return $this->raiseError("Local file '$local_file' exists and may not be overwriten.", 0);
             }
             if (@file_exists($local_file) && !@is_writeable($local_file) && $overwrite) {
-                return $this->raiseError("Local file '$file' is not writeable. Can not overwrite.", 0);
+                return $this->raiseError("Local file '$local_file' is not writeable. Can not overwrite.", 0);
             }
 
             if (@function_exists('ftp_nb_get')){
@@ -809,7 +827,7 @@
             if (!$res) {
                 return $this->raiseError("Could not delete directory '$dir'.", 0);
             } else {
-                return $true;
+                return true;
             }
         }
 
@@ -884,9 +902,7 @@
         */
 
         function _ls_dirs ( $dir ) {
-            if (!is_array($list["files"])) {
-                $list["dirs"] = array();
-            }
+            $list["dirs"] = array();
             $list = $this->_list_and_parse($dir);
             return $list["dirs"];
         }
