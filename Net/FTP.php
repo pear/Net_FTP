@@ -18,10 +18,42 @@
 
 require_once 'PEAR.php';
 
-define("NET_FTP_FILES_ONLY", 0, true);
-define("NET_FTP_DIRS_ONLY",  1, true);
-define("NET_FTP_DIRS_FILES", 2, true);
-define("NET_FTP_RAWLIST",    3, true);
+
+/**
+ * Option to let the ls() method return only files.
+ *
+ * @since 1.3
+ * @name NET_FTP_FILES_ONLY
+ * @see Net_FTP::ls()
+ */
+define('NET_FTP_FILES_ONLY', 0, true);
+
+/**
+ * Option to let the ls() method return only directories.
+ *
+ * @since 1.3
+ * @name NET_FTP_DIRS_ONLY
+ * @see Net_FTP::ls()
+ */
+define('NET_FTP_DIRS_ONLY', 1, true);
+
+/**
+ * Option to let the ls() method return directories and files (default).
+ *
+ * @since 1.3
+ * @name NET_FTP_DIRS_FILES
+ * @see Net_FTP::ls()
+ */
+define('NET_FTP_DIRS_FILES', 2, true);
+
+/**
+ * Option to let the ls() method return the raw directory listing from ftp_rawlist().
+ *
+ * @since 1.3
+ * @name NET_FTP_RAWLIST
+ * @see Net_FTP::ls()
+ */
+define('NET_FTP_RAWLIST', 3, true);
 
 
 /**
@@ -30,6 +62,7 @@ define("NET_FTP_RAWLIST",    3, true);
  * could not be established. Check your connection settings (host & port)!
  *
  * @since 1.3
+ * @name NET_FTP_ERR_CONNECT_FAILED
  * @see Net_FTP::connect()
  */
 define('NET_FTP_ERR_CONNECT_FAILED', -1);
@@ -40,6 +73,7 @@ define('NET_FTP_ERR_CONNECT_FAILED', -1);
  * your user data (username & password).
  *
  * @since 1.3
+ * @name NET_FTP_ERR_LOGIN_FAILED
  * @see Net_FTP::login()
  */
 define('NET_FTP_ERR_LOGIN_FAILED', -2);
@@ -560,13 +594,14 @@ class Net_FTP extends PEAR
      * This generates a new FTP-Object. The FTP-connection will not be established, yet.
      * You can leave $host and $port blank, if you want. The $host will not be set
      * and the $port will be left at 21. You have to set the $host manualy before
-     * trying to connect.
+     * trying to connect or with the connect() method.
      *
      * @access  public
      * @param   string $host    (optional) The hostname 
      * @param   int    $port    (optional) The port
      * @param   int    $timeout (optional) Sets the standard timeout
      * @return  void
+     * @see     Net_FTP::setHostname(), Net_FTP::setPort(), Net_FTP::connect()
      */
     
     function Net_FTP($host = null, $port = null, $timeout = 90)
@@ -1058,7 +1093,7 @@ class Net_FTP extends PEAR
      * @param   string $dir   (optional) The directory to list or null, when listing the current directory.
      * @param   int    $mode  (optional) The mode which types to list (files, directories or both).
      * @return  mixed         The directory list as described above or PEAR::Error on failure.
-     * @see     NET_FTP_ERR_DETERMINEPATH_FAILED, NET_FTP_ERR_RAWDIRLIST_FAILED, NET_FTP_ERR_DIRLIST_UNSUPPORTED
+     * @see     NET_FTP_DIRS_FILES, NET_FTP_DIRS_ONLY, NET_FTP_FILES_ONLY, NET_FTP_RAWLIST, NET_FTP_ERR_DETERMINEPATH_FAILED, NET_FTP_ERR_RAWDIRLIST_FAILED, NET_FTP_ERR_DIRLIST_UNSUPPORTED
      */
      
     function ls($dir = null, $mode = NET_FTP_DIRS_FILES)
@@ -1267,11 +1302,13 @@ class Net_FTP extends PEAR
         $dir_list = array();
         $dir_list = $this->ls($remote_path, NET_FTP_DIRS_ONLY);
         foreach ($dir_list as $dir_entry) {
-            $remote_path_new = $remote_path.$dir_entry["name"]."/";
-            $local_path_new = $local_path.$dir_entry["name"]."/";
-            $result = $this->getRecursive($remote_path_new, $local_path_new, $overwrite, $mode);
-            if ($this->isError($result)) {
-                return $result;
+            if ($dir_entry['name'] != '.' && $dir_entry['name'] != '..') {
+                $remote_path_new = $remote_path.$dir_entry["name"]."/";
+                $local_path_new = $local_path.$dir_entry["name"]."/";
+                $result = $this->getRecursive($remote_path_new, $local_path_new, $overwrite, $mode);
+                if ($this->isError($result)) {
+                    return $result;
+                }
             }
         }
         $file_list = array();
