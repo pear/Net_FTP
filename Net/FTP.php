@@ -7,16 +7,10 @@
     define("NET_FTP_DIRS_FILES", 2, true);
     define("NET_FTP_RAWLIST", 3, true);
 
-    // drwx---r-x  2 system   System            0 Nov 15 11:17 Foo
-    define("NET_FTP_DIR_EREG", "([-dl])([rwx-]{9})[ ]*([0-9]*)[ ]*([a-zA-Z0-9_-]*)[ ]*([a-zA-Z0-9_-]*)[ ]*([0-9]*)[ ]*([A-Za-z]+ [0-9: ]*) (.+)", true);
-    // lrwxrwxrwx 1 oir100 nogroup 17 Sep 23 07:39 README.mod_sql -> ../README.mod_sql
-    
-    
-
  	/**
  	* Class for comfortable FTP-communication
  	*
- 	* This class provides comfortable communication with FTP-servers. You may do everything 
+ 	* This class provides comfortable communication with FTP-servers. You may do everything
     * enabled by the PHP-FTP-extension and further functionalities, like recursive-deletion,
     * -up- and -download. Another feature is to create directories recursively.
  	*
@@ -53,54 +47,54 @@
         * @access private
         * @var string
         */
-        
+
         var $_hostname;
-        
+
         /**
         * The port for ftp-connection (standard is 21)
         *
         * @access private
         * @var string
         */
-        
+
         var $_port = 21;
-        
+
         /**
         * The username for login
         *
         * @access private
         * @var string
         */
-        
+
         var $_username;
-        
+
         /**
         * The password for login
         *
         * @access private
         * @var string
         */
-        
+
         var $_password;
-        
+
         /**
         * Determine wether to use passive-mode (true) or active-mode (false)
         *
         * @access private
         * @var bool
         */
-        
+
         var $_passv;
-        
+
         /**
-        * The standard mode for ftp-transfer 
+        * The standard mode for ftp-transfer
         *
         * @access private
         * @var string
         */
-        
+
         var $_mode;
-        
+
         /**
         * This holds the handle for the ftp-connection
         *
@@ -123,6 +117,19 @@
         var $_file_extensions;
 
         /**
+        * ls match
+        *
+        * ls match
+        *
+        * @access private
+        * @var string
+        */
+
+        var $ls_match = '/(?:(d)|.)([rwx-]+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\S+\s+\S+\s+\S+)\s+(.+)/';
+        var $ls_regex_map = array('name'=>8,'size'=>6,'rights'=>2,'user'=>4,'group'=>5,
+								'files_inside'=>3,'date'=>7,'is_dir'=>1);
+
+        /**
         * This generates a new FTP-Object
         * This generates a new FTP-Object. The FTP-connection will not be established, yet.
         * You can leave $host and $port blank, if you want. The $host will not be set
@@ -134,22 +141,22 @@
         * @param int $port The port (optional)
         * @return void
         */
-        
+
         function Net_FTP ( $host = null, $port = null ) {
-            
+
             $this->PEAR();
             if (isset($host)) {
                 $this->setHostname($host);
-            }   
+            }
             if (isset($port)) {
                 $this->setPort($port);
             }
-            
+
             $this->_file_extensions[FTP_ASCII] = array();
             $this->_file_extensions[FTP_BINARY] = array();
-            
+
         }
-        
+
         /**
         * Build the FTP-connection
         * This function generates the FTP-connection. You can optionally define a
@@ -160,7 +167,7 @@
         * @param int $port The Port (optional)
         * @return bool $res True on success, otherwise PEAR::Error
         */
-        
+
         function connect ( $host = null, $port = null ) {
             if (isset($host)) {
                 $this->setHostname($host);
@@ -176,7 +183,7 @@
                 return true;
             }
         }
-        
+
         /**
         * Close the FTP-connection
         * This method closes the FTP-connection
@@ -337,8 +344,8 @@
         * Currently, you must give a number as the the permission argument (777 or
         * similar). The file can be either a relative or absolute path.
         * NOTE: Some servers do not support this feature. In that case, you will
-        * get a PEAR error object returned. If successful, the method returns true 
-        * 
+        * get a PEAR error object returned. If successful, the method returns true
+        *
         * @access public
         * @param mixed      $target The file or array of files to set permissions for
         * @param integer    $permissions The mode to set the file permissions to
@@ -359,7 +366,7 @@
                 } // end for i < count($target)
 
             } else {
-            
+
                 $res = $this->site("CHMOD " . $permissions . " " . $target);
                 if (!$res) {
                     return PEAR::raiseError("CHMOD " . $permissions . " " . $target . " failed", 0, PEAR_ERROR_RETURN);
@@ -432,7 +439,7 @@
                     if (PEAR::isError($result)) {
                         return $result;
                     }
-                    
+
                     $result = $this->chmodRecursive($remote_path_new, $permissions);
 
                     if (PEAR::isError($result)) {
@@ -458,7 +465,7 @@
                 } // end foreach $file_list
 
             } // end if is_array
-                
+
             return true; // No errors
 
         } // end method chmodRecursive
@@ -895,7 +902,7 @@
             }
             return $path;
         }
-        
+
         /**
         * Checks, wether a given string is a directory-path (ends with "/") or not.
         * Checks, wether a given string is a directory-path (ends with "/") or not.
@@ -1073,41 +1080,19 @@
             $files_list = array();
             $dir_list = ftp_rawlist($this->_handle, $dir);
             foreach ($dir_list as $entry) {
-                // ([1] = directory?, [2] = rights, [3] = files below, [4] = user,
-                //  [5] = group, [6] = size, [7] = date, [8]  = name)
-                $res_1 = @ereg(NET_FTP_DIR_EREG ,$entry,$eregs);
-                if (!$res_1) {
-                    var_dump($entry);
-                    return $this->raiseError("Raw directory-list in wrong format.", 0);
+                if (!preg_match($this->ls_match, $entry, $m)) {
+                    continue;
                 }
-                $is_dir = (@trim($eregs[1]) == "d");
-                // snip link-locations (have to clean that up later)
-                if (@trim($eregs[1]) == "l") {
-                    preg_match("/(.*) -> (.*)/", $eregs[8], $matches);
-                    $eregs[8] = $matches[1];
-                }
-                
-                $date = $this->_parse_date($eregs[7]);
-                // $date = $eregs[7];
-                if (!$date) {
-                    return $this->raiseError("Can not parse date from raw directory-list on '$dir'.", 0);
-                }
-                if ($is_dir) {
-                    $dirs_list[] = array("name"         =>  $eregs[8],
-                                        "rights"        =>  $eregs[2],
-                                        "user"          =>  $eregs[4],
-                                        "group"         =>  $eregs[5],
-                                        "files_inside"  =>  $eregs[3],
-                                        "date"          =>  $date,
-                                        "is_dir"        =>  $is_dir);
+                $entry = array();
+    	        foreach ($this->ls_regex_map as $key=>$val) {
+	        	    $entry[$key] = $m[$val];
+        	    }
+            	$entry['stamp'] = $this->_parse_Date($entry['date']);
+
+                if ($entry['is_dir']) {
+                    $dirs_list[] = $entry;
                 } else {
-                    $files_list[] = array("name"        =>  $eregs[8],
-                                         "size"         =>  (int)$eregs[6],
-                                         "rights"       =>  $eregs[2],
-                                         "user"         =>  $eregs[4],
-                                         "group"        =>  $eregs[5],
-                                         "date"         =>  $date,
-                                         "is_dir"       =>  $is_dir);
+                    $files_list[] = $entry;
                 }
             }
             @usort($dirs_list, array("Net_FTP", "_nat_sort"));
@@ -1132,7 +1117,7 @@
             $dir_list = array();
             $file_list = array();
             while (false !== ($entry = $dir->read())) {
-                if (($entry != ".") && ($entry != "..")) {
+                if (($entry != '.') && ($entry != '..')) {
                     if (is_dir($dir_path.$entry)) {
                         $dir_list[] = $entry;
                     } else {
@@ -1141,8 +1126,8 @@
                 }
             }
             $dir->close();
-            $res["dirs"] = $dir_list;
-            $res["files"] = $file_list;
+            $res['dirs'] = $dir_list;
+            $res['files'] = $file_list;
             return $res;
         }
 
@@ -1156,7 +1141,7 @@
         */
 
         function _nat_sort ( $item_1, $item_2 ) {
-            return strnatcmp($item_1["name"], $item_2["name"]);
+            return strnatcmp($item_1['name'], $item_2['name']);
         }
 
         /**
@@ -1170,17 +1155,21 @@
 
         function _parse_Date ( $date ) {
             // Sep 10 22:06 => Sep 10, <year> 22:06
-            if (preg_match("/([A-Za-z]+)[ ]+([0-9]+)[ ]+([0-9]+):([0-9]+)/", $date, $res)) {
-                $year = date("Y");
+            if (preg_match('/([A-Za-z]+)[ ]+([0-9]+)[ ]+([0-9]+):([0-9]+)/', $date, $res)) {
+                $year = date('Y');
                 $month = $res[1];
                 $day = $res[2];
                 $hour = $res[3];
                 $minute = $res[4];
                 $date = "$month $day, $year $hour:$minute";
             }
+            // 09-10-04 => 09/10/04
+            elseif (preg_match('/^\d\d-\d\d-\d\d/',$date)) {
+            	$date = str_replace('-','/',$date);
+            }
             $res = strtotime($date);
             if (!$res) {
-                return $this->raiseError("Dateconversion faild.", 0);
+                return $this->raiseError('Dateconversion failed.', 0);
             }
             return $res;
         }
@@ -1248,7 +1237,7 @@
                 $this->_mode = $mode;
                 return true;
             } else {
-                return $this->raiseError("FTP-Mode has either to be FTP_ASCII or FTP_BINARY", 1);
+                return $this->raiseError('FTP-Mode has either to be FTP_ASCII or FTP_BINARY', 1);
             }
         }
 
@@ -1281,11 +1270,11 @@
         /**
         * Adds an extension to a mode-directory
         * The mode-directory saves file-extensions coresponding to filetypes
-        * (ascii e.g.: "php", "txt", "htm",...; binary e.g.: "jpg", "gif", "exe",...).
-        * The extensions have to be saved without the ".". And
+        * (ascii e.g.: 'php', 'txt', 'htm',...; binary e.g.: 'jpg', 'gif', 'exe',...).
+        * The extensions have to be saved without the '.'. And
         * can be predefined in an external file (see: getExtensionsFile()).
         *
-        * The array is build like this: "php" => FTP_ASCII, "png" => FTP_BINARY
+        * The array is build like this: 'php' => FTP_ASCII, 'png' => FTP_BINARY
         *
         * To change the mode of an extension, just add it again with the new mode!
         *
