@@ -18,7 +18,7 @@
 		                        supported by PHP and additionally features like recursive up- and downloading,
 		                        dircreation and chmodding. It although implements an observer pattern to allow
 		                        for example the view of a progress bar.',
-		      'version' => '1.3.0beta2',
+		      'version' => '1.3.0beta3',
 	          'packagedirectory' => $packagedir,
 	          'pathtopackagefile' => $packagedir,
               'state' => 'beta',
@@ -29,18 +29,15 @@ Changelog:
               
 Fixes:
 
-* Added patch by Ilja Polivanovas <ipa@assis.lt> to enable correct directory permissions.
-* Added rename() functionality. Thanks to the unnamed coder from "Webmestre ESGI" <wmaster_esgi@hotmail.com>.
+* Added "t" for permission regex (some servers mark speacial dirs).
+* Added better support for different ls formats (thanks for hint by George Kearns).
 
-Enhancements:
-
-* Added rename() method.
-              
 Todo:
 -----
               
-* Extensive testing.
+* More testing.
 * Add example for observer.
+* Add unit test.
 ',
 			  'package' => 'Net_FTP',
 			  'dir_roles' => array(
