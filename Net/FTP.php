@@ -1824,17 +1824,15 @@ class Net_FTP extends PEAR
     
     function _rm_file($file)
     {
-        if (substr($file, 0, 1) == "/") {
-            $res = @ftp_delete($this->_handle, $file);
-        } else {
+        if (substr($ifile, 0, 1) != "/") {
             $actual_dir = @ftp_pwd($this->_handle);
             if (substr($actual_dir, (strlen($actual_dir) - 2), 1) != "/") {
                 $actual_dir .= "/";
             }
             $file = $actual_dir.$file;
-            $res = @ftp_delete($this->_handle, $file);
         }
-
+        $res = @ftp_delete($this->_handle, $file);
+        
         if (!$res) {
             return $this->raiseError("Could not delete file '$file'.", NET_FTP_ERR_DELETEFILE_FAILED);
         } else {
@@ -1895,7 +1893,7 @@ class Net_FTP extends PEAR
             }
         }
         $res = $this->_rm_dir($dir);
-        if (!$res) {
+        if (PEAR::isError($res)) {
             return $res;
         } else {
             return true;
@@ -1935,8 +1933,10 @@ class Net_FTP extends PEAR
     
     function _ls_dirs($dir)
     {
-        $list["dirs"] = array();
         $list = $this->_list_and_parse($dir);
+        if (PEAR::isError($list)) {
+            return $list;
+        }
         return $list["dirs"];
     }
 
@@ -1951,8 +1951,8 @@ class Net_FTP extends PEAR
     function _ls_files($dir)
     {
         $list = $this->_list_and_parse($dir);
-        if (!is_array($list["files"])) {
-            $list["files"] = array();
+        if (PEAR::isError($list)) {
+            return $list;
         }
         return $list["files"];
     }
@@ -1976,10 +1976,7 @@ class Net_FTP extends PEAR
         if ($dir_list === false) {
             return PEAR::raiseError('Could not get raw directory listing.', NET_FTP_ERR_RAWDIRLIST_FAILED);
         }
-        if (is_array($dir_list) && (count($dir_list) == 0)) {
-            return array();
-        }
-        if (!isset($this->_matcher)) {
+        if (!isset($this->_matcher) || PEAR::isError($this->_matcher)) {
             $this->_matcher = $this->_determine_os_match($dir_list);
             if (PEAR::isError($this->_matcher)) {
                 return $this->_matcher;
@@ -2003,8 +2000,8 @@ class Net_FTP extends PEAR
         }
         @usort($dirs_list, array("Net_FTP", "_nat_sort"));
         @usort($files_list, array("Net_FTP", "_nat_sort"));
-        $res["dirs"] = $dirs_list;
-        $res["files"] = $files_list;
+        $res["dirs"] = (is_array($dirs_list)) ? $dirs_list : array();
+        $res["files"] = (is_array($files_list)) ? $files_list : array();
         return $res;
     }
     
