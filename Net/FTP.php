@@ -23,41 +23,365 @@ define("NET_FTP_DIRS_ONLY",  1, true);
 define("NET_FTP_DIRS_FILES", 2, true);
 define("NET_FTP_RAWLIST",    3, true);
 
-// Work on error codes still in progress
+
+/**
+ * Error code to indicate a failed connection
+ * This error code indicates, that the connection you tryed to set up
+ * could not be established. Check your connection settings (host & port)!
+ *
+ * @since 1.3
+ * @see Net_FTP::connect()
+ */
 define('NET_FTP_ERR_CONNECTION_FAILED', -1);
+
+/**
+ * Error code to indicate a failed login
+ * This error code indicates, that the login to the FTP server failed. Check
+ * your user data (username & password).
+ *
+ * @since 1.3
+ * @see Net_FTP::login()
+ */
 define('NET_FTP_ERR_LOGIN_FAILED', -2);
+
+/**
+ * Error code to indicate a failed directory change
+ * The cd() method failed. Ensure that the directory you wanted to access exists.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_DIRCHANGE_FAILED
+ * @see Net_FTP::cd()
+ */
 define('NET_FTP_ERR_DIRCHANGE_FAILED', 2); // Compatibillity reasons!
-define('NET_FTP_ERR_DETERMINEPATH_FAILED', -3);
+
+/**
+ * Error code to indicate that Net_FTP could not determine the current path
+ * The cwd() method failed and could not determine the path you currently reside
+ * in on the FTP server.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_DETERMINEPATH_FAILED
+ * @see Net_FTP::pwd()
+ */
+define('NET_FTP_ERR_DETERMINEPATH_FAILED', 4); // Compatibillity reasons!
+
+/**
+ * Error code to indicate that the creation of a directory failed
+ * The directory you tryed to create could not be created. Check the
+ * access rights on the parent directory!
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_CREATEDIR_FAILED
+ * @see Net_FTP::mkdir()
+ */
 define('NET_FTP_ERR_CREATEDIR_FAILED', -4);
+
+/**
+ * Error code to indicate that the CMD execution failed.
+ * The execution of a command using CMD failed. Ensure, that your
+ * FTP server supports the CMD command.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_CMDEXECUTION_FAILED
+ * @see Net_FTP::cmd()
+ */
 define('NET_FTP_ERR_CMDEXECUTION_FAILED', -5);
+
+/**
+ * Error code to indicate that the SITE command failed.
+ * The execution of a command using SITE failed. Ensure, that your
+ * FTP server supports the SITE command.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_SITEEXECUTION_FAILED
+ * @see Net_FTP::site()
+ */
 define('NET_FTP_ERR_SITEEXECUTION_FAILED', -6);
+
+/**
+ * Error code to indicate that the CHMOD command failed.
+ * The execution of CHMOD failed. Ensure, that your
+ * FTP server supports the CHMOD command and that you have the appropriate
+ * access rights to use CHMOD.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_CHMOD_FAILED
+ * @see Net_FTP::chmod()
+ */
 define('NET_FTP_ERR_CHMOD_FAILED', -7);
+
+/**
+ * Error code to indicate that a file rename failed
+ * The renaming of a file on the server failed. Ensure that you have the
+ * appropriate access rights to rename the file.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_RENAME_FAILED
+ * @see Net_FTP::rename()
+ */
 define('NET_FTP_ERR_RENAME_FAILED', -8);
+
+/**
+ * Error code to indicate that the MDTM command failed
+ * The MDTM command is not supported for directories. Ensure that you gave
+ * a file path to the mdtm() method, not a directory path.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_MDTMDIR_UNSUPPORTED
+ * @see Net_FTP::mdtm()
+ */
 define('NET_FTP_ERR_MDTMDIR_UNSUPPORTED', -9);
+
+/**
+ * Error code to indicate that the MDTM command failed
+ * The MDTM command failed. Ensure that your server supports the MDTM command.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_MDTM_FAILED
+ * @see Net_FTP::mdtm()
+ */
 define('NET_FTP_ERR_MDTM_FAILED', -10);
+
+/**
+ * Error code to indicate that a date returned by the server was misformated
+ * A date string returned by your server seems to be missformated and could not be
+ * parsed. Check that the server is configured correctly. If you're sure, please
+ * send an email to the auhtor with a dumped output of $ftp->ls('./', NET_FTP_RAWLIST);
+ * to get the date format supported.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_DATEFORMAT_FAILED
+ * @see Net_FTP::mdtm(), Net_FTP::ls()
+ */
 define('NET_FTP_ERR_DATEFORMAT_FAILED', -11);
+
+/**
+ * Error code to indicate that the SIZE command failed
+ * The determination of the filesize of a file failed. Ensure that your server supports the
+ * SIZE command.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_FILESIZE_FAILED
+ * @see Net_FTP::size()
+ */
 define('NET_FTP_ERR_FILESIZE_FAILED', -12);
-define('NET_FTP_ERR_DETERMINEDIR_FAILED', 4); // Compatibillity reasons!
+
+/**
+ * Error code to indicate that a local file could not be overwritten
+ * You specified not to overwrite files. Therefore the local file has not been
+ * overwriten. If you want to get the file overwriten, please set the option to
+ * do so.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_OVERWRITELOCALFILE_FORBIDDEN
+ * @see Net_FTP::get(), Net_FTP::getRecursive()
+ */
 define('NET_FTP_ERR_OVERWRITELOCALFILE_FORBIDDEN', -13);
+
+/**
+ * Error code to indicate that a local file could not be overwritten
+ * Also you specified to overwrite the local file you want to download to,
+ * it has not been possible to do so. Check that you have the appropriate access
+ * rights on the local file to overwrite it.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_OVERWRITELOCALFILE_FAILED
+ * @see Net_FTP::get(), Net_FTP::getRecursive()
+ */
 define('NET_FTP_ERR_OVERWRITELOCALFILE_FAILED', -14);
-define('NET_FTP_ERR_LOCALFILEEXIST_FAILED', -15);
+
+/**
+ * Error code to indicate that the file you wanted to upload does not exist
+ * The file you tried to upload does not exist. Ensure that it exists.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_LOCALFILENOTEXIST
+ * @see Net_FTP::put(), Net_FTP::putRecursive()
+ */
+define('NET_FTP_ERR_LOCALFILENOTEXIST', -15);
+
+/**
+ * Error code to indicate that a remote file could not be overwritten
+ * You specified not to overwrite files. Therefore the remote file has not been
+ * overwriten. If you want to get the file overwriten, please set the option to
+ * do so.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_OVERWRITEREMOTEFILE_FORBIDDEN
+ * @see Net_FTP::put(), Net_FTP::putRecursive()
+ */
 define('NET_FTP_ERR_OVERWRITEREMOTEFILE_FORBIDDEN', -16);
+
+/**
+ * Error code to indicate that the upload of a file failed
+ * The upload you tried failed. Ensure that you have appropriate access rights
+ * to upload the desired file.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_UPLOADFILE_FAILED
+ * @see Net_FTP::put(), Net_FTP::putRecursive()
+ */
 define('NET_FTP_ERR_UPLOADFILE_FAILED', -17);
+
+/**
+ * Error code to indicate that you specified an incorrect directory path
+ * The remote path you specified seems not to be a directory. Ensure that
+ * the path you specify is a directory and that the path string ends with
+ * a /.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_REMOTEPATHNODIR
+ * @see Net_FTP::putRecursive(), Net_FTP::getRecursive()
+ */
 define('NET_FTP_ERR_REMOTEPATHNODIR', -18);
+
+/**
+ * Error code to indicate that you specified an incorrect directory path
+ * The local path you specified seems not to be a directory. Ensure that
+ * the path you specify is a directory and that the path string ends with
+ * a /.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_LOCALPATHNODIR
+ * @see Net_FTP::putRecursive(), Net_FTP::getRecursive()
+ */
 define('NET_FTP_ERR_LOCALPATHNODIR', -19);
+
+/**
+ * Error code to indicate that a local directory failed to be created
+ * You tried to create a local directory through getRecursive() method,
+ * which has failed. Ensure that you have the appropriate access rights
+ * to create it.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_CREATELOCALDIR_FAILED
+ * @see Net_FTP::getRecursive()
+ */
 define('NET_FTP_ERR_CREATELOCALDIR_FAILED', -20);
+
+/**
+ * Error code to indicate that the provided hostname was incorrect
+ * The hostname you provided was invalid. Ensure to provide either a
+ * full qualified domain name or an IP address.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_HOSTNAMENOSTRING
+ * @see Net_FTP::setHostname()
+ */
 define('NET_FTP_ERR_HOSTNAMENOSTRING', -21);
+
+/**
+ * Error code to indicate that the provided port was incorrect
+ * The port number you provided was invalid. Ensure to provide either a
+ * a numeric port number greater zero.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_PORTLESSZERO
+ * @see Net_FTP::setPort()
+ */
 define('NET_FTP_ERR_PORTLESSZERO', -22);
+
+/**
+ * Error code to indicate that you provided an invalid mode constant
+ * The mode constant you provided was invalid. You may only provide
+ * FTP_ASCII or FTP_BINARY.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_NOMODECONST
+ * @see Net_FTP::setMode()
+ */
 define('NET_FTP_ERR_NOMODECONST', -23);
+
+/**
+ * Error code to indicate that you provided an invalid timeout
+ * The timeout you provided was invalid. You have to provide a timeout greater
+ * or equal to zero.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_TIMEOUTLESSZERO
+ * @see Net_FTP::Net_FTP(), Net_FTP::setTimeout()
+ */
 define('NET_FTP_ERR_TIMEOUTLESSZERO', -24);
+
+/**
+ * Error code to indicate that you provided an invalid timeout
+ * An error occured while setting the timeout. Ensure that you provide a
+ * valid integer for the timeount and that your PHP installation works
+ * correctly.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_SETTIMEOUT_FAILED
+ * @see Net_FTP::Net_FTP(), Net_FTP::setTimeout()
+ */
 define('NET_FTP_ERR_SETTIMEOUT_FAILED', -25);
+
+/**
+ * Error code to indicate that the provided extension file doesn't exist
+ * The provided extension file does not exist. Ensure to provided an
+ * existant extension file.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_EXTFILENOTEXIST
+ * @see Net_FTP::getExtensionFile()
+ */
 define('NET_FTP_ERR_EXTFILENOTEXIST', -26);
+
+/**
+ * Error code to indicate that the provided extension file is not readable
+ * The provided extension file is not readable. Ensure to have sufficient
+ * access rights for it.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_EXTFILEREAD_FAILED
+ * @see Net_FTP::getExtensionFile()
+ */
 define('NET_FTP_ERR_EXTFILEREAD_FAILED', -27);
+
+/**
+ * Error code to indicate that the deletion of a file failed
+ * The specified file could not be deleted. Ensure to have sufficient
+ * access rights to delete the file.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_EXTFILEREAD_FAILED
+ * @see Net_FTP::rm()
+ */
 define('NET_FTP_ERR_DELETEFILE_FAILED', -28);
-define('NET_FTP_ERR_IVALIDDIRNAME', -29);
-define('NET_FTP_ERR_DELETEDIR_FAILED', -30);
-define('NET_FTP_ERR_RAWDIRLIST_FAILED', -31);
-define('NET_FTP_ERR_DIRLIST_UNSUPPORTED', -32);
+
+/**
+ * Error code to indicate that the deletion of a directory faild
+ * The specified file could not be deleted. Ensure to have sufficient
+ * access rights to delete the file.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_EXTFILEREAD_FAILED
+ * @see Net_FTP::rm()
+ */
+define('NET_FTP_ERR_DELETEDIR_FAILED', -29);
+
+/**
+ * Error code to indicate that the directory listing failed
+ * PHP could not list the directory contents on the server. Ensure
+ * that your server is configured appropriate.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_RAWDIRLIST_FAILED
+ * @see Net_FTP::ls()
+ */
+define('NET_FTP_ERR_RAWDIRLIST_FAILED', -30);
+
+/**
+ * Error code to indicate that the directory listing failed
+ * The directory listing format your server uses seems not to
+ * be supported by Net_FTP. Please send the output of the
+ * call ls('./', NET_FTP_RAWLIST); to the author of this
+ * class to get it supported.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_DIRLIST_UNSUPPORTED
+ * @see Net_FTP::ls()
+ */
+define('NET_FTP_ERR_DIRLIST_UNSUPPORTED', -31);
 
 
 /**
@@ -692,7 +1016,7 @@ class Net_FTP extends PEAR
         if (!isset($dir)) {
             $dir = @ftp_pwd($this->_handle);
             if (!$dir) {
-                return $this->raiseError("Could not retrieve current directory", NET_FTP_ERR_DETERMINEDIR_FAILED);
+                return $this->raiseError("Could not retrieve current directory", NET_FTP_ERR_DETERMINEPATH_FAILED);
             }
         }
         if (($mode != NET_FTP_FILES_ONLY) && ($mode != NET_FTP_DIRS_ONLY) && ($mode != NET_FTP_RAWLIST)) {
@@ -826,7 +1150,7 @@ class Net_FTP extends PEAR
         $remote_file = $this->_construct_path($remote_file);
 
         if (!@file_exists($local_file)) {
-            return $this->raiseError("Local file '$local_file' does not exist.", NET_FTP_ERR_LOCALFILEEXIST_FAILED);
+            return $this->raiseError("Local file '$local_file' does not exist.", NET_FTP_ERR_LOCALFILENOTEXIST);
         }
         if ((@ftp_size($this->_handle, $remote_file) != -1) && !$overwrite) {
             return $this->raiseError("Remote file '$remote_file' exists and may not be overwriten.", NET_FTP_ERR_OVERWRITEREMOTEFILE_FORBIDDEN);
@@ -1417,7 +1741,7 @@ class Net_FTP extends PEAR
     function _rm_dir($dir)
     {
         if (substr($dir, (strlen($dir) - 1), 1) != "/") {
-            return $this->raiseError("Directory name '$dir' is invalid, has to end with '/'", NET_FTP_ERR_IVALIDDIRNAME);
+            return $this->raiseError("Directory name '$dir' is invalid, has to end with '/'", NET_FTP_ERR_REMOTEPATHNODIR);
         }
         $res = @ftp_rmdir($this->_handle, $dir);
         if (!$res) {
@@ -1438,7 +1762,7 @@ class Net_FTP extends PEAR
     function _rm_dir_recursive($dir)
     {
         if (substr($dir, (strlen($dir) - 1), 1) != "/") {
-            return $this->raiseError("Directory name '$dir' is invalid, has to end with '/'", NET_FTP_ERR_IVALIDDIRNAME);
+            return $this->raiseError("Directory name '$dir' is invalid, has to end with '/'", NET_FTP_ERR_REMOTEPATHNODIR);
         }
         $file_list = $this->_ls_files($dir);
         foreach ($file_list as $file) {
