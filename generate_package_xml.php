@@ -10,7 +10,7 @@
 	$packagedir = $cvsdir . 'Net_FTP/';
 	$category = 'Networking';	
 
-	$version = '1.3.0beta4';
+	$version = '1.3.0RC1';
 	
 	$summary = 'Net_FTP provides an OO interface to the PHP FTP functions plus some additions';
 	
@@ -23,26 +23,18 @@ for example the view of a progress bar.
 EOT;
 	
 	$notes = <<<EOT
-Another beta, since I added many new stuff in the last days.
+This is the first RC for version 1.3. I decided to not wait until all todos are
+implemented, to give the new features to all users.
 
 Changelog:
 -----------
 
 Additions:
-
- * Optimized OS determination. Thanks to Eric Quilantang. 
- * Added ability to set timeout in constructor.
- * Added much more error handling.
- * Added real error codes with full documentation.
+-
 
 Fixes:
-
- * Fix bug #1176: Net_FTP::ls can return dates in the future. 
- * Fix bug #1446: Bug in isPassive().
- * Fix bug #1480 _list_and_parse() may throw warnings.
- * Fix bug #1445 Improvement of setTimeout() method + timout handling.
- * Renamed makeDirPermissions() to _makeDirPermissions(), since it's private (CS).
- * Fix './' syntax for pathes.
+ 
+* Fixed bug #2268: getRecursive does not work because of '.' and '..' directories. 
 
 Todo:
               
@@ -58,7 +50,7 @@ EOT;
 		      'version' => $version,
 	          'packagedirectory' => $packagedir,
 	          'pathtopackagefile' => $packagedir,
-              'state' => 'beta',
+              'state' => 'RC',
               'filelistgenerator' => 'cvs',
               'notes' => $notes,
 			  'package' => 'Net_FTP',
