@@ -889,12 +889,17 @@ class Net_FTP extends PEAR
      * Set the Hostname
      *
      * @access  public
-     * @param   string $host  The Hostname to set
+     * @param   string $host The Hostname to set
+     * @return  bool True on success, otherwise PEAR::Error
      */
     
     function setHostname($host)
     {
+        if (!is_string($hostname)) {
+            return PEAR::raiseError("Hostname must be a string.", 0);
+        }
         $this->_hostname = $host;
+        return true;
     }
 
     /**
@@ -902,11 +907,16 @@ class Net_FTP extends PEAR
      *
      * @access  public
      * @param   int $port    The Port to set
+     * @return  bool True on success, otherwise PEAR::Error
      */
     
     function setPort($port)
     {
+        if (!is_int($port) || ($port < 0)) {
+            PEAR::raiseError("Invalid port. Has to be integer >= 0", 0);
+        }
         $this->_port = $port;
+        return true;
     }
 
     /**
