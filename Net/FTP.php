@@ -120,7 +120,7 @@ class Net_FTP extends PEAR
      * @var     string
      */
     
-    var $ls_match = '/(?:(d)|.)([rwx-]+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\S+\s+\S+\s+\S+)\s+(.+)/';
+    var $ls_match = '/(?:(d)|.)([rwxt-]+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\S+\s+\S+\s+\S+)\s+(.+)/';
     
     var $ls_regex_map = array('name'=>8,'size'=>6,'rights'=>2,'user'=>4,'group'=>5,
                               'files_inside'=>3,'date'=>7,'is_dir'=>1);
@@ -642,6 +642,7 @@ class Net_FTP extends PEAR
             case NET_FTP_FILES_ONLY:    $res = $this->_ls_files ( $dir );
                                         break;
             case NET_FTP_RAWLIST:       $res = @ftp_rawlist($this->_handle, $dir);
+                                        echo "HETE!!";
                                         break;
         }
 
