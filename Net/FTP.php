@@ -1202,7 +1202,7 @@ class Net_FTP extends PEAR
     
     function isPassive()
     {
-        return $this->_passive;
+        return $this->_passv;
     }
 
     /**
