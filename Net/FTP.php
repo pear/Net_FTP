@@ -1701,7 +1701,7 @@ class Net_FTP extends PEAR
     
     function _construct_path($path)
     {
-        if (substr($path, 0, 1) != "/") {
+        if ((substr($path, 0, 1) != "/") && (substr($path, 0, 2) != "./")) {
             $actual_dir = @ftp_pwd($this->_handle);
             if (substr($actual_dir, (strlen($actual_dir) - 2), 1) != "/") {
                 $actual_dir .= "/";
