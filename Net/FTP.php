@@ -307,7 +307,7 @@
         function execute ( $command ) {
             $res = @ftp_exec($this->_handle, $command);
             if (!$res) {
-                return $this->raiseError("Execution of command '$command' faild.", 0);
+                return $this->raiseError("Execution of command '$command' failed.", 0);
             } else {
                 return $res;
             }
@@ -325,18 +325,151 @@
         function site ( $command ) {
             $res = @ftp_site($this->_handle, $command);
             if (!$res) {
-                return $this->raiseError("Execution of command '$command' faild.", 0);
+                return $this->raiseError("Execution of SITE command '$command' failed.", 0);
             } else {
                 return $res;
             }
         }
 
         /**
+        * Chmod a file on the server
+        * This method will try to chmod the file specified on the server
+        * Currently, you must give a number as the the permission argument (777 or
+        * similar). The file can be either a relative or absolute path.
+        * NOTE: Some servers do not support this feature. In that case, you will
+        * get a PEAR error object returned. If successful, the method returns true 
+        * 
+        * @access public
+        * @param mixed      $target The file or array of files to set permissions for
+        * @param integer    $permissions The mode to set the file permissions to
+        * @return mixed $res true if successful, otherwise PEAR::Error
+        */
+
+        function chmod($target, $permissions)
+        {
+
+            // If $target is an array: Loop through it.
+            if (is_array($target)) {
+
+                for ($i = 0; $i < count($target); $i++) {
+                    $res = $this->chmod($target[$i], $permissions);
+                    if (PEAR::isError($res)) {
+                        return $res;
+                    } // end if isError
+                } // end for i < count($target)
+
+            } else {
+            
+                $res = $this->site("CHMOD " . $permissions . " " . $target);
+                if (!$res) {
+                    return PEAR::raiseError("CHMOD " . $permissions . " " . $target . " failed", 0, PEAR_ERROR_RETURN);
+                } else {
+                    return $res;
+                }
+
+            } // end if is_array
+
+        } // end method chmod
+
+        /**
+        * Chmod a folder recursively on the server
+        * This method will try to chmod a folder and all of its contents
+        * on the server. The target argument must be a folder or an array of folders
+        * and the permissions argument have to be an integer (i.e. 777).
+        * The file can be either a relative or absolute path.
+        * NOTE: Some servers do not support this feature. In that case, you
+        * will get a PEAR error object returned. If successful, the method
+        * returns true
+        *
+        * @access public
+        * @param mixed      $target         The folder or array of folders to
+        *                                   set permissions for
+        * @param integer    $permissions    The mode to set the folder
+        *                                   and file permissions to
+        * @return mixed     $res            true if successful, otherwise PEAR::Error
+        */
+        function chmodRecursive($target, $permissions)
+        {
+
+            // If $target is an array: Loop through it
+            if (is_array($target)) {
+
+                for ($i = 0; $i < count($target); $i++) {
+                    $res = $this->chmodRecursive($target[$i], $permissions);
+                    if (PEAR::isError($res)) {
+                        return $res;
+                    } // end if isError
+                } // end for i < count($target)
+
+            } else {
+
+                $remote_path = $this->_construct_path($target);
+
+                // Chmod the directory itself
+                $result = $this->chmod($remote_path, $permissions);
+
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
+
+                // If $remote_path last character is not a slash, add one
+                if (substr($remote_path, strlen($remote_path)-1) != "/") {
+
+                    $remote_path .= "/";
+
+                }
+
+                $dir_list = array();
+                $mode = NET_FTP_DIRS_ONLY;
+                $dir_list = $this->ls($remote_path, $mode);
+                foreach ($dir_list as $dir_entry) {
+
+                    $remote_path_new = $remote_path.$dir_entry["name"]."/";
+
+                    // Chmod the directory we're about to enter
+                    $result = $this->chmod($remote_path_new, $permissions);
+
+                    if (PEAR::isError($result)) {
+                        return $result;
+                    }
+                    
+                    $result = $this->chmodRecursive($remote_path_new, $permissions);
+
+                    if (PEAR::isError($result)) {
+                        return $result;
+                    }
+
+                } // end foreach dir_list as dir_entry
+
+                $file_list = array();
+                $mode = NET_FTP_FILES_ONLY;
+                $file_list = $this->ls($remote_path, $mode);
+
+                foreach ($file_list as $file_entry) {
+
+                    $remote_file = $remote_path.$file_entry["name"];
+
+                    $result = $this->chmod($remote_file, $permissions);
+
+                    if (PEAR::isError($result)) {
+                        return $result;
+                    }
+
+                } // end foreach $file_list
+
+            } // end if is_array
+                
+            return true; // No errors
+
+        } // end method chmodRecursive
+
+
+        /**
         * Get the last modification-time of a file.
         * This will return the last modification-time of a file. You can either give this
-        * function a relative or an absolute path to the file to ckeck.
+        * function a relative or an absolute path to the file to check.
         * NOTE: Some servers will not support this feature and the function works
-        * only on files, not directories! When successfull,
+        * only on files, not directories! When successful,
         * it will return the last modification-time as a unix-timestamp or, when $format is
         * specified, a preformated timestring.
         *
