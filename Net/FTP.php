@@ -193,7 +193,7 @@
         */
 
         function disconnect ( ) {
-            ftp_close($this->_handle);
+            return @ftp_close($this->_handle);
         }
 
         /**
@@ -222,7 +222,7 @@
                 $this->setPassword($password);
             }
 
-            $res = ftp_login($this->_handle, $username, $password);
+            $res = @ftp_login($this->_handle, $username, $password);
 
             if (!$res) {
                 return $this->raiseError("Unable to login", 0);
@@ -492,7 +492,7 @@
             if ($this->_check_dir($file)) {
                 return $this->raiseError("Filename '$file' seems to be a directory.", 0);
             }
-            $res = ftp_mdtm($this->_handle, $file);
+            $res = @ftp_mdtm($this->_handle, $file);
             if ($res == -1) {
                 return $this->raiseError("Could not get last-modification-date of '$file'.", 0);
             }
@@ -518,7 +518,7 @@
         function size ( $file ) {
 
             $file = $this->_construct_path($file);
-            $res = ftp_size($this->_handle, $file);
+            $res = @ftp_size($this->_handle, $file);
             if ($res == -1) {
                 return $this->raiseError("Could not determine filesize of '$file'.", 0);
             } else {
@@ -574,7 +574,7 @@
 
         function ls ( $dir = null, $mode = NET_FTP_DIRS_FILES ) {
             if (!isset($dir)) {
-                $dir = ftp_pwd($this->_handle);
+                $dir = @ftp_pwd($this->_handle);
                 if (!$dir) {
                     return $this->raiseError("Could not retrieve current directory", 4);
                 }
@@ -590,7 +590,7 @@
                                             break;
                 case NET_FTP_FILES_ONLY:    $res = $this->_ls_files ( $dir );
                                             break;
-                case NET_FTP_RAWLIST:       $res = ftp_rawlist($this->_handle, $dir);
+                case NET_FTP_RAWLIST:       $res = @ftp_rawlist($this->_handle, $dir);
                                             break;
             }
 
@@ -670,7 +670,7 @@
             if (@function_exists('ftp_nb_get')){
 	            $res = @ftp_nb_get($this->_handle, $local_file, $remote_file, $mode);
 	            while ($res == FTP_MOREDATA) {
-	                $res = ftp_nb_continue ($this->_handle);
+	                $res = @ftp_nb_continue ($this->_handle);
 	            }
 	        } else {
 	            $res = @ftp_get($this->_handle, $local_file, $remote_file, $mode);
@@ -723,7 +723,7 @@
 	            }
 
             } else {
-	            $res = ftp_put($this->_handle, $remote_file, $local_file, $mode);
+	            $res = @ftp_put($this->_handle, $remote_file, $local_file, $mode);
 	        }
             if (!$res) {
                 return $this->raiseError("File '$local_file' could not be uploaded to '$remote_file'.", 0);
@@ -894,7 +894,7 @@
         function _construct_path ( $path ) {
 
             if (substr($path, 0, 1) != "/") {
-                $actual_dir = ftp_pwd($this->_handle);
+                $actual_dir = @ftp_pwd($this->_handle);
                 if (substr($actual_dir, (strlen($actual_dir) - 2), 1) != "/") {
                     $actual_dir .= "/";
                 }
@@ -935,7 +935,7 @@
             if (substr($file, 0, 1) == "/") {
                 $res = @ftp_delete($this->_handle, $file);
             } else {
-                $actual_dir = ftp_pwd($this->_handle);
+                $actual_dir = @ftp_pwd($this->_handle);
                 if (substr($actual_dir, (strlen($actual_dir) - 2), 1) != "/") {
                     $actual_dir .= "/";
                 }
@@ -1078,7 +1078,7 @@
         function _list_and_parse ( $dir ) {
             $dirs_list = array();
             $files_list = array();
-            $dir_list = ftp_rawlist($this->_handle, $dir);
+            $dir_list = @ftp_rawlist($this->_handle, $dir);
             foreach ($dir_list as $entry) {
                 if (!preg_match($this->ls_match, $entry, $m)) {
                     continue;
@@ -1251,7 +1251,7 @@
 
         function setPassive () {
             $this->_passv = true;
-            ftp_pasv($this->_handle, true);
+            @ftp_pasv($this->_handle, true);
         }
 
         /**
@@ -1264,7 +1264,7 @@
 
         function setActive () {
             $this->_passv = false;
-            ftp_pasv($this->_handle, false);
+            @ftp_pasv($this->_handle, false);
         }
 
         /**
