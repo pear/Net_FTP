@@ -1816,7 +1816,7 @@ class Net_FTP extends PEAR
     
     function _check_dir($path)
     {
-        if (substr($path, (strlen($path) - 1), 1) == "/") {
+        if (!empty($path) && substr($path, (strlen($path) - 1), 1) == "/") {
             return true;
         } else {
             return false;
