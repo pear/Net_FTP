@@ -1,143 +1,29 @@
 <?php
+    error_reporting(E_ALL|E_STRICT);
+
     /**
     * Default FTP extension constants
     */
-    define ( 'FTP_ASCII', 0 );
-    define ( 'FTP_TEXT', 0 );
-    define ( 'FTP_BINARY', 1 );
-    define ( 'FTP_IMAGE', 1 );
-    define ( 'FTP_TIMEOUT_SEC', 0 );
+    define('FTP_ASCII', 0);
+    define('FTP_TEXT', 0);
+    define('FTP_BINARY', 1);
+    define('FTP_IMAGE', 1);
+    define('FTP_TIMEOUT_SEC', 0);
 
-    define ( 'PASSIVE', 1 ); // Shall we use passive mode?
-   
+    define('CRLF', "\r\n"); # Line endings
     /**
     * What needs to be done overall?
-    *   #1 Add active mode
-    *   #2 Make *all* functions check for correct respons code
-    *   #3 Document better
-    *   #4 Remove private functions
-    *   #5 Alot of other things I don't remember
+    *   #1 Install the rest of these functions
+    *   #2 Document better
+    *   #3 Alot of other things I don't remember
     */
-    
-    # # # # # # # !!!! NOTE !!!! # # # # # # #
-    # Most of the comment's are "not working",
-    # meaning they are not all up-to-date
-    # # # # # # # !!!! NOTE !!!! # # # # # # #
-    
-    error_reporting ( E_ALL | E_STRICT );
-    
-    /**
-    * mixed _ControlSend ( resource stream, string command [,bool return data ] );
-    *
-    * Sends infomation ( commands ) to stream.
-    * Returns bytes written or FALSE on error unless $return_data is set
-    *
-    * @access   private
-    * @param    resource    $stream ( Stream resource )
-    * @param    string      $action ( Command to send )
-    * @return   integer
-    *
-    * TODO:
-    *       Remove function. This function shall not exists in the "final
-    *       release" of this package. Its only used here for two resons; quicker
-    *       development time and smaller code.
-    *
-    * NOTE:
-    *       Currently this function returns server respons, by default, unless
-    *       $read ( third parameter ) is set to false. This way saves one line
-    *       of coding ( lol, yes, one line hahaha )
-    */
-    function _ControlSend ( &$stream, $action, $read = TRUE ) {
-        $i = fputs ( $stream, $action. "\r\n" );
-        if ( $read ) {
-            return _ControlRead ( $stream );
-        }
-        return $i;
-    }
-    
-    /**
-    * array _ControlRead ( resource stream [, int bytes [, bool use array ] ] );
-    *
-    * Reads data from stream.
-    * Returns data readed as array
-    *
-    * BUG:
-    *       Not binary safe.
-    *
-    * TODO:
-    *       Remove function. This function shall not exists in the "final
-    *       release" of this package. Its only used here for two reasons;
-    *       quicker development time and smaller code.
-    *
-    * TODO:
-    *       Make stream_set_time() call to ftp_get_option to retrive connection
-    *       timeout seconds.
-    *
-    * NOTE:
-    *       Becouse the usage of trim(), in this function, this function is
-    *       *not* binary safe.
-    *
-    * NOTE:
-    *       This function can be used to read data from *both* control stream
-    *       and data stream.
-    *       
-    * NOTE:
-    *       If there is lagg problem, this function is ( problibly ) to blame
-    *       ( hint; do { fgets(); } while ( $unread_bytes ); ) all thou it
-    *       should be working fine now.
-    *
-    * @access   private
-    * @param    resource    $stream  ( Stream resource )
-    * @param    integer     $bytes   ( Optional, read in $bytes sized chunks )
-    * @param    boolean     $use_array ( Optional, return "new line" as array )
-    * @return   string
-    */
-    function _ControlRead ( &$stream, $bytes = 8192, $use_array = FALSE ) {
-        # Set stream in "blocking mode" with timeout 1 second
-        stream_set_blocking ( $stream, TRUE );
-        stream_set_timeout ( $stream, 1 );
 
-        # Read line from stream
-        # Place the line in array ( if requested )
-        # Check if there are unread bytes, if so loop
-        # NOTE:
-        #       Line gets overwritten! ( not the array )
-        # Reson:
-        #       We usually only want the last line
+    # # # # # # # # !!! NOTE !!! # # # # # # # #
+    # Most of the comment's are "not working", #
+    # meaning they are not all up-to-date      #
+    # # # # # # # # !!! NOTE !!! # # # # # # # #
 
-        # TODO:
-        #       Install usleep(1) before the loop?
-        #       ( maight be worth it so we get the time to destroy data sockets
-        #       if needed etc. )
-        # NOTE:
-        #       Destroying data socket causes the text "Transfer complete" to be
-        #       echod into Control stream.
-        do {
-            $contents = trim ( fgets ( $stream, $bytes ) );
-            if ( $use_array ) {
-                $content[] = $contents;
-            }
-            $array = socket_get_status ( $stream );
-        } while ( $array[ 'unread_bytes' ] > 0 );
-        
-        if ( $use_array ) {
-            return $content;
-        }
-        
-        # First 3 letters are usually Respons codes
-        $key = substr ( $contents, 0, 3 );
-        if ( is_numeric ( $key ) ) {
-            return array (
-                'key' => $key,
-                # ltrim() to get rid of the space which was located between
-                # "Respons code" and "Respons text"
-                'msg' => ltrim ( substr ( $contents, 3 ) )
-            );
-        }
-        
-        return array ( 'msg' => $contents );
-    }
-    
+
     /**
     * &resource ftp_connect ( string host [, int port [, int timeout ] ] );
     *
@@ -159,26 +45,42 @@
     * @param    int     $timeout( Optional, seconds until function timeouts )
     * @return   &resource
     */
-    function &ftp_connect ( $host, $port = 21, $timeout = 90 ) {
-        $fp = fsockopen ( $host, $port, $i, $s, $timeout );
-        $array = _ControlRead ( $fp );
-        
-        if ( !is_resource ( $fp ) || !isset ( $array[ 'key' ] ) ||
-                $array[ 'key' ] != 220 ) {
-            return FALSE;
+    function &ftp_connect($host, $port = 21, $timeout = 90)
+    {
+        $false = false; // We are going to return refrence (E_STRICT)
+
+        if (!is_string($host) || !is_integer($port) || !is_integer($timeout)) {
+            return $false;
         }
-        
-        return $fp;
+
+        $control = @fsockopen($host, $port, $iError, $sError, $timeout);
+        $GLOBALS['_NET_FTP']['timeout'] = $timeout;
+
+        if (!is_resource($control)) {
+            return $false;
+        }
+
+        stream_set_blocking($control, TRUE);
+        stream_set_timeout($control, $timeout);
+
+        do {
+            $content[] = fgets($control, 8129);
+            $array = socket_get_status($control);
+        }
+        while ($array['unread_bytes'] > 0);
+
+        if (substr($content[count($content)-1], 0, 3) == 220) {
+            return $control;
+        }
+
+        return $false;
     }
-    
+
     /**
     * boolean ftp_login ( resource stream, string username, string password );
     *
     * Logs in to an given FTP connection stream.
     * Returns TRUE on success or FALSE on failure.
-    *
-    * TODO:
-    *       Throw warning on failure.
     *
     * NOTE:
     *       Username and password are *not* optional. Function will *not*
@@ -191,23 +93,46 @@
     * @param    string      $password ( FTP Password to be used )
     * @return   boolean
     */
-    function ftp_login ( &$stream, $username, $password ) {
-        
-        _ControlSend ( $stream, 'USER ' .$username );
-        $array = _ControlSend ( $stream, 'PASS ' .$password );
-        
-        if ( isset ( $array[ 'key' ] ) && $array [ 'key' ] == 230 ) {
-            return TRUE;
+    function ftp_login(&$control, $username, $password)
+    {
+        if (!is_resource($control) || is_null($username)) {
+            return false;
         }
-        
-        return FALSE;
+
+        fputs($control, 'USER '.$username.CRLF);
+        $contents = array();
+        do {
+            $contents[] = fgets($control, 8192);
+            $array = socket_get_status($control);
+        } while ($array['unread_bytes'] > 0);
+
+        if (substr($contents[count($contents)-1], 0, 3) != 331) {
+            return false;
+        }
+
+        fputs($control, 'PASS '.$password.CRLF);
+        $contents = array();
+        do {
+            $contents[] = fgets($control, 8192);
+            $array = socket_get_status($control);
+        } while ($array['unread_bytes']);
+
+        if (substr($contents[count($contents)-1], 0, 3) == 230) {
+            return true;
+        }
+
+        trigger_error('ftp_login() [<a
+                href="function.ftp-login">function.ftp-login</a>]: '
+.$contents[count($contents)-1], E_USER_WARNING);
+
+        return false;
     }
-    
+
     /**
     * boolean ftp_quit ( resource stream );
     *
     * Closes FTP connection.
-    * Returns TRUE on success or FALSE on failure.
+    * Returns TRUE or FALSE on error.
     *
     * NOTE: The PHP function ftp_quit is *alias* to ftp_close, here it is
     * the *other-way-around* ( ftp_close() is alias to ftp_quit() ).
@@ -218,20 +143,26 @@
     * @param    integer     $stream   ( FTP resource )
     * @return   boolean
     */
-    function ftp_quit ( &$stream ) {
-        _ControlSend ( $stream, 'QUIT' );
-        fclose ( $stream );
-        $stream = NULL;
+    function ftp_quit(&$control)
+    {
+        if (!is_resource($control)) {
+            return false;
+        }
+
+        fputs($control, 'QUIT'.CRLF);
+        fclose($control);
+        $control = NULL;
         return TRUE;
     }
-    
+
     /**
     * Alias to ftp_quit()
     */
-    function ftp_close ( &$stream ) {
-        return ftp_quit ( $stream );
+    function ftp_close(&$control)
+    {
+        return ftp_quit($control);
     }
-    
+
     /**
     * string ftp_pwd ( resource stream );
     *
@@ -239,23 +170,40 @@
     * Returns the current directory.
     *
     * Needs data connection: NO
+    * Success respons code: 257
     *
     * @param    integer     $stream     ( FTP resource )
     * @return   string
     */
-    function ftp_pwd ( &$stream ) {
-        $array = _ControlSend ( $stream, 'PWD' );
-        return _GetString ( $array[ 'msg' ], '"', '"', 0 );
+    function ftp_pwd(&$control)
+    {
+        if (!is_resource($control)) {
+            return $control;
+        }
+
+        fputs($control, 'PWD'.CRLF);
+
+        $content = array();
+        do {
+            $content[] = fgets($control, 8192);
+            $array = socket_get_status($control);
+        } while ($array['unread_bytes'] > 0);
+
+        if (substr($cont = $content[count($content)-1], 0, 3) == 257) {
+            $pos  = strpos($cont, '"')+1;
+            $pos2 = strrpos($cont, '"') - $pos;
+            $path = substr($cont, $pos, $pos2);
+            return $path;
+        }
+
+        return false;
     }
-    
+
     /**
     * boolean ftp_chdir ( resource stream, string directory );
     *
     * Changes the current directory to the specified directory.
     * Returns TRUE on success or FALSE on failure.
-    *
-    * TODO:
-    *       FTP extension throws warning on failure. Throw that warning.
     *
     * FTP success respons code: 250
     * Needs data connection: NO
@@ -264,133 +212,137 @@
     * @param    string      $pwd        ( Directory name )
     * @return   boolean
     */
-    function ftp_chdir ( &$stream, $pwd ) {
-        $array = _ControlSend ( $stream, 'CWD ' .$pwd );
-        
-        if ( $array[ 'key' ] == 250 ) {
-            return TRUE;
+    function ftp_chdir(&$control, $pwd)
+    {
+        if (!is_resource($control) || !is_string($pwd)) {
+            return false;
         }
-        
-        return FALSE;
+
+        fputs($control, 'CWD '.$pwd.CRLF);
+        $content = array();
+        do {
+            $content[] = fgets($control, 8192);
+            $array = socket_get_status($control);
+        } while ($array['unread_bytes'] > 0);
+
+        if (substr($content[count($content)-1], 0, 3) == 250) {
+            return true;
+        }
+
+        trigger_error ('ftp_chdir() [<a
+                href="function.ftp-chdir">function.ftp-chdir</a>]:
+                    ' .$content[count($content)-1], E_USER_WARNING);
+
+        return false;
     }
-    
+
     /**
     * boolean ftp_pasv ( resource stream, boolean passive );
     *
     * Toggles passive mode ON/OFF.
     * Returns TRUE on success or FALSE on failure.
     *
-    * NOTE:
-    *       Should Toggle between passive and active mode, according to the FTP
-    *       exteion atleast.
-    *
-    * TODO:
-    *       Make it compatible with the FTP extension.
-    *
-    * TODO:
-    *       Make fscokopen() use ftp_get_option() for timeout variable.
-    *
-    * IDEA:
-    *       Try to enter passive mode, then destroy it. If success passive mode
-    *       can be enabled. If it failes, passive mode can not be enabled.
+    * Comment:
+    *       Althou my lack of C knowlage I checked how the PHP FTP extension
+    *       do things here. Seems like they create the data connection and store
+    *       it in object for other functions to use.
+    *       This is now done here.
     *
     * FTP success respons code: 227
     *
-    * @param   integer  $stream  ( FTP stream )
+    * @param   stream  $control  ( FTP stream )
     * @return  boolean
     */
-    function ftp_pasv ( &$stream, $pasv ) {
-    }
-    
-    /**
-    * &resource _CreatePassive ( resource stream );
-    *
-    * Creates data connection for stream.
-    * Returns resource to data connection.
-    *
-    * TODO:
-    *       Remove function. This function shall not exists in the "final
-    *       release" of this package. Its only used here for two reasons;
-    *       quicker development time and smaller code.
-    *
-    * @access   private
-    * @param    resource    $stream     ( FTP control resource )
-    * @return   &resource
-    */
-    function &_CreatePassive ( &$stream ) {
-        $msg = _ControlSend ( $stream, 'PASV' );
-        
-        $word = _GetString ( $msg[ 'msg' ], '(', ')', 0 );
-        $array = split ( ',', $word );
+    $_NET_FTP = array();
+    $_NET_FTP['USE_PASSIVE'] = false;
+    $_NET_FTP['DATA'] = null;
 
-        # IP which we are suppost to connect to
-        # NOTE:
-        #       IP does *not* need to be the same for data and control
-        #       connection acording to the standart.
-        $host = $array[0]. '.' .$array[1]. '.' .$array[2]. '.' .$array[3];
-        # Calculate which port we are suppost to connect to.
-        # $array[4]*2*2*2*2*2*2*2*2 + $array[5]
-        $port = ( (int)$array[4] << 8 ) + (int)$array[5];
-        
-        $data = fsockopen ( $host, $port, $iError, $sError, 10 );
-        return $data;
-    }
-    
-    # This function problibly needs total rewrite
-    function &_CreateActive ( &$stream  ) {
-        static $accept; // Keep the socket alive so the ftp can connect to it
-        # No point in creating socket with socket_create_listen cause we need to
-        # read/write data to it also. Damn socket_accept.
-        # I guess we need to read/write data to $socket - but the ftp server
-        # needs to read/write from $accept - I guess?
-        # that theary is *NOT TESTED* since that stupid socket_accept doesn't
-        # work for some resons
-        
-        # Pick random "low bit"
-        $low = rand ( 39, 250 );
-        # Pick random "high bit"
-        $high = rand ( 39, 250 );
-        # Lowest  possible port would be; 10023
-        # Highest possible port would be; 64246
-        
-        $port = ( $low<<8 ) + $high;
-        $ip = str_replace ( '.', ',', $_SERVER[ 'SERVER_ADDR' ] );
-        $s = $ip. ',' .$low. ',' .$high;
-        var_dump ( $ip, $port, $low, $high, $s );
-        
-        $socket = socket_create ( AF_INET, SOCK_STREAM, SOL_TCP );
-        if ( is_resource ( $socket ) ) {
-            echo "Socket Create\n";
-            if ( socket_bind ( $socket, '0.0.0.0', $port ) ) {
-                echo "Socket bind\n";
-                if ( socket_listen ( $socket ) ) {
-                    echo "Socket listen\n";
-                    /**
-                    * Here we have a problem!
-                    * socket_listen just hangs and I've *no* idea why
-                    * set_time_limit() doesn't help us here
-                    * Quote from manual ( about set_time_limit() ):
-                    * Any time spent on activity that happens outside the execution
-                    * of the script such as system calls using system(), stream
-                    * operations, database queries, etc. is not included when
-                    * determining the maximum time that the script has been running.
-                    */
-                    
-                    # set_time_limit ( 10 ); // damn you set_time_limit() !
-                    socket_set_timeout ( $socket, 1 ); # Doesn't seem to work
-                    #socket_close ( $socket );
-                    #return false;
-#                    $accept = socket_accept ( $socket );
-                    // Damn you socket_accept! You don't like me and I don't
-                    // like you but please, work god damnit!
-                    _ControlSend ( $stream, 'PORT ' .$s );
-                    return $socket;
+    function ftp_pasv(&$control, $pasv)
+    {
+        if (!is_resource($control) || !is_bool($pasv)) {
+            return false;
+        }
+
+        // If data connection exists, destroy it
+        if (isset($GLOBALS['_NET_FTP']['DATA'])) {
+            fclose($GLOBALS['_NET_FTP']['DATA']);
+            $GLOBALS['_NET_FTP']['DATA'] = null;
+
+            do {
+                fgets($control, 16);
+                $array = socket_get_status($control);
+            } while ($array['unread_bytes'] > 0);
+        }
+
+        // Are we suppost to create active or passive connection?
+        if (!$pasv) {
+            $GLOBALS['_NET_FTP']['USE_PASSIVE'] = false;
+            # Pick random "low bit"
+            $low = rand(39, 250);
+            # Pick random "high bit"
+            $high = rand(39, 250);
+            # Lowest  possible port would be; 10023
+            # Highest possible port would be; 64246
+
+            $port = ($low<<8)+$high;
+            $ip = str_replace('.', ',', $_SERVER['SERVER_ADDR']);
+            $s = $ip.','.$low.','.$high;
+
+            $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+            if (is_resource($socket)) {
+                if (socket_bind($socket, '0.0.0.0', $port)) {
+                    if (socket_listen($socket)) {
+                        $GLOBALS['_NET_FTP']['DATA'] = &$socket;
+                        fputs($control, 'PORT '.$s.CRLF);
+                        $line = fgets($control, 512);
+                        if (substr($line, 0, 3) == 200) {
+                            return true;
+                        }
+                    }
                 }
             }
+            return false;
         }
-        var_dump ( $i = socket_last_error(), socket_strerror ( $i ) );
-        return FALSE;
+
+        # Since we are here, we are suppost to create passive data connection.
+        $i = fputs($control, 'PASV' .CRLF);
+
+        $content = array();
+        do {
+            $content[] = fgets($control, 128);
+            $array = socket_get_status($control);
+        } while ($array['unread_bytes']);
+
+        if (substr($cont=$content[count($content)-1], 0, 3) != 227) {
+            return false;
+        }
+
+        $pos    = strpos($cont, '(')+1;
+        $pos2   = strrpos($cont, ')')-$pos;
+        $string = substr($cont, $pos, $pos2);
+
+        $array = split(',', $string);
+        # IP we are connecting to
+        $ip = $array[0]. '.' .$array[1]. '.' .$array[2]. '.' .$array[3];
+        # Port ( 256*lowbit + highbit
+        $port = ($array[4] << 8)+$array[5];
+
+        # Our data connection
+        $data = fsockopen($ip, $port, $iError, $sError,
+            $GLOBALS['_NET_FTP']['timeout']);
+
+        if (is_resource($data)) {
+            $GLOBALS['_NET_FTP']['USE_PASSIVE'] = true;
+            $GLOBALS['_NET_FTP']['DATA'] = &$data;
+            stream_set_blocking($data, true);
+            stream_set_timeout($data, $GLOBALS['_NET_FTP']['timeout']);
+
+            return true;
+        }
+
+        return false;
     }
+
     /**
     * array ftp_rawlist ( resource stream, string directory [,bool recursive] );
     *
@@ -399,9 +351,6 @@
     * TODO:
     *       Enable the recursive feature.
     *
-    * BUG:
-    *       Does *not* support active connections.
-    *
     * Needs data connection: YES
     *
     * @param    integer     $stream     ( FTP resource )
@@ -409,36 +358,63 @@
     * @param    boolean     $recursive  ( Optional, retrive recursive listing )
     * @return   array
     */
-    function ftp_rawlist ( $stream, $pwd, $recursive = FALSE ) {
-        # Suppost to check for passive mode...
-        if ( PASSIVE ) {
-            $data = _CreatePassive ( $stream );
-            _ControlSend ( $stream, 'LIST ' .$pwd, FALSE );
-            $contents = _ControlRead ( $data, 8192, TRUE );
-            fclose ( $data );
-            $data = NULL;
-            # Sleep for one millionth of second
-            # Waiting for datasocket to die so we can read "Transfer
-            # complete"
-            usleep(1);
-            _ControlRead ( $stream );
+    function ftp_rawlist(&$control, $pwd, $recursive = false)
+    {
+        if (!is_resource($control) || !is_string($pwd)) {
+            return false;
         }
-        else {
-            $data = _CreateActive ( $stream );
-            if ( !is_resource ( $data ) ) {
-                return FALSE;
-            }
-            _ControlSend ( $stream, 'LIST ' .$pwd, FALSE );
-            usleep ( 1 );
-            $contents = socket_read ( $data, 64, PHP_NORMAL_READ );
-            socket_close ( $data );
-            $data = NULL;
-            usleep ( 1 );
-            _ControlRead ( $stream );
+
+        if (!isset($GLOBALS['_NET_FTP']['DATA']) ||
+                !is_resource($GLOBALS['_NET_FTP']['DATA'])) {
+            ftp_pasv($control, $GLOBALS['_NET_FTP']['USE_PASSIVE']);
         }
-        return $contents;
+        fputs($control, 'LIST '.$pwd.CRLF);
+
+        $msg = fgets($control, 512);
+        if (substr($msg, 0, 3) == 425) {
+            return false;
+        }
+
+        $data = &$GLOBALS['_NET_FTP']['DATA'];
+        if (!$GLOBALS['_NET_FTP']['USE_PASSIVE']) {
+            $data = &socket_accept($data);
+        }
+
+        $content = array();
+
+        switch ($GLOBALS['_NET_FTP']['USE_PASSIVE']) {
+            case true:
+                while (true) {
+                    $string = rtrim(fgets($data, 1024));
+
+                    if ($string=='') {
+                        break;
+                    }
+
+                    $content[] = $string;
+                }
+
+                fclose($data);
+                break;
+
+            case false:
+                $string = socket_read($data, 1024, PHP_BINARY_READ);
+
+                $content = explode("\n", $string);
+                unset($content[count($content)-1]);
+
+                socket_close($GLOBALS['_NET_FTP']['DATA']);
+                socket_close($data);
+                break;
+
+        }
+
+        $data = $GLOBALS['_NET_FTP']['DATA'] = NULL;
+
+        $f = fgets($control, 1024);
+        return $content;
     }
-    
+
     /**
     * string ftp_systype ( resource stream );
     *
@@ -448,11 +424,23 @@
     * @param    resource    $stream   ( FTP resource )
     * @return   string
     */
-    function ftp_systype ( &$stream ) {
-        $array = _ControlSend ( $stream, 'SYST' );
-        return $array[ 'msg' ];
+    function ftp_systype(&$control)
+    {
+        if (!is_resource($control)) {
+            return false;
+        }
+
+        fputs($control, 'SYST'.CRLF);
+        $line = fgets($control, 256);
+
+        if (substr($line, 0, 3) != 215) {
+            return false;
+        }
+
+        $os = substr($line, 4, strpos($line, ' ', 4)-4);
+        return $os;
     }
-    
+
     /**
     * boolean ftp_alloc ( resource stream, integer bytes [, string &message ] );
     *
@@ -471,18 +459,24 @@
     *                                       returned by refrence )
     * @return   boolean
     */
-    function ftp_alloc ( &$stream, $int, &$msg = NULL ) {
-        $array = _ControlSend ( $stream, 'ALLO ' .$int. ' R ' .$int );
-        
-        $msg = $array[ 'msg' ];
-        if ( isset ( $array[ 'key' ] ) && (
-                    $array[ 'key' ] == 200 ^ $array[ 'key' ] == 202 ) ) {
-            return TRUE;
+    function ftp_alloc(&$control, $int, &$msg = NULL)
+    {
+        if (!is_resource($control) || !is_integer($int)) {
+            return false;
         }
-        
-        return FALSE;
+
+        fputs($control, 'ALLO '.$int.' R '.$int.CRLF);
+
+        $msg = rtrim(fgets($control, 256));
+
+        $code = substr($msg, 0, 3);
+        if ($code == 200 || $code == 202) {
+            return true;
+        }
+
+        return false;
     }
-    
+
     /**
     * bool ftp_put ( resource stream, string remote_file, string local_file,
     *               int mode [, int startpos ] );
@@ -493,9 +487,6 @@
     * NOTE:
     *       The transfer mode specified must be either FTP_ASCII or FTP_BINARY.
     *
-    * TODO:
-    *       Make it "active" compatible
-    *
     * @param    resource    $stream     ( FTP stream )
     * @param    string      $remote     ( Remote file to write )
     * @param    string      $local      ( Local file to upload )
@@ -503,10 +494,10 @@
     * @param    integer     $pos        ( Optional, start upload at position )
     * @return   boolean
     */
-    function ftp_put ( &$stream, $remote, $local, $mode, $pos = 0 ) {
-        if ( !is_resource ( $stream ) || !is_readable ( $local ) ||
-                !is_integer ( $mode ) || !is_integer ( $pos ) ) {
-            return FALSE;
+    function ftp_put(&$control, $remote, $local, $mode, $pos = 0) {
+        if (!is_resource($control) || !is_readable($local) ||
+                !is_integer($mode) || !is_integer($pos)) {
+            return false;
         }
 
         $types = array (
@@ -526,31 +517,94 @@
         *       L ( BYTE   )
         */
 
-        # Create data socket
-        $data = _CreatePassive ( $stream );
-        # Decide TYPE to use
-        $msg = _ControlSend ( $stream, 'TYPE '. $types[ $mode ] );
-        
-        if ( $msg[ 'key' ] == 200 ) {
-            $msg = _ControlSend ( $stream, 'STOR ' .$remote );
-            # Creating resource to $local file
-            $fp = fopen ( $local, 'r'. $windows[ $mode ] );
-            if ( !is_resource ( $fp ) ) {
-                fclose ( $data );
-                $data = $fp = NULL;
-                return FALSE;
-            }
-            # Loop throu that file and echo it to the data socket
-            $i = 0;
-            while ( !feof ( $fp ) ) {
-                $i += fputs ( $data, fread ( $fp, 8192 ) );
-            }
-            fclose ( $data );
-            $data = NULL;
-            #usleep(1);
-            $foo = _ControlRead ( $stream );
+        if (!isset($GLOBALS['_NET_FTP']['DATA']) ||
+                !is_resource($GLOBALS['_NET_FTP']['DATA'])) {
+            ftp_pasv($control, $GLOBALS['_NET_FTP']['USE_PASSIVE']);
+
         }
-        return TRUE;
+        // Establish data connection variable
+        $data = &$GLOBALS['_NET_FTP']['DATA'];
+
+        // Decide TYPE to use
+        fputs($control, 'TYPE '.$types[$mode].CRLF);
+        $line = fgets($control, 256); // "Type set to TYPE"
+        if (substr($line, 0, 3) != 200) {
+            return false;
+        }
+
+        fputs($control, 'STOR '.$remote.CRLF);
+        sleep(1);
+        $line = fgets($control, 256); // "Opening TYPE mode data connect."
+
+        if (substr($line, 0, 3) != 150) {
+            return false;
+        }
+
+        // Creating resource to $local file
+        $fp = fopen($local, 'r'. $windows[$mode]);
+        if (!is_resource($fp)) {
+            $fp = NULL;
+            return false;
+        }
+
+        // Loop throu that file and echo it to the data socket
+        $i = 0;
+        switch ($GLOBALS['_NET_FTP']['USE_PASSIVE']) {
+            case false:
+                $data = &socket_accept($data);
+                while (!feof($fp)) {
+                    $i += socket_write($data, fread($fp, 10240), 10240);
+                }
+                socket_close($data);
+                break;
+
+            case true:
+                while (!feof($fp)) {
+                    $i += fputs($data, fread($fp, 10240), 10240);
+                }
+
+                fclose($data);
+            break;
+        }
+
+        $data = NULL;
+        do {
+            $line = fgets($control, 256);
+        } while (substr($line, 0, 4) != "226 ");
+        return true;
+    }
+
+    function ftp_get(&$control, $local, $remote, $mode, $resume = 0) {
+        if (!is_resource($control) || !is_writable(dirname($local)) ||
+                !is_integer($mode) || !is_integer($resume)) {
+            return false;
+        }
+        $types = array (
+                0 => 'A',
+                1 => 'I'
+        );
+        $windows = array (
+                0 => 't',
+                1 => 'b'
+        );
+
+        if (!isset($GLOBALS['_NET_FTP']['DATA']) ||
+                !is_resource($GLOBALS['_NET_FTP'][ 'DATA'])) {
+            ftp_pasv($control, $GLOBALS['_NET_FTP']['USE_PASSIVE']);
+        }
+        $data = &$GLOBALS['NET_FTP']['DATA'];
+
+        fputs($control, 'TYPE '.$types[$mode].CRLF);
+        $line = fgets($control, 256);
+        if (substr($line, 0, 3) != 200) {
+            return false;
+        }
+
+        $fp = fopen($local, 'w'.$windows[$mode]);
+        if (!is_resource($fp)) {
+            $fp = NULL;
+            return false;
+        }
     }
 
     /**
@@ -561,15 +615,18 @@
     * @param   integer $stream  ( Stream ID )
     * @return  boolean
     */
-    function ftp_cdup ( &$stream ) {
-        $array = _ControlSend ( $stream, 'CDUP' );
-        if ( $array[ 'key' ] == 250 ) {
-            return TRUE;
+    function ftp_cdup(&$control)
+    {
+        fputs($control, 'CDUP'.CRLF);
+        $line = fgets($control, 256);
+
+        if (substr($line, 0, 3) != 250) {
+            return false;
         }
-        
-        return FALSE;
+
+        return true;
     }
-    
+
     /**
     * Set permissions on a file via FTP
     * Returns the new file permission on success or FALSE on error
@@ -584,20 +641,27 @@
     * @param   string  $file    ( File to change permissions on )
     * @return  integer
     */
-    function ftp_chmod ( &$stream, $mode, $file ) {
-        # chmod not in the standart, proftpd doesn't recognize it
-        # use SITE CHMOD?
-        $msg = _ControlSend ( $stream, 'SITE CHMOD ' .$mode. ' ' .$file );
-        if ( $msg[ 'key' ] == 200 ) {
+    function ftp_chmod(&$control, $mode, $file)
+    {
+        if (!is_resource($control) || !is_integer($mode) || !is_string($file)) {
+            return false;
+        }
+
+        // chmod not in the standart, proftpd doesn't recognize it
+        // use SITE CHMOD?
+        fputs($control, 'SITE CHMOD '.$mode. ' ' .$file.CRLF );
+        $line = fgets($control, 256);
+
+        if (substr($line, 0, 3) == 200) {
             return $mode;
         }
-        
+
         trigger_error ( 'ftp_chmod() [<a
-                href="function.ftp-chmod">function.ftp-chmod</a>]: ' .$msg[ 'msg' ], E_USER_WARNING );
-        return FALSE;
-        #$msg[ 'key' ]. ' ' .$msg[ 'msg' ];
+                href="function.ftp-chmod">function.ftp-chmod</a>]: ' .
+                rtrim ( $line ), E_USER_WARNING );
+        return false;
     }
-    
+
     /**
     * Deletes a file on the FTP server
     * Returns TRUE on success or FALSE on failure
@@ -606,15 +670,22 @@
     * @param  string  $path    ( File to delete )
     * @return boolean
     */
-    function ftp_delete ( &$stream, $path ) {
-        $msg = _ControlSend ( $stream, 'DELE ' .$path );
-        if ( $msg[ 'key' ] == 250 ) {
-            return TRUE;
+    function ftp_delete(&$control, $path)
+    {
+        if (!is_resource($control) || !is_string($path)) {
+            return false;
         }
 
-        return FALSE;
+        fputs($control, 'DELE '.$path.CRLF);
+        $line = fgets($control, 256);
+
+        if (substr($line, 0, 3) == 250) {
+            return true;
+        }
+
+        return false;
     }
-    
+
     /**
     * Requests execution of a program on the FTP server
     * NOTE; SITE EXEC is *not* supported by the standart
@@ -627,44 +698,22 @@
     * @param   string  $cmd     ( Command to send )
     * @return  boolean
     */
-    function ftp_exec ( $stream, $cmd ) {
-        # Command not defined in the standart
-        # proftpd doesn't recognize SITE EXEC ( only help, chgrp, chmod and ratio )
-        return $this->_ctrlSend ( $stream, 'SITE EXEC ' .$cmd, $msg, $key, 200 );
-        # php.net/ftp_exec uses respons code 200 to verify if command was
-        # sent successfully or not
-    }
-    
-    /**
-    * Method, used by some functions in this class, to get string between
-    * two string A and string B
-    * Returns string on success or FALSE on failure
-    *
-    * @access  private
-    * @param   string  $string  ( String to search in )
-    * @param   string  $from    ( Get from this text )
-    * @param   string  $to      ( Get till this text )
-    * @param   integer $offset  ( Start from this offset )
-    * @return  string
-    */
-    function _GetString ( $string, $from, $to, $offset = NULL ) {
-        static $i;
-        
-        if ( isset ( $offset ) ) {
-            $i = $offset;
+    function ftp_exec(&$control, $cmd)
+    {
+        if (!is_resource($control) || !is_string($cmd)) {
+            return false;
         }
-        
-        $i = $pos = strpos ( $string, $from, $i ) + strlen ( $from );
-        $pos2 = strpos ( $string, $to, $pos ) - $pos;
-        
-        if ( $pos === FALSE || $pos2 === FALSE ) {
-            return FALSE;
+        // Command not defined in the standart
+        // proftpd doesn't recognize SITE EXEC (only help,chgrp,chmod and ratio)
+        fputs($control, 'SITE EXEC '.$cmd.CRLF);
+        $line = fgets($control, 256);
+
+        // php.net/ftp_exec uses respons code 200 to verify if command was sent
+        // successfully or not, so we'll just do the same
+        if (substr($line, 0, 3) == 200) {
+            return true;
         }
-        
-        return substr ( $string, $pos, $pos2 );
+
+        return false;
     }
-    
-    # Open this file, standalone, to see how the read FTP extension behaves on
-    # these test
-    require_once 'test_suit.php';
 ?>
