@@ -895,7 +895,7 @@ class Net_FTP extends PEAR
     
     function setHostname($host)
     {
-        if (!is_string($hostname)) {
+        if (!is_string($host)) {
             return PEAR::raiseError("Hostname must be a string.", 0);
         }
         $this->_hostname = $host;
