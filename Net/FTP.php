@@ -1,5 +1,22 @@
 <?php
 
+	/*
+   +----------------------------------------------------------------------+
+   | Net_FTP Version 1.3	                                              |
+   +----------------------------------------------------------------------+
+   | Copyright (c) 2001-2004 Tobias Schlitt                               |
+   +----------------------------------------------------------------------+
+   | This source file is subject to version 3.0 of the PHP license,       |
+   | that is available at through the world-wide-web at                   |
+   | http://www.php.net/license/3_0.txt.                                  |
+   | If you did not receive a copy of the PHP license and are unable to   |
+   | obtain it through the world-wide-web, please send a note to          |
+   | license@php.net so we can mail you a copy immediately.               |
+   +----------------------------------------------------------------------+
+   | Authors:       Tobias Schlitt <toby@php.net>                         |
+   +----------------------------------------------------------------------+
+	*/
+
     require_once 'PEAR.php';
 
     define("NET_FTP_FILES_ONLY", 0, true);
@@ -14,24 +31,8 @@
     * enabled by the PHP-FTP-extension and further functionalities, like recursive-deletion,
     * -up- and -download. Another feature is to create directories recursively.
  	*
- 	* Change-Log:
-    *
-    * 2002-02-21:
-    *
- 	* Now that the class runs into beta stadium, the API may not change any more. (Maybe there will be some
-    * optional parameters added later on, but the existing once will not change any further.) Notice, that
-    * the API has not changed until alpha stadiu. So, you have not to change anything on your
-    * existing code using this class.
- 	*
-    * - Added support for ftp_nb_{put||get}-functions. If these functions do not exist the methods
-    * will fall back on ftp_{put||get}. (Thanks to Alexander Skwar!)
-    * - Added support for recursive directory creation. (Thanks to Alexander Skwar!)
-    * - Fixed some bugs
-    * - Fixed documentation
-    *
- 	*
  	* @since PHP 4.2.3
- 	* @author Tobias Schlitt <tobias@schlitt.info>
+ 	* @author Tobias Schlitt <toby@php.net>
  	* @see http://www.schlitt.info
  	*/
 
