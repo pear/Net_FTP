@@ -776,7 +776,7 @@ class Net_FTP extends PEAR
             }
         }
         $dir_list = array();
-        $dir_list = $this->ls($remote_path, $mode = NET_FTP_DIRS_ONLY);
+        $dir_list = $this->ls($remote_path, NET_FTP_DIRS_ONLY);
         foreach ($dir_list as $dir_entry) {
             $remote_path_new = $remote_path.$dir_entry["name"]."/";
             $local_path_new = $local_path.$dir_entry["name"]."/";
@@ -786,7 +786,7 @@ class Net_FTP extends PEAR
             }
         }
         $file_list = array();
-        $file_list = $this->ls($remote_path, $mode = NET_FTP_FILES_ONLY);
+        $file_list = $this->ls($remote_path, NET_FTP_FILES_ONLY);
         foreach ($file_list as $file_entry) {
             $remote_file = $remote_path.$file_entry["name"];
             $local_file = $local_path.$file_entry["name"];
