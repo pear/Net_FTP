@@ -84,7 +84,7 @@ Enhancements:
 * Added site() method for usage of FTP SITE command. Thanks to Eivind Lie &lt;nittereivind@ununique.net&gt; for that.
 * Added funtionality for chmod on server and recursive chmod. Both currently support only numeric values. I'll try to fix this. Thanks to Eivind Lie &lt;nittereivind@ununique.net&gt; for this patch.
 * Now Windows ftp directories enabled. Thanks Eric Quilantang.
-* Added the observer pattern. Up- and downloads are now observable (this works e.g. for HTML_Progress). Thanks to Laurent Laville &lt;larell@php.net&gt;.
+* Added the observer pattern. Up- and downloads are now observable (this works e.g. for HTML_Progress). Thanks to Laurent Laville &lt;farell@php.net&gt;.
 * Added support for timout setting.
 * Added input validation for port and hostname.
               
