@@ -492,7 +492,7 @@ class Net_FTP extends PEAR
      * @return bool $res True on success, otherwise PEAR::Error
      */
 
-    function rename ( $remote_from, $remote_to ) 
+    function rename ($remote_from, $remote_to) 
     {
         $res = @ftp_rename($this->_handle, $remote_from, $remote_to);
         if(!$res) {
