@@ -32,7 +32,7 @@ define("NET_FTP_RAWLIST",    3, true);
  * @since 1.3
  * @see Net_FTP::connect()
  */
-define('NET_FTP_ERR_CONNECTION_FAILED', -1);
+define('NET_FTP_ERR_CONNECT_FAILED', -1);
 
 /**
  * Error code to indicate a failed login
@@ -383,6 +383,36 @@ define('NET_FTP_ERR_RAWDIRLIST_FAILED', -30);
  */
 define('NET_FTP_ERR_DIRLIST_UNSUPPORTED', -31);
 
+/**
+ * Error code to indicate failed disconnecting
+ * This error code indicates, that disconnection was not possible.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_DISCONNECT_FAILED
+ * @see Net_FTP::disconnect()
+ */
+define('NET_FTP_ERR_DISCONNECT_FAILED', -32);
+
+/**
+ * Error code to indicate that the username you provided was invalid.
+ * Check that you provided a non-empty string as the username.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_USERNAMENOSTRING
+ * @see Net_FTP::setUsername()
+ */
+define('NET_FTP_ERR_USERNAMENOSTRING', -33);
+
+/**
+ * Error code to indicate that the username you provided was invalid.
+ * Check that you provided a non-empty string as the username.
+ *
+ * @since 1.3
+ * @name NET_FTP_ERR_PASSWORDNOSTRING
+ * @see Net_FTP::setPassword()
+ */
+define('NET_FTP_ERR_PASSWORDNOSTRING', -33);
+
 
 /**
  * Class for comfortable FTP-communication
@@ -561,7 +591,7 @@ class Net_FTP extends PEAR
      * @param   string $host    (optional) The Hostname
      * @param   int    $port    (optional) The Port 
      * @return  mixed           True on success, otherwise PEAR::Error
-     * @see     NET_FTP_ERR_CONNECTION_FAILED
+     * @see     NET_FTP_ERR_CONNECT_FAILED
      */
     
     function connect($host = null, $port = null)
@@ -575,7 +605,7 @@ class Net_FTP extends PEAR
         }
         $handle = @ftp_connect($this->getHostname(), $this->getPort(), $this->_timeout);
         if (!$handle) {
-            return $this->raiseError("Connection to host failed", NET_FTP_ERR_CONNECTION_FAILED);
+            return $this->raiseError("Connection to host failed", NET_FTP_ERR_CONNECT_FAILED);
         } else {
             $this->_handle =& $handle;
             return true;
@@ -586,12 +616,16 @@ class Net_FTP extends PEAR
      * This function close the FTP-connection
      *
      * @access  public
-     * @return  void
+     * @return  bool|PEAR_Error Returns true on success, PEAR_Error on failure
      */
     
     function disconnect()
     {
-        @ftp_close($this->_handle);
+        $res = @ftp_close($this->_handle);
+        if (!$res) {
+            return PEAR::raiseError('Disconnect failed.', NET_FTP_ERR_DISCONNECT_FAILED);
+        }
+        return true;
     }
 
     /**
@@ -1382,10 +1416,15 @@ class Net_FTP extends PEAR
      *
      * @access  public
      * @param   string $user The Username to set
+     * @return  mixed True on success, otherwise PEAR::Error
+     * @see     NET_FTP_ERR_USERNAMENOSTRING
      */
     
     function setUsername($user)
     {
+        if (empty($user) || !is_string($user)) {
+            return PEAR::raiseError('Username $user invalid.', NET_FTP_ERR_USERNAMENOSTRING);
+        }
         $this->_username = $user;
     }
 
@@ -1394,10 +1433,15 @@ class Net_FTP extends PEAR
      *
      * @access  private
      * @param   string $password  The Password to set
+     * @return  void
+     * @see     NET_FTP_ERR_PASSWORDNOSTRING
      */
     
     function setPassword($password)
     {
+        if (empty($password) || !is_string($password)) {
+            return PEAR::raiseError('Password xxx invalid.', NET_FTP_ERR_PASSWORDNOSTRING);
+        }
         $this->_password = $password;
     }
 
