@@ -1482,7 +1482,10 @@ class Net_FTP extends PEAR
         $dirs_list = array();
         $files_list = array();
         $dir_list = @ftp_rawlist($this->_handle, $dir);
-        if ($dir_list && !isset($this->_matcher)) {
+        if ($dir_list === false) {
+            return PEAR::raiseError('Could not get raw directory listing.', 0);
+        }
+        if (isset($this->_matcher)) {
 	        $this->_matcher = $this->_determine_os_match($dir_list);
             if (PEAR::isError($this->_matcher)) {
 	            return $this->_matcher;
