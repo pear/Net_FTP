@@ -484,6 +484,24 @@ class Net_FTP extends PEAR
     } // end method chmodRecursive
 
     /**
+     * Rename or move a file or a directory from the ftp-server
+     *
+     * @access public
+     * @param string $remote_from The remote file or directory original to rename or move
+     * @param string $remote_to The remote file or directory final to rename or move
+     * @return bool $res True on success, otherwise PEAR::Error
+     */
+
+    function rename ( $remote_from, $remote_to ) 
+    {
+        $res = @ftp_rename($this->_handle, $remote_from, $remote_to);
+        if(!$res) {
+            return $this->raiseError("Could not rename ".$remote_from." to ".$remote_to." !", 0);
+        }
+        return true;
+    }
+
+    /**
      * This will return logical permissions mask for directory.
      * if directory have to be writeable it have also be executable
      *
@@ -491,6 +509,7 @@ class Net_FTP extends PEAR
      * @param   string $permissions    File permissions in digits for file (i.e. 666)
      * @return  string                 File permissions in digits for directory (i.e. 777)
      */
+
     function makeDirPermissions($permissions){
         $permissions = (string)$permissions;
 
