@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------+
 // | Net_FTP Version 1.3                                                  |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2001-2004 Tobias Schlitt                               |
+// | Copyright (c) 2001-2005 Tobias Schlitt                               |
 // +----------------------------------------------------------------------+
 // | This source file is subject to version 3.0 of the PHP license,       |
 // | that is available at through the world-wide-web at                   |
