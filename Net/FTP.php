@@ -94,7 +94,7 @@
         * @var string
         */
 
-        var $_mode;
+        var $_mode = FTP_BINARY;
 
         /**
         * This holds the handle for the ftp-connection
