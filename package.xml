@@ -17,8 +17,8 @@
     </maintainer>
   </maintainers>
   <release>
-    <version>1.3.0beta2</version>
-    <date>2004-03-20</date>
+    <version>1.3.0beta3</version>
+    <date>2004-05-25</date>
     <license>PHP License</license>
     <state>beta</state>
     <notes>This release ads new features and fixes all open bugs.
@@ -27,18 +27,15 @@ Changelog:
               
 Fixes:
 
-* Added patch by Ilja Polivanovas &lt;ipa@assis.lt&gt; to enable correct directory permissions.
-* Added rename() functionality. Thanks to the unnamed coder from &quot;Webmestre ESGI&quot; &lt;wmaster_esgi@hotmail.com&gt;.
+* Added &quot;t&quot; for permission regex (some servers mark speacial dirs).
+* Added better support for different ls formats (thanks for hint by George Kearns).
 
-Enhancements:
-
-* Added rename() method.
-              
 Todo:
 -----
               
-* Extensive testing.
+* More testing.
 * Add example for observer.
+* Add unit test.
 </notes>
     <deps>
       <dep type="ext" rel="has" optional="no">ftp</dep>
@@ -56,7 +53,7 @@ Todo:
     <filelist>
       <file role="doc" baseinstalldir="" md5sum="0aeb3b3be1fdfe7fccbe704581d36f3f" name="example/extensions.ini"/>
       <file role="doc" baseinstalldir="" md5sum="4b60d593d3f57abd53adb6746a116f59" name="example/index.php"/>
-      <file role="php" baseinstalldir="" md5sum="39b23ad59a923ec7371cc2ccd70559ff" name="Net/FTP.php"/>
+      <file role="php" baseinstalldir="" md5sum="ce41de0275821b53313b418241d89009" name="Net/FTP.php"/>
       <file role="php" baseinstalldir="" md5sum="8e1b05e3868f94dc06327612b3e18921" name="Net/FTP/Observer.php"/>
     </filelist>
   </release>
@@ -96,7 +93,7 @@ Todo:
     </release>
     <release>
       <version>1.3.0beta2</version>
-      <date>2004-03-20</date>
+      <date>2004-05-25</date>
       <license>PHP License</license>
       <state>beta</state>
       <notes>This release ads new features and fixes all open bugs.
@@ -105,18 +102,36 @@ Changelog:
               
 Fixes:
 
-* Added patch by Ilja Polivanovas &lt;ipa@assis.lt&gt; to enable correct directory permissions.
-* Added rename() functionality. Thanks to the unnamed coder from &quot;Webmestre ESGI&quot; &lt;wmaster_esgi@hotmail.com&gt;.
+* Added &quot;t&quot; for permission regex (some servers mark speacial dirs).
+* Added better support for different ls formats (thanks for hint by George Kearns).
 
-Enhancements:
-
-* Added rename() method.
-              
 Todo:
 -----
               
-* Extensive testing.
+* More testing.
 * Add example for observer.
+* Add unit test.</notes>
+    </release>
+    <release>
+      <version>1.3.0beta3</version>
+      <date>2004-05-25</date>
+      <license>PHP License</license>
+      <state>beta</state>
+      <notes>This release ads new features and fixes all open bugs.
+Changelog:
+-----------
+              
+Fixes:
+
+* Added &quot;t&quot; for permission regex (some servers mark speacial dirs).
+* Added better support for different ls formats (thanks for hint by George Kearns).
+
+Todo:
+-----
+              
+* More testing.
+* Add example for observer.
+* Add unit test.
 </notes>
     </release>
   </changelog>
