@@ -1306,9 +1306,9 @@ class Net_FTP extends PEAR
             $remote_file = $remote_path.$file_entry;
             $local_file = $local_path.$file_entry;
             $result = $this->put($local_file, $remote_file, $overwrite, $mode);
-            /*if ($this->isError($result)) {
+            if ($this->isError($result)) {
                 return $result;
-            }*/
+            }
         }
         return true;
     }
