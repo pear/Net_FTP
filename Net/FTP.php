@@ -406,6 +406,12 @@ class Net_FTP extends PEAR
     
     function chmodRecursive($target, $permissions)
     {
+        static $dir_permissions;
+
+        if(!isset($dir_permissions)){ // Making directory specific permissions
+            $dir_permissions = $this->makeDirPermissions($permissions);
+        }
+
         // If $target is an array: Loop through it
         if (is_array($target)) {
 
@@ -421,7 +427,7 @@ class Net_FTP extends PEAR
             $remote_path = $this->_construct_path($target);
 
             // Chmod the directory itself
-            $result = $this->chmod($remote_path, $permissions);
+            $result = $this->chmod($remote_path, $dir_permissions);
 
             if (PEAR::isError($result)) {
                 return $result;
@@ -441,7 +447,7 @@ class Net_FTP extends PEAR
                 $remote_path_new = $remote_path.$dir_entry["name"]."/";
 
                 // Chmod the directory we're about to enter
-                $result = $this->chmod($remote_path_new, $permissions);
+                $result = $this->chmod($remote_path_new, $dir_permissions);
 
                 if (PEAR::isError($result)) {
                     return $result;
@@ -476,6 +482,27 @@ class Net_FTP extends PEAR
         return true; // No errors
 
     } // end method chmodRecursive
+
+    /**
+     * This will return logical permissions mask for directory.
+     * if directory have to be writeable it have also be executable
+     *
+     * @access  private
+     * @param   string $permissions    File permissions in digits for file (i.e. 666)
+     * @return  string                 File permissions in digits for directory (i.e. 777)
+     */
+    function makeDirPermissions($permissions){
+        $permissions = (string)$permissions;
+
+        for($i = 0; $i < strlen($permissions); $i++){ // going through (user, group, world)
+            if((int)$permissions{$i} & 4 and !((int)$permissions{$i} & 1)){ // Read permission is set
+                                                                            // but execute not yet
+                (int)$permissions{$i} = (int)$permissions{$i} + 1; // Adding execute flag
+            }
+        }
+
+        return (string)$permissions;
+    }
 
     /**
      * This will return the last modification-time of a file. You can either give this
