@@ -134,6 +134,15 @@ class Net_FTP extends PEAR
     );
     
     /**
+     * matcher
+     * Stores the matcher for the current connection
+     *
+     * @access  private
+     * @var     array
+     */
+    var $_matcher = null;
+    
+    /**
      * Holds all Net_FTP_Observer objects 
      * that wish to be notified of new messages.
      *
@@ -182,6 +191,7 @@ class Net_FTP extends PEAR
     
     function connect($host = null, $port = null)
     {
+        $this->_matcher = null;
         if (isset($host)) {
             $this->setHostname($host);
         }
@@ -1469,22 +1479,21 @@ class Net_FTP extends PEAR
     
     function _list_and_parse($dir)
     {
-        static $matcher = null;
         $dirs_list = array();
         $files_list = array();
         $dir_list = @ftp_rawlist($this->_handle, $dir);
-        foreach ($dir_list as $entry) {
-            if (!isset($matcher)) {
-                $matcher = $this->_determine_os_match($entry);
-                if (PEAR::isError($matcher)) {
-                    return $matcher;
-                }
+        if ($dir_list && !isset($this->_matcher)) {
+	        $this->_matcher = $this->_determine_os_match($dir_list);
+            if (PEAR::isError($this->_matcher)) {
+	            return $this->_matcher;
             }
-            if (!preg_match($matcher['pattern'], $entry, $m)) {
+        }
+        foreach ($dir_list as $entry) {
+            if (!preg_match($this->_matcher['pattern'], $entry, $m)) {
                 continue;
             }
             $entry = array();
-            foreach ($matcher['map'] as $key=>$val) {
+            foreach ($this->_matcher['map'] as $key=>$val) {
                 $entry[$key] = $m[$val];
             }
             $entry['stamp'] = $this->_parse_Date($entry['date']);
@@ -1508,16 +1517,18 @@ class Net_FTP extends PEAR
      * ls() output.
      *
      * @access private
-     * @param string $entry The ls entry to parse
+     * @param array $dir_list The raw dir list to parse
      * @return mixed An array of 'pattern' and 'map' on success, otherwise PEAR::Error
      */
     
-    function _determine_os_match($entry) {
-        foreach ($this->_ls_match as $os => $match) {
-            if (preg_match($match['pattern'], $entry)) {
-                return $match;
+    function _determine_os_match(&$dir_list) {
+	foreach ($dir_list as $entry) {
+	    foreach ($this->_ls_match as $os => $match) {
+	        if (preg_match($match['pattern'], $entry)) {
+                    return $match;
+                }
             }
-        }
+	}
         $error = 'The list style of your server seems not to be supported. Please email a "$ftp->ls(NET_FTP_RAWLIST);" output plus info on the server to the maintainer of this package to get it supported! Thanks for your help!';
         return PEAR::raiseError($error);
     }
