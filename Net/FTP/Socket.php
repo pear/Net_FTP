@@ -10,7 +10,6 @@
     define('FTP_IMAGE', 1);
     define('FTP_TIMEOUT_SEC', 0);
 
-    define('CRLF', "\r\n"); # Line endings
     /**
     * What needs to be done overall?
     *   #1 Install the rest of these functions
@@ -99,7 +98,7 @@
             return false;
         }
 
-        fputs($control, 'USER '.$username.CRLF);
+        fputs($control, 'USER '.$username."\r\n");
         $contents = array();
         do {
             $contents[] = fgets($control, 8192);
@@ -110,7 +109,7 @@
             return false;
         }
 
-        fputs($control, 'PASS '.$password.CRLF);
+        fputs($control, 'PASS '.$password."\r\n");
         $contents = array();
         do {
             $contents[] = fgets($control, 8192);
@@ -149,7 +148,7 @@
             return false;
         }
 
-        fputs($control, 'QUIT'.CRLF);
+        fputs($control, 'QUIT'."\r\n");
         fclose($control);
         $control = NULL;
         return TRUE;
@@ -181,7 +180,7 @@
             return $control;
         }
 
-        fputs($control, 'PWD'.CRLF);
+        fputs($control, 'PWD'."\r\n");
 
         $content = array();
         do {
@@ -218,7 +217,7 @@
             return false;
         }
 
-        fputs($control, 'CWD '.$pwd.CRLF);
+        fputs($control, 'CWD '.$pwd."\r\n");
         $content = array();
         do {
             $content[] = fgets($control, 8192);
@@ -293,7 +292,7 @@
                 if (socket_bind($socket, '0.0.0.0', $port)) {
                     if (socket_listen($socket)) {
                         $GLOBALS['_NET_FTP']['DATA'] = &$socket;
-                        fputs($control, 'PORT '.$s.CRLF);
+                        fputs($control, 'PORT '.$s."\r\n");
                         $line = fgets($control, 512);
                         if (substr($line, 0, 3) == 200) {
                             return true;
@@ -305,7 +304,7 @@
         }
 
         # Since we are here, we are suppost to create passive data connection.
-        $i = fputs($control, 'PASV' .CRLF);
+        $i = fputs($control, 'PASV' ."\r\n");
 
         $content = array();
         do {
@@ -368,7 +367,7 @@
                 !is_resource($GLOBALS['_NET_FTP']['DATA'])) {
             ftp_pasv($control, $GLOBALS['_NET_FTP']['USE_PASSIVE']);
         }
-        fputs($control, 'LIST '.$pwd.CRLF);
+        fputs($control, 'LIST '.$pwd."\r\n");
 
         $msg = fgets($control, 512);
         if (substr($msg, 0, 3) == 425) {
@@ -430,7 +429,7 @@
             return false;
         }
 
-        fputs($control, 'SYST'.CRLF);
+        fputs($control, 'SYST'."\r\n");
         $line = fgets($control, 256);
 
         if (substr($line, 0, 3) != 215) {
@@ -465,7 +464,7 @@
             return false;
         }
 
-        fputs($control, 'ALLO '.$int.' R '.$int.CRLF);
+        fputs($control, 'ALLO '.$int.' R '.$int."\r\n");
 
         $msg = rtrim(fgets($control, 256));
 
@@ -526,13 +525,13 @@
         $data = &$GLOBALS['_NET_FTP']['DATA'];
 
         // Decide TYPE to use
-        fputs($control, 'TYPE '.$types[$mode].CRLF);
+        fputs($control, 'TYPE '.$types[$mode]."\r\n");
         $line = fgets($control, 256); // "Type set to TYPE"
         if (substr($line, 0, 3) != 200) {
             return false;
         }
 
-        fputs($control, 'STOR '.$remote.CRLF);
+        fputs($control, 'STOR '.$remote."\r\n");
         sleep(1);
         $line = fgets($control, 256); // "Opening TYPE mode data connect."
 
@@ -594,7 +593,7 @@
         }
         $data = &$GLOBALS['NET_FTP']['DATA'];
 
-        fputs($control, 'TYPE '.$types[$mode].CRLF);
+        fputs($control, 'TYPE '.$types[$mode]."\r\n");
         $line = fgets($control, 256);
         if (substr($line, 0, 3) != 200) {
             return false;
@@ -617,7 +616,7 @@
     */
     function ftp_cdup(&$control)
     {
-        fputs($control, 'CDUP'.CRLF);
+        fputs($control, 'CDUP'."\r\n");
         $line = fgets($control, 256);
 
         if (substr($line, 0, 3) != 250) {
@@ -649,7 +648,7 @@
 
         // chmod not in the standart, proftpd doesn't recognize it
         // use SITE CHMOD?
-        fputs($control, 'SITE CHMOD '.$mode. ' ' .$file.CRLF );
+        fputs($control, 'SITE CHMOD '.$mode. ' ' .$file."\r\n" );
         $line = fgets($control, 256);
 
         if (substr($line, 0, 3) == 200) {
@@ -676,7 +675,7 @@
             return false;
         }
 
-        fputs($control, 'DELE '.$path.CRLF);
+        fputs($control, 'DELE '.$path."\r\n");
         $line = fgets($control, 256);
 
         if (substr($line, 0, 3) == 250) {
@@ -705,7 +704,7 @@
         }
         // Command not defined in the standart
         // proftpd doesn't recognize SITE EXEC (only help,chgrp,chmod and ratio)
-        fputs($control, 'SITE EXEC '.$cmd.CRLF);
+        fputs($control, 'SITE EXEC '.$cmd."\r\n");
         $line = fgets($control, 256);
 
         // php.net/ftp_exec uses respons code 200 to verify if command was sent
