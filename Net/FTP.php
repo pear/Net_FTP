@@ -1973,9 +1973,9 @@ class Net_FTP extends PEAR
             return PEAR::raiseError('Could not get raw directory listing.', NET_FTP_ERR_RAWDIRLIST_FAILED);
         }
         if (!isset($this->_matcher)) {
-	        $this->_matcher = $this->_determine_os_match($dir_list);
+            $this->_matcher = $this->_determine_os_match($dir_list);
             if (PEAR::isError($this->_matcher)) {
-	            return $this->_matcher;
+                return $this->_matcher;
             }
         }
         foreach ($dir_list as $entry) {
@@ -2013,13 +2013,13 @@ class Net_FTP extends PEAR
      */
     
     function _determine_os_match(&$dir_list) {
-	foreach ($dir_list as $entry) {
-	    foreach ($this->_ls_match as $os => $match) {
-	        if (preg_match($match['pattern'], $entry)) {
+    foreach ($dir_list as $entry) {
+        foreach ($this->_ls_match as $os => $match) {
+            if (preg_match($match['pattern'], $entry)) {
                     return $match;
                 }
             }
-	}
+    }
         $error = 'The list style of your server seems not to be supported. Please email a "$ftp->ls(NET_FTP_RAWLIST);" output plus info on the server to the maintainer of this package to get it supported! Thanks for your help!';
         return PEAR::raiseError($error, NET_FTP_ERR_DIRLIST_UNSUPPORTED);
     }
