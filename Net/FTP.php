@@ -752,6 +752,15 @@ class Net_FTP extends PEAR
     function mkdir($dir, $recursive = false)
     {
         $dir = $this->_construct_path($dir);
+        $savedir = $this->pwd();
+        $this->pushErrorHandling(PEAR_ERROR_RETURN);
+        $e = $this->cd($dir);
+        $this->popErrorHandling();
+        if ($e === true) {
+            $this->cd($savedir);
+            return true;
+        }
+        $this->cd($savedir);
         if ($recursive === false){
             $res = @ftp_mkdir($this->_handle, $dir);
             if (!$res) {
@@ -760,19 +769,14 @@ class Net_FTP extends PEAR
                 return true;
             }
         } else {
-            $pos = 0;
             if(strpos($dir, '/') === false) {
                 return $this->mkdir($dir,false);
             }
-            $elements = array();
-            while (false !== ($pos = strpos($dir, '/', $pos + 1))){
-                $elements[] = substr($dir, 0, $pos);
-            }
-            foreach ($elements as $element){
-                $res = $this->mkdir($element, false);
-                if($res !== true) {
-                    return $res;
-                }
+            $pos = 0;
+            $res = $this->mkdir(dirname($dir), true);
+            $res = $this->mkdir($dir, false);
+            if ($res !== true) {
+                return $res;
             }
             return true;
         }
