@@ -28,6 +28,13 @@ Another beta, since I added many new stuff in the last days.
 Changelog:
 -----------
 
+Additions:
+
+ * Optimized OS determination. Thanks to Eric Quilantang. 
+ * Added ability to set timeout in constructor.
+ * Added much more error handling.
+ * Added real error codes with full documentation.
+
 Fixes:
 
  * Fix bug #1176: Net_FTP::ls can return dates in the future. 
@@ -37,21 +44,12 @@ Fixes:
  * Renamed makeDirPermissions() to _makeDirPermissions(), since it's private (CS).
  * Fix './' syntax for pathes.
 
-Additions:
-
- * Optimized OS determination. Thanks to Eric Quilantang. 
- * Added ability to set timeout in constructor.
- * Added much more error handling.
- * Added real error codes with full documentation.
- 
-
 Todo:
------
               
 * More testing.
 * Add example for observer.
 * Add unit test.
-EOT;	
+EOT;
 	
 	$e = $pkg->setOptions(
 		array('baseinstalldir' => '',
@@ -65,10 +63,11 @@ EOT;
               'notes' => $notes,
 			  'package' => 'Net_FTP',
 			  'dir_roles' => array(
-			  		'example' => 'doc'
+			  		'example' => 'doc',
 			  		'test' => 'test'),
 		      'ignore' => array('package.xml',
-		                        'doc*', 
+		                        'doc*',
+		                        'test*', 
 		                        'generate_package_xml.php',
 		                        '*.tgz',
 		                        'FTP_PHP5.php',
