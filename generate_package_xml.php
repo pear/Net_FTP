@@ -10,7 +10,7 @@
 	$packagedir = $cvsdir . 'Net_FTP/';
 	$category = 'Networking';	
 
-	$version = '1.3.0RC2';
+	$version = '1.3.0';
 	
 	$summary = 'Net_FTP provides an OO interface to the PHP FTP functions plus some additions';
 	
@@ -23,26 +23,14 @@ for example the view of a progress bar.
 EOT;
 	
 	$notes = <<<EOT
-I fixed the reported bugs since 1.3RC2 and added the necessary example for the 
-observer interface.
+Another month of testing did not bring any more critical bugs to daylight. Therefore 
+and because PEAR 1.4.0 will depend optionally on Net_FTP I decided to run the next 
+stable release. The following changes were made to the package files:
 
-Changelog:
------------
-
-Additions:
-* Added example for observer.
-
-Fixes:
-
-* Fixed CS issues.
-* Fixed bug #2654: mkdir() should not fail if the directory already exists.
-* Fixed bug #2648: if ls() returns array(), net_FTP bails.
-* Fixed some unknown small bugs.
-
-Todo:
-              
-* More testing.
-* Add unit test.
+ - Updated year.
+ - Updated docblocks regarding the new standard.
+ - Fixed whitespace issues.
+ - Fixed bug 3362: bug in Net_FTP::_rm_file. 
 EOT;
 	
 	$e = $pkg->setOptions(
@@ -52,7 +40,7 @@ EOT;
 		      'version' => $version,
 	          'packagedirectory' => $packagedir,
 	          'pathtopackagefile' => $packagedir,
-              'state' => 'beta',
+              'state' => 'stable',
               'filelistgenerator' => 'cvs',
               'notes' => $notes,
 			  'package' => 'Net_FTP',

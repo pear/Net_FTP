@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<package version="2.0" 
+    xmlns="http://pear.php.net/dtd/package-2.0" 
+    xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+        http://pear.php.net/dtd/tasks-1.0.xsd
+        http://pear.php.net/dtd/package-2.0
+        http://pear.php.net/dtd/package-2.0.xsd">
+ <name>Net_FTP</name>
+ <channel>pear.php.net</channel>
+ <summary>Net_FTP provides an OO interface to the PHP FTP functions plus some additions</summary>
+ <description>Net_FTP allows you to communicate with FTP servers in a more comfortable way
+than the native FTP functions of PHP do. The class implements everything nativly
+supported by PHP and additionally features like recursive up- and downloading,
+dircreation and chmodding. It although implements an observer pattern to allow
+for example the view of a progress bar.
+ </description>
+ <lead>
+  <user>toby</user>
+  <name>Tobias Schlitt</name>
+  <email>toby@php.net</email>
+  <active>yes</active>
+ </lead>
+ <date>2005-02-24</date>
+ <version>
+  <release>1.3.0</release>
+  <api>1.3.0</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.php.net/license/3_0.txt">PHP License</license>
+   <notes>Another month of testing did not bring any more critical bugs to daylight. Therefore 
+and because PEAR 1.4.0 will depend optionally on Net_FTP I decided to run the next 
+stable release. The following changes were made to the package files:
+
+ - Updated year.
+ - Updated docblocks regarding the new standard.
+ - Fixed whitespace issues.
+ - Fixed bug 3362: bug in Net_FTP::_rm_file.
+   </notes>
+ <contents>
+  <dir name="/">
+   <dir name="example">
+    <file name="extensions.ini" role="doc" />
+    <file name="index.php" role="doc">
+      <tasks:replace from="@package_version@" to="package_version" type="package-info" />
+     </file>
+    <file name="observer.php" role="doc">
+      <tasks:replace from="@package_version@" to="package_version" type="package-info" />
+     </file>
+   </dir> <!-- /example -->
+   <dir name="Net">
+    <file name="FTP.php" role="php">
+     <tasks:replace from="@package_version@" to="package_version" type="package-info" />
+    </file>
+    <dir name="FTP">
+     <file name="Observer.php" role="php">
+      <tasks:replace from="@package_version@" to="package_version" type="package-info" />
+     </file>
+    </dir> <!-- /Net/FTP -->
+   </dir> <!-- /Net -->
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <extension>
+    <name>ftp</name>
+   </extension>
+  </required>
+  <optional>
+   <package>
+    <name>Var_Dump</name>
+    <channel>pear.php.net</channel>
+   </package>
+  </optional>
+  <group name="testscript" hint="if you want to try the Net_FTP test script as an examle, you need the Var_Dump package.">
+   <package>
+    <name>Var_Dump</name>
+    <channel>pear.php.net</channel>
+   </package>
+  </group>
+ </dependencies>
+</package>
