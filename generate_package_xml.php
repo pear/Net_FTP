@@ -9,28 +9,41 @@
 	$cvsdir  = '/cvs/pear/';
 	$packagedir = $cvsdir . 'Net_FTP/';
 	$category = 'Networking';	
+
+	$version = '1.3.0beta4';
 	
-	$e = $pkg->setOptions(
-		array('baseinstalldir' => '',
-		      'summary' => 'Net_FTP provides an OO interface to the PHP FTP functions plus some additions',
-		      'description' => 'Net_FTP allows you to communicate with FTP servers in a more comfortable way
-		                        than the native FTP functions of PHP do. The class implements everything nativly
-		                        supported by PHP and additionally features like recursive up- and downloading,
-		                        dircreation and chmodding. It although implements an observer pattern to allow
-		                        for example the view of a progress bar.',
-		      'version' => '1.3.0beta3',
-	          'packagedirectory' => $packagedir,
-	          'pathtopackagefile' => $packagedir,
-              'state' => 'beta',
-              'filelistgenerator' => 'cvs',
-              'notes' => 'This release ads new features and fixes all open bugs.
+	$summary = 'Net_FTP provides an OO interface to the PHP FTP functions plus some additions';
+	
+	$description = <<<EOT
+Net_FTP allows you to communicate with FTP servers in a more comfortable way
+than the native FTP functions of PHP do. The class implements everything nativly
+supported by PHP and additionally features like recursive up- and downloading,
+dircreation and chmodding. It although implements an observer pattern to allow
+for example the view of a progress bar.
+EOT;
+	
+	$notes = <<<EOT
+Another beta, since I added many new stuff in the last days.
+
 Changelog:
 -----------
-              
+
 Fixes:
 
-* Added "t" for permission regex (some servers mark speacial dirs).
-* Added better support for different ls formats (thanks for hint by George Kearns).
+ * Fix bug #1176: Net_FTP::ls can return dates in the future. 
+ * Fix bug #1446: Bug in isPassive().
+ * Fix bug #1480 _list_and_parse() may throw warnings.
+ * Fix bug #1445 Improvement of setTimeout() method + timout handling.
+ * Renamed makeDirPermissions() to _makeDirPermissions(), since it's private (CS).
+ * Fix './' syntax for pathes.
+
+Additions:
+
+ * Optimized OS determination. Thanks to Eric Quilantang. 
+ * Added ability to set timeout in constructor.
+ * Added much more error handling.
+ * Added real error codes with full documentation.
+ 
 
 Todo:
 -----
@@ -38,10 +51,22 @@ Todo:
 * More testing.
 * Add example for observer.
 * Add unit test.
-',
+EOT;	
+	
+	$e = $pkg->setOptions(
+		array('baseinstalldir' => '',
+		      'summary' => $summary,
+		      'description' => $description,
+		      'version' => $version,
+	          'packagedirectory' => $packagedir,
+	          'pathtopackagefile' => $packagedir,
+              'state' => 'beta',
+              'filelistgenerator' => 'cvs',
+              'notes' => $notes,
 			  'package' => 'Net_FTP',
 			  'dir_roles' => array(
-			  		'example' => 'doc'),
+			  		'example' => 'doc'
+			  		'test' => 'test'),
 		      'ignore' => array('package.xml',
 		                        'doc*', 
 		                        'generate_package_xml.php',
