@@ -30,7 +30,8 @@ stable release. The following changes were made to the package files:
  - Updated year.
  - Updated docblocks regarding the new standard.
  - Fixed whitespace issues.
- - Fixed bug 3362: bug in Net_FTP::_rm_file. 
+ - Fixed bug 3362: bug in Net_FTP::_rm_file.
+ - Added PEAR 1.4 compatible package2.xml (package.xml version 2.0).
 EOT;
 	
 	$e = $pkg->setOptions(
