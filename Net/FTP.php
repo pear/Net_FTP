@@ -115,16 +115,24 @@ class Net_FTP extends PEAR
 
     /**
      * ls match
+     * Matches the ls entries against a regex and maps the resulting array to speaking names
      *
      * @access  private
-     * @var     string
+     * @var     array
      */
     
-    var $ls_match = '/(?:(d)|.)([rwxt-]+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\S+\s+\S+\s+\S+)\s+(.+)/';
+    var $_ls_match = array(
+        'unix'    => array(
+            'pattern' => '/(?:(d)|.)([rwxt-]+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\S+\s+\S+\s+\S+)\s+(.+)/',
+            'map'     => array('name'=>8,'size'=>6,'rights'=>2,'user'=>4,'group'=>5,
+                              'files_inside'=>3,'date'=>7,'is_dir'=>1)
+        ),
+        'windows' => array(
+            'pattern' => '/(.+)\s+(.+)\s+((<DIR>)|[0-9]+)\s+(.+)/',
+            'map'     => array('name'=>5,'date'=>1,'is_dir'=>3)
+        )
+    );
     
-    var $ls_regex_map = array('name'=>8,'size'=>6,'rights'=>2,'user'=>4,'group'=>5,
-                              'files_inside'=>3,'date'=>7,'is_dir'=>1);
-
     /**
      * Holds all Net_FTP_Observer objects 
      * that wish to be notified of new messages.
@@ -642,7 +650,6 @@ class Net_FTP extends PEAR
             case NET_FTP_FILES_ONLY:    $res = $this->_ls_files ( $dir );
                                         break;
             case NET_FTP_RAWLIST:       $res = @ftp_rawlist($this->_handle, $dir);
-                                        echo "HETE!!";
                                         break;
         }
 
@@ -1462,15 +1469,22 @@ class Net_FTP extends PEAR
     
     function _list_and_parse($dir)
     {
+        static $matcher = null;
         $dirs_list = array();
         $files_list = array();
         $dir_list = @ftp_rawlist($this->_handle, $dir);
         foreach ($dir_list as $entry) {
-            if (!preg_match($this->ls_match, $entry, $m)) {
+            if (!isset($matcher)) {
+                $matcher = $this->_determine_os_match($entry);
+                if (PEAR::isError($matcher)) {
+                    return $matcher;
+                }
+            }
+            if (!preg_match($matcher['pattern'], $entry, $m)) {
                 continue;
             }
             $entry = array();
-            foreach ($this->ls_regex_map as $key=>$val) {
+            foreach ($matcher['map'] as $key=>$val) {
                 $entry[$key] = $m[$val];
             }
             $entry['stamp'] = $this->_parse_Date($entry['date']);
@@ -1487,7 +1501,26 @@ class Net_FTP extends PEAR
         $res["files"] = $files_list;
         return $res;
     }
-
+    
+    /**
+     * Determine server OS
+     * This determines the server OS and returns a valid regex to parse
+     * ls() output.
+     *
+     * @access private
+     * @param string $entry The ls entry to parse
+     * @return mixed An array of 'pattern' and 'map' on success, otherwise PEAR::Error
+     */
+    
+    function _determine_os_match($entry) {
+        foreach ($this->_ls_match as $os => $match) {
+            if (preg_match($match['pattern'], $entry)) {
+                return $match;
+            }
+        }
+        $error = 'The list style of your server seems not to be supported. Please email a "$ftp->ls(NET_FTP_RAWLIST);" output plus info on the server to the maintainer of this package to get it supported! Thanks for your help!';
+        return PEAR::raiseError($error);
+    }
     /**
      * Lists a local directory
      *
