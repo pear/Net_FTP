@@ -979,6 +979,27 @@ class Net_FTP extends PEAR
     }
 
     /**
+     * Set the timeout for FTP operations
+     * Use this method to set a timeout for FTP operation. Timeout has to be an integer.
+     *
+     * @acess public
+     * @param int $timeout the timeout to use
+     * @return bool True on success, otherwise PEAR::Error
+     */
+     
+    function setTimeout ( $timeout = 0 ) 
+    {
+        if (!is_int($timeout) || ($timeout < 0)) {
+            return PEAR::raiseError("Timeout $timeout is invalid, has to be an integer >= 0");
+        }
+        $res = @ftp_set_option($this->_handle, FTP_TIMEOUT_SEC, $timeout);
+        if (!$res) {
+            return PEAR::raiseError("Set timeout failed.");
+        }
+        return true;
+    }        
+    
+    /**
      * Adds an extension to a mode-directory
      * The mode-directory saves file-extensions coresponding to filetypes
      * (ascii e.g.: 'php', 'txt', 'htm',...; binary e.g.: 'jpg', 'gif', 'exe',...).
@@ -1123,6 +1144,18 @@ class Net_FTP extends PEAR
         return @$this->_file_extensions[$ext];
     }
 
+    /**
+     * Get the currently set timeout.
+     * Returns the actual timeout set.
+     *
+     * @access public
+     * @return int The actual timeout
+     */
+    
+    function getTimeout ( )
+    {
+        return ftp_get_option($this->_handle, FTP_TIMEOUT_SEC);
+    }    
 
     /**
      * Adds a Net_FTP_Observer instance to the list of observers 
