@@ -277,12 +277,18 @@ class Net_FTP extends PEAR
             }
         } else {
             $pos = 0;
+            if(strpos($dir, '/') === false) {
+                return $this->mkdir($dir,false);
+            }
             $elements = array();
             while (false !== ($pos = strpos($dir, '/', $pos + 1))){
                 $elements[] = substr($dir, 0, $pos);
             }
             foreach ($elements as $element){
-                $this->mkdir($element, false);
+                $res = $this->mkdir($element, false);
+                if($res !== true) {
+                    return $res;
+                }
             }
             return true;
         }
