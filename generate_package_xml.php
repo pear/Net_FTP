@@ -50,7 +50,7 @@ EOT;
 		      'version' => $version,
 	          'packagedirectory' => $packagedir,
 	          'pathtopackagefile' => $packagedir,
-              'state' => 'RC',
+              'state' => 'stable',
               'filelistgenerator' => 'cvs',
               'notes' => $notes,
 			  'package' => 'Net_FTP',
