@@ -10,7 +10,7 @@
 	$packagedir = $cvsdir . 'Net_FTP/';
 	$category = 'Networking';	
 
-	$version = '1.3.0RC1';
+	$version = '1.3.0RC2';
 	
 	$summary = 'Net_FTP provides an OO interface to the PHP FTP functions plus some additions';
 	
@@ -23,23 +23,25 @@ for example the view of a progress bar.
 EOT;
 	
 	$notes = <<<EOT
-This is the first RC for version 1.3. I decided to not wait until all todos are
-implemented, to give the new features to all users.
+I fixed the reported bugs since 1.3RC2 and added the necessary example for the 
+observer interface.
 
 Changelog:
 -----------
 
 Additions:
--
+* Added example for observer.
 
 Fixes:
- 
-* Fixed bug #2268: getRecursive does not work because of '.' and '..' directories. 
+
+* Fixed CS issues.
+* Fixed bug #2654: mkdir() should not fail if the directory already exists.
+* Fixed bug #2648: if ls() returns array(), net_FTP bails.
+* Fixed some unknown small bugs.
 
 Todo:
               
 * More testing.
-* Add example for observer.
 * Add unit test.
 EOT;
 	
@@ -50,7 +52,7 @@ EOT;
 		      'version' => $version,
 	          'packagedirectory' => $packagedir,
 	          'pathtopackagefile' => $packagedir,
-              'state' => 'stable',
+              'state' => 'beta',
               'filelistgenerator' => 'cvs',
               'notes' => $notes,
 			  'package' => 'Net_FTP',
