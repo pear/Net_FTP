@@ -102,6 +102,15 @@ class Net_FTP extends PEAR
     var $_handle;
 
     /**
+     * Contains the timeout for FTP operations
+     *
+     * @access  private
+     * @var     int
+     */
+    
+    var $_timeout = 90;
+        
+    /**
      * Saves file-extensions for ascii- and binary-mode
      *
      * The array contains 2 sub-arrays ("ascii" and "binary"), which both contain
@@ -162,10 +171,11 @@ class Net_FTP extends PEAR
      * @access  public
      * @param   string $host    (optional) The hostname 
      * @param   int    $port    (optional) The port
+     * @param   int    $timeout (optional) Sets the standard timeout
      * @return  void
      */
     
-    function Net_FTP($host = null, $port = null)
+    function Net_FTP($host = null, $port = null, $timeout = 90)
     {
         $this->PEAR();
         if (isset($host)) {
@@ -174,7 +184,7 @@ class Net_FTP extends PEAR
         if (isset($port)) {
             $this->setPort($port);
         }
-
+        $this->_timeout = $timeout;
         $this->_file_extensions[FTP_ASCII] = array();
         $this->_file_extensions[FTP_BINARY] = array();
     }
@@ -198,7 +208,7 @@ class Net_FTP extends PEAR
         if (isset($port)) {
             $this->setPort($port);
         }
-        $handle = @ftp_connect($this->getHostname(), $this->getPort());
+        $handle = @ftp_connect($this->getHostname(), $this->getPort(), $this->_timeout);
         if (!$handle) {
             return $this->raiseError("Connection to host failed", 0);
         } else {
@@ -1066,7 +1076,12 @@ class Net_FTP extends PEAR
         if (!is_int($timeout) || ($timeout < 0)) {
             return PEAR::raiseError("Timeout $timeout is invalid, has to be an integer >= 0");
         }
-        $res = @ftp_set_option($this->_handle, FTP_TIMEOUT_SEC, $timeout);
+        $this->_timeout = $timeout;
+        if (isset($this->_handle) && is_resource($this->_handle)) {
+            $res = @ftp_set_option($this->_handle, FTP_TIMEOUT_SEC, $timeout);
+        } else {
+            $res = true;
+        }
         if (!$res) {
             return PEAR::raiseError("Set timeout failed.");
         }
