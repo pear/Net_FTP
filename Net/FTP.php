@@ -1590,6 +1590,11 @@ class Net_FTP extends PEAR
             $hour = $res[3];
             $minute = $res[4];
             $date = "$month $day, $year $hour:$minute";
+            $tmpDate = strtotime($date);
+            if ($tmpDate > time()) {
+                $year--;
+                $date = "$month $day, $year $hour:$minute";
+            }
         }
         // 09-10-04 => 09/10/04
         elseif (preg_match('/^\d\d-\d\d-\d\d/',$date)) {
