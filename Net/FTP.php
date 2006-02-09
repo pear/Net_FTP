@@ -2012,6 +2012,12 @@ class Net_FTP extends PEAR
         if (count($dir_list) == 0) {
             return array('dirs' => $dirs_list, 'files' => $files_list);
         }
+
+        // Exception for some FTP servers seem to return this wiered result instead of an empty list
+        if (count($dirs_list) == 1 && $dirs_list[0] == 'total 0') {
+            return array('dirs' => array(), 'files' => $files_list);
+        }
+        
         if (!isset($this->_matcher) || PEAR::isError($this->_matcher)) {
             $this->_matcher = $this->_determine_os_match($dir_list);
             if (PEAR::isError($this->_matcher)) {
