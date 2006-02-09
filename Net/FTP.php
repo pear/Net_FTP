@@ -570,8 +570,16 @@ class Net_FTP extends PEAR
     var $_ls_match = array(
         'unix'    => array(
             'pattern' => '/(?:(d)|.)([rwxt-]+)\s+(\w+)\s+([\w\d]+)\s+([\w\d]+)\s+(\w+)\s+(\S+\s+\S+\s+\S+)\s+(.+)/',
-            'map'     => array('name'=>8,'size'=>6,'rights'=>2,'user'=>4,'group'=>5,
-                              'files_inside'=>3,'date'=>7,'is_dir'=>1)
+            'map'     => array(
+                'is_dir'        => 1,
+                'rights'        => 2,
+                'files_inside'  => 3,
+                'user'          => 4,
+                'group'         => 5,
+                'size'          => 6,
+                'date'          => 7,
+                'name'          => 8,
+            )
         ),
         'windows' => array(
             'pattern' => '/(.+)\s+(.+)\s+((<DIR>)|[0-9]+)\s+(.+)/',
@@ -927,7 +935,10 @@ class Net_FTP extends PEAR
             $mode = NET_FTP_DIRS_ONLY;
             $dir_list = $this->ls($remote_path, $mode);
             foreach ($dir_list as $dir_entry) {
-
+                if ($dir_entry == '.' || $dir_entry == '..') {;
+                    continue;
+                }
+                
                 $remote_path_new = $remote_path.$dir_entry["name"]."/";
 
                 // Chmod the directory we're about to enter
@@ -1896,6 +1907,9 @@ class Net_FTP extends PEAR
         }
         $dir_list = $this->_ls_dirs($dir);
         foreach ($dir_list as $new_dir) {
+            if ($new_dir == '.' || $new_dir == '..') {
+                continue;
+            }
             $new_dir = $dir.$new_dir["name"]."/";
             $res = $this->_rm_dir_recursive($new_dir);
             if ($this->isError($res)) {
