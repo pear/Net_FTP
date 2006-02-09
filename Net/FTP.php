@@ -583,7 +583,12 @@ class Net_FTP extends PEAR
         ),
         'windows' => array(
             'pattern' => '/(.+)\s+(.+)\s+((<DIR>)|[0-9]+)\s+(.+)/',
-            'map'     => array('name'=>5,'date'=>1,'is_dir'=>3)
+            'map'     => array(
+                'name'   => 5,
+                'date'   => 1,
+                'size'   => 3,
+                'is_dir' => 4,
+            )
         )
     );
     
