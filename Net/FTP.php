@@ -1935,6 +1935,9 @@ class Net_FTP extends PEAR
     function _ls_both($dir)
     {
         $list_splitted = $this->_list_and_parse($dir);
+        if (PEAR::isError($list_splitted)) {
+            return $list_splitted;
+        }
         if (!is_array($list_splitted["files"])) {
             $list_splitted["files"] = array();
         }
