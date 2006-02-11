@@ -18,9 +18,9 @@ for example the view of a progress bar.</description>
   <active>yes</active>
  </lead>
  <date>2006-02-11</date>
- <time>11:54:52</time>
+ <time>12:00:11</time>
  <version>
-  <release>1.3.1</release>
+  <release>1.3.2</release>
   <api>1.0.0</api>
  </version>
  <stability>
@@ -33,10 +33,7 @@ for example the view of a progress bar.</description>
 * Fixed Bug #4836: Off-by-one error in regex for Windows directory listings.
 * Fixed Bug #4749: ls() fails when connection is closed.
 * Fixed Bug #4969: Recursive rm ends in endless loop.
-* Fixed Bug #5895: Recursive chmod ends in endless loop.
-* Fixed Bug #4009: _determine_os_match doesn&apos;t take into account numbered users and groups.
-* Fixed Bug #4008: _list_and_parse tries to determine OS on an empty list.
-* Fixed Bug #3778: Notice of Uninitialized string offset in function _rm_dir_recursive.</notes>
+* Fixed Bug #5895: Recursive chmod ends in endless loop.</notes>
  <contents>
   <dir baseinstalldir="/" name="/">
    <dir name="example">
@@ -71,7 +68,7 @@ for example the view of a progress bar.</description>
  <changelog>
   <release>
    <version>
-    <release>1.3.1</release>
+    <release>1.3.2</release>
     <api>1.0.0</api>
    </version>
    <stability>
@@ -85,10 +82,7 @@ for example the view of a progress bar.</description>
 * Fixed Bug #4836: Off-by-one error in regex for Windows directory listings.
 * Fixed Bug #4749: ls() fails when connection is closed.
 * Fixed Bug #4969: Recursive rm ends in endless loop.
-* Fixed Bug #5895: Recursive chmod ends in endless loop.
-* Fixed Bug #4009: _determine_os_match doesn&apos;t take into account numbered users and groups.
-* Fixed Bug #4008: _list_and_parse tries to determine OS on an empty list.
-* Fixed Bug #3778: Notice of Uninitialized string offset in function _rm_dir_recursive.</notes>
+* Fixed Bug #5895: Recursive chmod ends in endless loop.</notes>
   </release>
  </changelog>
 </package>

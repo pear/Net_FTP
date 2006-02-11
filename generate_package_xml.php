@@ -10,7 +10,7 @@ function dumpError($err) {
 $cvsdir  = '/cvs/pear/';
 $packagedir = $cvsdir . 'Net_FTP/';
 
-$version = '1.3.1';
+$version = '1.3.2';
 
 $summary = 'Net_FTP provides an OO interface to the PHP FTP functions plus some additions';
 
@@ -29,9 +29,6 @@ EOT;
 * Fixed Bug #4749: ls() fails when connection is closed.
 * Fixed Bug #4969: Recursive rm ends in endless loop.
 * Fixed Bug #5895: Recursive chmod ends in endless loop.
-* Fixed Bug #4009: _determine_os_match doesn't take into account numbered users and groups.
-* Fixed Bug #4008: _list_and_parse tries to determine OS on an empty list.
-* Fixed Bug #3778: Notice of Uninitialized string offset in function _rm_dir_recursive.
 EOT;
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
