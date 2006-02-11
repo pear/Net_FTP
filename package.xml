@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
-<package version="1.0" packagerversion="1.4.0a1">
- <name>Net_FTP</name>       
+<package version="1.0" packagerversion="1.4.6">
+ <name>Net_FTP</name>
  <summary>Net_FTP provides an OO interface to the PHP FTP functions plus some additions</summary>
  <description>Net_FTP allows you to communicate with FTP servers in a more comfortable way
 than the native FTP functions of PHP do. The class implements everything nativly
@@ -18,56 +18,71 @@ for example the view of a progress bar.
   </maintainer>
   </maintainers>
  <release>
-  <version>1.3.0</version>
-  <date>2005-02-28</date>
+  <version>1.3.1</version>
+  <date>2006-02-11</date>
   <license>PHP License</license>
   <state>stable</state>
-  <notes>Another month of testing did not bring any more critical bugs to daylight. Therefore 
-and because PEAR 1.4.0 will depend optionally on Net_FTP I decided to run the next 
-stable release. The following changes were made to the package files:
-
- - Updated year.
- - Updated docblocks regarding the new standard.
- - Fixed whitespace issues.
- - Fixed bug 3362: bug in Net_FTP::_rm_file.
- - Added PEAR 1.4 compatible package2.xml (package.xml version 2.0).
+  <notes>* Fixed Bug #4102: Problem detecting os method ls().
+* Fixed Bug #5337: _list_and_parse behavior with an empty remote directory.
+* Fixed Bug #4836: Off-by-one error in regex for Windows directory listings.
+* Fixed Bug #4749: ls() fails when connection is closed.
+* Fixed Bug #4969: Recursive rm ends in endless loop.
+* Fixed Bug #5895: Recursive chmod ends in endless loop.
+* Fixed Bug #4009: _determine_os_match doesn&apos;t take into account numbered users and groups.
+* Fixed Bug #4008: _list_and_parse tries to determine OS on an empty list.
+* Fixed Bug #3778: Notice of Uninitialized string offset in function _rm_dir_recursive.
   </notes>
   <deps>
+   <dep type="php" rel="ge" version="4.3.0" optional="no"/>
    <dep type="ext" rel="has" optional="no">ftp</dep>
   </deps>
-  <provides type="class" name="Net_FTP" extends="PEAR" />
-  <provides type="function" name="Net_FTP::connect" />
-  <provides type="function" name="Net_FTP::disconnect" />
-  <provides type="function" name="Net_FTP::login" />
-  <provides type="function" name="Net_FTP::cd" />
-  <provides type="function" name="Net_FTP::pwd" />
-  <provides type="function" name="Net_FTP::mkdir" />
-  <provides type="class" name="Net_FTP_Observer" />
-  <provides type="function" name="Net_FTP_Observer::getId" />
-  <provides type="function" name="Net_FTP_Observer::notify" />
   <filelist>
-   <file role="doc" baseinstalldir="" name="example/extensions.ini"/>
-   <file role="doc" baseinstalldir="" name="example/index.php"/>
-   <file role="doc" baseinstalldir="" name="example/observer.php"/>
-   <file role="php" baseinstalldir="" name="Net/FTP.php"/>
-   <file role="php" baseinstalldir="" name="Net/FTP/Observer.php"/>
+   <dir name="/" baseinstalldir="/">
+    <dir name="example">
+     <file role="doc" name="extensions.ini">
+      <replace from="@package_version@" to="version" type="package-info"/>
+     </file>
+     <file role="doc" name="index.php">
+      <replace from="@package_version@" to="version" type="package-info"/>
+     </file>
+     <file role="doc" name="observer.php">
+      <replace from="@package_version@" to="version" type="package-info"/>
+     </file>
+     <file role="doc" name="socket.php">
+      <replace from="@package_version@" to="version" type="package-info"/>
+     </file>
+    </dir> <!-- /example -->
+    <dir name="Net">
+     <dir name="FTP">
+      <file role="php" name="Observer.php">
+       <replace from="@package_version@" to="version" type="package-info"/>
+      </file>
+      <file role="php" name="Socket.php">
+       <replace from="@package_version@" to="version" type="package-info"/>
+      </file>
+     </dir> <!-- /Net/FTP -->
+     <file role="php" name="FTP.php">
+      <replace from="@package_version@" to="version" type="package-info"/>
+     </file>
+    </dir> <!-- /Net -->
+   </dir> <!-- / -->
   </filelist>
  </release>
  <changelog>
    <release>
-    <version>1.3.0</version>
-    <date>2005-02-28</date>
+    <version>1.3.1</version>
+    <date>2006-02-11</date>
     <license>PHP License</license>
     <state>stable</state>
-    <notes>Another month of testing did not bring any more critical bugs to daylight. Therefore 
-and because PEAR 1.4.0 will depend optionally on Net_FTP I decided to run the next 
-stable release. The following changes were made to the package files:
-
- - Updated year.
- - Updated docblocks regarding the new standard.
- - Fixed whitespace issues.
- - Fixed bug 3362: bug in Net_FTP::_rm_file.
- - Added PEAR 1.4 compatible package2.xml (package.xml version 2.0).
+    <notes>* Fixed Bug #4102: Problem detecting os method ls().
+* Fixed Bug #5337: _list_and_parse behavior with an empty remote directory.
+* Fixed Bug #4836: Off-by-one error in regex for Windows directory listings.
+* Fixed Bug #4749: ls() fails when connection is closed.
+* Fixed Bug #4969: Recursive rm ends in endless loop.
+* Fixed Bug #5895: Recursive chmod ends in endless loop.
+* Fixed Bug #4009: _determine_os_match doesn&apos;t take into account numbered users and groups.
+* Fixed Bug #4008: _list_and_parse tries to determine OS on an empty list.
+* Fixed Bug #3778: Notice of Uninitialized string offset in function _rm_dir_recursive.
     </notes>
    </release>
  </changelog>
