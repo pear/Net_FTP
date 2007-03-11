@@ -452,7 +452,7 @@ define('NET_FTP_ERR_USERNAMENOSTRING', -33);
  * @name NET_FTP_ERR_PASSWORDNOSTRING
  * @see Net_FTP::setPassword()
  */
-define('NET_FTP_ERR_PASSWORDNOSTRING', -33);
+define('NET_FTP_ERR_PASSWORDNOSTRING', -34);
 
 /**
  * Class for comfortable FTP-communication
