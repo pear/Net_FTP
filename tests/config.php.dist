@@ -1,0 +1,14 @@
+<?php
+/*
+ * copy this file to config.php and enter connection details for
+ * an FTP server that allows read and write access
+ *
+ * The directory field can be left empty
+ */
+
+define('FTPHOST', '');
+define('FTPPORT', '');
+define('FTPUSER', '');
+define('FTPPASSWORD', '');
+define('FTPDIR', '');
+?>
