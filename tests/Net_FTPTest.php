@@ -11,6 +11,8 @@
  *
  * In both cases you need PHPUnit installed
  *
+ * PHP version 5
+ *
  * LICENSE: This source file is subject to version 3.0 of the PHP license
  * that is available through the world-wide-web at the following URI:
  * http://www.php.net/license/3_0.txt.  If you did not receive a copy of
@@ -24,8 +26,8 @@
  * @license   http://www.php.net/license/3_0.txt  PHP License 3.0
  * @version   CVS: $Id$
  * @link      http://pear.php.net/package/Net_FTP
- * @since     File available since Release 0.0.1
  * @link      http://www.phpunit.de PHPUnit
+ * @since     File available since Release 0.0.1
  */
 
 if (!defined('PHPUnit_MAIN_METHOD')) {
@@ -45,7 +47,7 @@ require_once '../Net/FTP.php';
  * @author    Jorrit Schippers <jorrit@ncode.nl>
  * @copyright 1997-2007 The PHP Group
  * @license   http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version   CVS: $Id$
+ * @version   Release: @package_version@
  * @link      http://pear.php.net/package/Net_FTP
  * @since     Class available since Release 1.4
  */

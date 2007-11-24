@@ -1735,7 +1735,7 @@ class Net_FTP extends PEAR
      */
     function removeExtension($ext)
     {
-        if(isset($this->_file_extensions[$ext])) {
+        if (isset($this->_file_extensions[$ext])) {
             unset($this->_file_extensions[$ext]);
         }
     }
@@ -1774,7 +1774,7 @@ class Net_FTP extends PEAR
         $exts = @parse_ini_file($filename, true);
         if (!is_array($exts)) {
             return $this->raiseError("Extensions-file '$filename' could not be".
-                "loaded",  NET_FTP_ERR_EXTFILELOAD_FAILED);
+                "loaded", NET_FTP_ERR_EXTFILELOAD_FAILED);
         }
         
         $this->_file_extensions = array();
