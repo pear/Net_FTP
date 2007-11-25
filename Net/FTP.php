@@ -466,7 +466,7 @@ define('NET_FTP_ERR_PASSWORDNOSTRING', -34);
  * @name NET_FTP_ERR_EXTFILELOAD_FAILED
  * @see Net_FTP::getExtensionsFile()
  */
-define('NET_FTP_ERR_EXTFILELOAD_FAILED', -27);
+define('NET_FTP_ERR_EXTFILELOAD_FAILED', -35);
 
 /**
  * Class for comfortable FTP-communication
