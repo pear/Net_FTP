@@ -1352,7 +1352,7 @@ class Net_FTP extends PEAR
                                      NET_FTP_ERR_OVERWRITEREMOTEFILE_FORBIDDEN);
         }
 
-        ftp_alloc($this->_handle, filesize($file));
+        ftp_alloc($this->_handle, filesize($local_file));
         if (function_exists('ftp_nb_put')) {
             $res = @ftp_nb_put($this->_handle, $remote_file, $local_file, $mode);
             while ($res == FTP_MOREDATA) {
