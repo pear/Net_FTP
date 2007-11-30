@@ -34,10 +34,10 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'Net_FTPTest::main');
 }
 
-chdir(dirname(__FILE__));
+chdir(dirname(__FILE__) . '/../');
 
 require_once 'PHPUnit/Framework.php';
-require_once '../Net/FTP.php';
+require_once 'Net/FTP.php';
 
 /**
  * Unit test case for Net_FTP
@@ -55,6 +55,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
 {
     protected $ftp;
     protected $ftpdir;
+    protected $setupError;
     
     /**
      * Runs the test methods of this class.
@@ -80,13 +81,14 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        if (file_exists('config.php')) {
-            include_once 'config.php';
+        if (file_exists('tests/config.php')) {
+            include_once 'tests/config.php';
             
             $this->ftp = new Net_FTP(FTPHOST, FTPPORT, 30);
             $res       = $this->ftp->connect();
             
             if (PEAR::isError($res)) {
+                $this->setupError = 'Could not connect to the FTP server';
                 $this->ftp = null;
                 return;
             }
@@ -94,6 +96,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             $res = $this->ftp->login(FTPUSER, FTPPASSWORD);
             
             if (PEAR::isError($res)) {
+                $this->setupError = 'Could not login to the FTP server';
                 $this->ftp = null;
                 return;
             }
@@ -102,14 +105,16 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
                 $res = $this->ftp->cd(FTPDIR);
                 
                 if (PEAR::isError($res)) {
+                    $this->setupError = 'Could switch to directory '.FTPDIR;
                     $this->ftp = null;
                     return;
                 }
             }
             
-            $res = $this->ftp->pwd('test');
+            $res = $this->ftp->pwd();
             
             if (PEAR::isError($res)) {
+                $this->setupError = 'Could not get current directory';
                 $this->ftp = null;
                 return;
             }
@@ -119,6 +124,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             $res = $this->ftp->mkdir('test');
             
             if (PEAR::isError($res)) {
+                $this->setupError = 'Could not create a test directory';
                 $this->ftp = null;
                 return;
             }
@@ -126,6 +132,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             $res = $this->ftp->cd('test');
             
             if (PEAR::isError($res)) {
+                $this->setupError = 'Could not change to the test directory';
                 $this->ftp = null;
                 return;
             }
@@ -146,8 +153,9 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             $this->ftp->rm('test', true);
             $this->ftp->disconnect();
             
-            $this->ftpdir = null;
-            $this->ftp    = null;
+            $this->ftpdir     = null;
+            $this->ftp        = null;
+            $this->setupError = null;
         }
     }
     
@@ -182,7 +190,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             ' Setup config.php with proper configuration parameters.');
             return;
         }
-        $this->ftp->put('testfile.dat', 'testfile.dat', FTP_ASCII);
+        $this->ftp->put('tests/testfile.dat', 'testfile.dat', FTP_ASCII);
         $this->assertTrue($this->ftp->rename('testfile.dat', 'testfile2.dat'));
     }
 
@@ -230,9 +238,9 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             return;
         }
         // upload in binary to avoid addition/removal of characters
-        $this->ftp->put('testfile.dat', 'testfile.dat', FTP_BINARY);
+        $this->ftp->put('tests/testfile.dat', 'testfile.dat', FTP_BINARY);
         $this->assertEquals($this->ftp->size('testfile.dat'),
-            filesize('testfile.dat'));
+            filesize('tests/testfile.dat'));
     }
     
     /**
@@ -272,7 +280,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             ' Setup config.php with proper configuration parameters.');
             return;
         }
-        $res = $this->ftp->getExtensionsFile('extensions.ini');
+        $res = $this->ftp->getExtensionsFile('tests/extensions.ini');
         $this->assertFalse(PEAR::isError($res), 'Test extensions file could be'.
             'loaded');
         
