@@ -406,6 +406,8 @@
                 for ($i = 0; $i < count($target); $i++) {
                     try {
                         $res = $this->chmodRecursive($target[$i], $permissions);
+                    } catch(Exception $e) {
+                        throw $e;
                     }
                 } // end for i < count($target)
 
