@@ -38,14 +38,35 @@ require_once 'PHPUnit/TextUI/TestRunner.php';
 
 require_once 'Net_FTPTest.php';
 
-
+/**
+ * Unit test case for Net_FTP
+ *
+ * @category  Networking
+ * @package   FTP
+ * @author    Jorrit Schippers <jschippers@php.net>
+ * @copyright 1997-2007 The PHP Group
+ * @license   http://www.php.net/license/3_0.txt  PHP License 3.0
+ * @version   Release: @package_version@
+ * @link      http://pear.php.net/package/Net_FTP
+ * @since     Class available since Release 1.3.3
+ */
 class Net_FTP_AllTests
 {
+    /**
+     * Main test suite run method
+     *
+     * @return void
+     */
     public static function main()
     {
         PHPUnit_TextUI_TestRunner::run(self::suite());
     }
 
+    /**
+     * Main test suite method
+     *
+     * @return void
+     */
     public static function suite()
     {
         $suite = new PHPUnit_Framework_TestSuite('Net_FTP Tests');
