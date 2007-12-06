@@ -87,7 +87,7 @@ $p2->addInstallAs('tests/extensions.ini', 'extensions.ini');
 
 $p2->addRelease();
 
-$p2->addMaintainer('lead', 'jschippers', 'Jorrit Schippers', 'jschippers@php.net', 'no');
+$p2->addMaintainer('lead', 'jorrit', 'Jorrit Schippers', 'jschippers@php.net', 'no');
 $p2->addMaintainer('lead', 'toby', 'Tobias Schlitt', 'toby@php.net', 'no');
 
 $p2->setPhpDep('4.3.0');

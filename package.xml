@@ -13,7 +13,7 @@ dircreation and chmodding. It also implements an observer pattern to allow
 for example the view of a progress bar.</description>
  <lead>
   <name>Jorrit Schippers</name>
-  <user>jschippers</user>
+  <user>jorrit</user>
   <email>jschippers@php.net</email>
   <active>no</active>
  </lead>
