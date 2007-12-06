@@ -20,7 +20,7 @@ $description =
 'Net_FTP allows you to communicate with FTP servers in a more comfortable way
 than the native FTP functions of PHP do. The class implements everything natively
 supported by PHP and additionally features like recursive up- and downloading,
-dircreation and chmodding. It although implements an observer pattern to allow
+dircreation and chmodding. It also implements an observer pattern to allow
 for example the view of a progress bar.';
 	
 $current_notes =
@@ -66,6 +66,8 @@ $p2->setChannel('pear.php.net');
 
 $p2->setPackageType('php');
 
+$p2->addGlobalReplacement('package-info', '@package_version@', 'version');
+
 $p2->generateContents();
 
 $p2->setReleaseVersion($current_version);
@@ -76,6 +78,12 @@ $p2->setAPIStability('stable');
 $p2->setNotes($current_notes);
 
 $p2->addGlobalReplacement('package-info', '@package_version@', 'version');
+
+$p2->addInstallAs('tests/AllTests.php', 'AllTests.php');
+$p2->addInstallAs('tests/Net_FTPTest.php', 'Net_FTPTest.php');
+$p2->addInstallAs('tests/config.php.dist', 'config.php.dist');
+$p2->addInstallAs('tests/testfile.dat', 'testfile.dat');
+$p2->addInstallAs('tests/extensions.ini', 'extensions.ini');
 
 $p2->addRelease();
 
