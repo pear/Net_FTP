@@ -819,6 +819,9 @@ class Net_FTP extends PEAR
             if (strpos(substr($dir, 1), '/') === false) {
                 return $this->mkdir($dir, false);
             }
+            if (substr($dir, -1) == '/') {
+                $dir = substr($dir, 0, -1);
+            }
             $parent = substr($dir, 0, strrpos($dir, '/'));
             $res    = $this->mkdir($parent, true);
             if ($res === true) {
@@ -1235,7 +1238,6 @@ class Net_FTP extends PEAR
     function rm($path, $recursive = false)
     {
         $path = $this->_constructPath($path);
-
         if ($this->_checkDir($path)) {
             if ($recursive) {
                 return $this->_rmDirRecursive($path);
@@ -1949,7 +1951,6 @@ class Net_FTP extends PEAR
      *
      * This method will make a relative path absolute by prepending the current
      * remote directory in front of it.
-     * It will also normalize the path by removing end slashes (since 1.3.3)
      *
      * @param string $path The path to check and construct
      *
@@ -1958,9 +1959,6 @@ class Net_FTP extends PEAR
      */
     function _constructPath($path)
     {
-        if (substr($path, -1) == '/') {
-            $path = substr($path, 0, -1);
-        }
         if ((substr($path, 0, 1) != '/') && (substr($path, 0, 2) != './')) {
             $actual_dir = @ftp_pwd($this->_handle);
             if (substr($actual_dir, -1) != '/') {

@@ -37,7 +37,11 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
 }
 
 require_once 'PHPUnit/Framework.php';
-require_once 'Net/FTP.php';
+if(substr(dirname(__FILE__), -6) == DIRECTORY_SEPARATOR.'tests') {
+    require_once '../Net/FTP.php';
+} else {
+    require_once 'Net/FTP.php';
+}
 
 /**
  * Unit test case for Net_FTP
@@ -159,7 +163,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
     {
         if ($this->ftp != null) {
             $this->ftp->cd($this->ftpdir);
-            $this->ftp->rm('test', true);
+            $this->ftp->rm('test/', true);
             $this->ftp->disconnect();
             
             $this->ftpdir     = null;
@@ -201,6 +205,30 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
         }
         $this->ftp->put('testfile.dat', 'testfile.dat', FTP_ASCII);
         $this->assertTrue($this->ftp->rename('testfile.dat', 'testfile2.dat'));
+    }
+
+    /**
+     * Tests functionality of Net_FTP::rm()
+     * 
+     * @return void
+     * @see Net_FTP::rm()
+     */
+    public function testRm()
+    {
+        if ($this->ftp == null) {
+            $this->fail('This test requires a working FTP connection. Setup '.
+            'config.php with proper configuration parameters. ('.
+            $this->setupError.')');
+        }
+        $list1 = $this->ftp->ls();
+        
+        $this->ftp->mkdir('dir1/dir2/dir3/dir4', true);
+        $this->ftp->rm('dir1/', true);
+        
+        $list2 = $this->ftp->ls();
+        var_dump($list2);
+        $this->assertEquals($list1, $list2, 'Directory listing before creation and'.
+            ' after creation are not equal');
     }
 
     /**
