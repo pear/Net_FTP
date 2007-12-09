@@ -12,7 +12,8 @@ function dumpError($err) {
 $cvsdir  = '/cvs/pear/';
 $packagedir = $cvsdir . 'Net_FTP/';
 
-$current_version = '1.3.3';
+$current_version = '1.3.4';
+$current_stability = 'stable';
 
 $summary = 'Net_FTP provides an OO interface to the PHP FTP functions plus some additions';
 
@@ -24,15 +25,7 @@ dircreation and chmodding. It also implements an observer pattern to allow
 for example the view of a progress bar.';
 	
 $current_notes =
-'* Fixed Bug #7146: Recursive mkdir() broken on Windows
-* Fixed Bug #7270: Recursive rmdir() broken
-* Fixed Bug #7527: ls fails if there are no files and a total line
-* Fixed Bug #8102: Loading file extension and checking extension gives binary for ascii files
-* Fixed Bug #9611: (, ? and ) break detection of the unix platform
-* Fixed Bug #10237: put() doesn\'t run ftp_alloc to allocate space
-* PEAR Coding Style Valid
-* Removed package.xml version 1.0
-* Added some unit tests';
+'* Fixed Bug #12639: _constructPath() prevents _checkDir() from working correctly';
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
 
@@ -72,7 +65,7 @@ $p2->generateContents();
 
 $p2->setReleaseVersion($current_version);
 $p2->setAPIVersion('1.0.0');
-$p2->setReleaseStability('stable');
+$p2->setReleaseStability($current_stability);
 $p2->setAPIStability('stable');
 
 $p2->setNotes($current_notes);
