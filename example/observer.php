@@ -1,5 +1,4 @@
 <?php
-
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -16,16 +15,16 @@
  * the PHP License and are unable to obtain it through the web, please
  * send a note to license@php.net so we can mail you a copy immediately.
  *
- * @category   Networking
- * @package    FTP
- * @author     Tobias Schlitt <toby@php.net>
- * @author     Laurent Laville <pear@laurent-laville.org>
- * @copyright  1997-2005 The PHP Group
- * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    CVS: $Id$
- * @link       http://pear.php.net/package/Net_FTP
- * @link       http://pear.php.net/package/HTML_Progress
- * @since      File available since Release 1.3.0
+ * @category  Networking
+ * @package   FTP
+ * @author    Tobias Schlitt <toby@php.net>
+ * @author    Laurent Laville <pear@laurent-laville.org>
+ * @copyright 1997-2005 The PHP Group
+ * @license   http://www.php.net/license/3_0.txt  PHP License 3.0
+ * @version   CVS: $Id$
+ * @link      http://pear.php.net/package/Net_FTP
+ * @link      http://pear.php.net/package/HTML_Progress
+ * @since     File available since Release 1.3.0
  */
 
 require_once 'Net/FTP.php';
@@ -42,21 +41,38 @@ $ftp = array(
     'pass' => ''
 );    
 
-$dest = 'tmp';                   // this directory must exists in your ftp server !
+$dest      = 'tmp';              // this directory must exists in your ftp server !
 $overwrite = true;               // overwrite all existing files on the ftp server
-$files = array(
+$files     = array(
     'HTML_Progress-1.2.0.tgz',
-    'php4ever.png'               // initializing contents (required!) file(s) must exists
-);                               // file(s) to upload
+    'php4ever.png'               // initializing contents (required!) file(s) must
+);                               // exists file(s) to upload
 
 
-//
-// 1. Defines the FTP/Progress Observer 
-//
+/**
+ * 1. Defines the FTP/Progress Observer
+ *
+ * @category  Networking
+ * @package   FTP
+ * @author    Tobias Schlitt <toby@php.net>
+ * @copyright 1997-2007 The PHP Group
+ * @license   http://www.php.net/license/3_0.txt PHP License 3.0
+ * @version   Release: @package_version@
+ * @link      http://pear.php.net/package/Net_FTP
+ * @since     0.0.1
+ * @access    public
+ */
 class Observer_ProgressUpload extends Net_FTP_Observer
 {
     var $progress;
-
+    
+    /**
+     * Constructor for the upload observer
+     *
+     * @param HTML_Progress &$progress Progress bar
+     *
+     * @return void
+     */
     function Observer_ProgressUpload(&$progress)
     {
         /* Call the base class constructor. */
@@ -73,6 +89,13 @@ class Observer_ProgressUpload extends Net_FTP_Observer
         $this->progress->setIndeterminate(true);
     }
 
+    /**
+     * Notification method
+     *
+     * @param mixed $event Variable describing occured event
+     *
+     * @return void
+     */
     function notify($event)
     {
         $this->progress->display();
@@ -90,7 +113,7 @@ class Observer_ProgressUpload extends Net_FTP_Observer
 // 2. defines the progress meter 
 //
 $meter = new HTML_Progress();
-$ui = & $meter->getUI();
+$ui    = &$meter->getUI();
 $ui->setProgressAttributes(array(
     'background-color' => '#e0e0e0'
 ));        
@@ -170,7 +193,7 @@ if (PEAR::isError($ret)) {
 // 6. attachs an instance of the FTP/Progress subclass observer
 //
 $observer = new Observer_ProgressUpload($meter);
-$ok = $f->attach($observer);
+$ok       = $f->attach($observer);
 if (!$ok) {
     die('cannot attach a FTP Observer');
 }
@@ -178,13 +201,14 @@ if (!$ok) {
 //
 // 7. moves files on the FTP server
 //
-foreach($files as $file) {
+foreach ($files as $file) {
     $ret = $f->put($file, basename($file), $overwrite);
     if (PEAR::isError($ret)) {
-    	if (($ret->getCode() == NET_FTP_ERR_OVERWRITEREMOTEFILE_FORBIDDEN) and (!$overwrite)) {
-    	    printf('%s <br />', $ret->getMessage());
-    	    continue;  // it is just a warning when \$overwrite variable is set to false
-    	}
+        if ($ret->getCode() == NET_FTP_ERR_OVERWRITEREMOTEFILE_FORBIDDEN
+            && !$overwrite) {
+            printf('%s <br />', $ret->getMessage());
+            continue;  // it is just a warning when \$overwrite variable is false
+        }
         die($ret->getMessage());
     }
     printf('<b>%s</b> transfer completed <br />', basename($file));

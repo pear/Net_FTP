@@ -1,21 +1,52 @@
 <?php
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
+/**
+ * File to generate a package.xml for a new Net_FTP release
+ *
+ * PHP versions 4 and 5
+ *
+ * LICENSE: This source file is subject to version 3.0 of the PHP license
+ * that is available through the world-wide-web at the following URI:
+ * http://www.php.net/license/3_0.txt.  If you did not receive a copy of
+ * the PHP License and are unable to obtain it through the web, please
+ * send a note to license@php.net so we can mail you a copy immediately.
+ *
+ * @category  Networking
+ * @package   FTP
+ * @author    Tobias Schlitt <toby@php.net>
+ * @copyright 1997-2005 The PHP Group
+ * @license   http://www.php.net/license/3_0.txt  PHP License 3.0
+ * @version   CVS: $Id$
+ * @link      http://pear.php.net/package/Net_FTP
+ * @since     File available since Release 1.3.0
+ */
 
 require_once 'PEAR/PackageFileManager2.php';
 
-function dumpError($err) {
+/**
+ * Dump an error
+ *
+ * @param PEAR_Error $err The error object
+ *
+ * @return void
+ */
+function dumpError($err)
+{
     echo $err->getMessage();
     exit;
     var_dump($err);
     die();
 }
 
-$cvsdir  = '/cvs/pear/';
+$cvsdir     = '/cvs/pear/';
 $packagedir = $cvsdir . 'Net_FTP/';
 
-$current_version = '1.3.4';
+$current_version   = '1.3.4';
 $current_stability = 'stable';
 
-$summary = 'Net_FTP provides an OO interface to the PHP FTP functions plus some additions';
+$summary =
+'Net_FTP provides an OO interface to the PHP FTP functions plus some additions';
 
 $description =
 'Net_FTP allows you to communicate with FTP servers in a more comfortable way
@@ -23,34 +54,31 @@ than the native FTP functions of PHP do. The class implements everything nativel
 supported by PHP and additionally features like recursive up- and downloading,
 dircreation and chmodding. It also implements an observer pattern to allow
 for example the view of a progress bar.';
-	
+
 $current_notes =
 '* Fixed Bug #12639: _constructPath() prevents _checkDir() from working correctly';
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
 
 $p2 = new PEAR_PackageFileManager2();
-$p2->setOptions(
-    array(
-        'baseinstalldir'    => '/',
-        'filelistgenerator' => 'cvs',
-        'packagedirectory'  => dirname(__FILE__),
-        'include'           => array(),
-        'ignore'            => array(
-            'package.xml',
-            'package2.xml',
-            '*.tgz',
-            'generate*',
-            'doc*',
-            'FTP_PHP5.php',
-        ),
-        'dir_roles'         => array(
-            'tests'     => 'test',
-            'example'   => 'doc'
-        ),
-        'simpleoutput'      => true,
-    )
-);
+$p2->setOptions(array(
+    'baseinstalldir'    => '/',
+    'filelistgenerator' => 'cvs',
+    'packagedirectory'  => dirname(__FILE__),
+    'include'           => array(),
+    'ignore'            => array(
+        'package.xml',
+        'package2.xml',
+        '*.tgz',
+        'generate*',
+        'doc*',
+    ),
+    'dir_roles'         => array(
+        'tests'     => 'test',
+        'example'   => 'doc'
+    ),
+    'simpleoutput'      => true,
+));
 
 $p2->setPackage('Net_FTP');
 $p2->setSummary($summary);
@@ -80,7 +108,8 @@ $p2->addInstallAs('tests/extensions.ini', 'extensions.ini');
 
 $p2->addRelease();
 
-$p2->addMaintainer('lead', 'jorrit', 'Jorrit Schippers', 'jschippers@php.net', 'no');
+$p2->addMaintainer('lead', 'jorrit', 'Jorrit Schippers', 'jschippers@php.net',
+    'yes');
 $p2->addMaintainer('lead', 'toby', 'Tobias Schlitt', 'toby@php.net', 'no');
 
 $p2->setPhpDep('4.3.0');
@@ -90,7 +119,8 @@ $p2->setLicense('PHP License', 'http://www.php.net/license');
 
 $p2->addExtensionDep('required', 'ftp');
 
-if (isset($_GET['make']) || (isset($_SERVER['argv']) && @$_SERVER['argv'][1] == 'make')) {
+if (isset($_GET['make']) ||
+    (isset($_SERVER['argv']) && @$_SERVER['argv'][1] == 'make')) {
     echo "Writing package file\n";
     $p2->writePackageFile();
 } else {

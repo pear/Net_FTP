@@ -1,5 +1,4 @@
 <?php
-
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -15,14 +14,14 @@
  * the PHP License and are unable to obtain it through the web, please
  * send a note to license@php.net so we can mail you a copy immediately.
  *
- * @category   Networking
- * @package    FTP
- * @author     Tobias Schlitt <toby@php.net>
- * @copyright  1997-2005 The PHP Group
- * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    CVS: $Id$
- * @link       http://pear.php.net/package/Net_FTP
- * @since      File available since Release 0.0.1
+ * @category  Networking
+ * @package   FTP
+ * @author    Tobias Schlitt <toby@php.net>
+ * @copyright 1997-2005 The PHP Group
+ * @license   http://www.php.net/license/3_0.txt  PHP License 3.0
+ * @version   CVS: $Id$
+ * @link      http://pear.php.net/package/Net_FTP
+ * @since     File available since Release 0.0.1
  */
 
 require_once 'Net/FTP.php';
@@ -33,17 +32,17 @@ require_once 'Var_Dump.php';
  * up, to suite the needs of your environment.
  */
 
-$host           = '';
-$port           = 21;
-$user           = '';
-$pass           = '';
+$host = '';
+$port = 21;
+$user = '';
+$pass = '';
 
 // The local base directory for FTP operations.
-$baseDir        = './test/';
+$baseDir = './test/';
 // The directory to upload to the FTP server for testing.
-$testUpDir      = 'test_up/';
+$testUpDir = 'test_up/';
 // The directory to download to for testing.
-$testDownDir    = 'test_down/';
+$testDownDir = 'test_down/';
 // The file for single file up- and download testing.
 $singleTestFile = 'test.zip';
 
@@ -56,15 +55,29 @@ if (isset($_SERVER)) {
         'mode'=>'normal',
         'offset'=>4
     ));
-    // Headline function for XHTML output.
-    function head ( $text ) {
+    /**
+     * Headline function for XHTML output
+     *
+     * @param string $text Text to put in header
+     *
+     * @return void
+     */
+    function head($text)
+    {
         echo '<br /><b>'.$text.'</b><br />';
     }
 } else {
     // Setup for displaying console output.
     Var_Dump::displayInit(array('display_mode'=>'Text'));
-    // Headline function for XHTML output.
-    function head ( $text ) {
+    /**
+     * Headline function for XHTML output
+     *
+     * @param string $text Text to put in header
+     *
+     * @return void
+     */
+    function head($text)
+    {
         echo "\n--- ".$text." ---\n";
     }
 }
@@ -145,7 +158,8 @@ head("\$ftp->putRecursive($baseDir$testUpDir, $baseDir$testUpDir)");
 Var_Dump::display($ftp->putRecursive($baseDir.$testUpDir, $baseDir.$testUpDir));
 
 head("\$ftp->putRecursive($baseDir$testUpDir, $baseDir$testUpDir)");
-Var_Dump::display($ftp->putRecursive($baseDir.$testUpDir, $baseDir.$testUpDir, true));
+Var_Dump::display($ftp->putRecursive($baseDir.$testUpDir, $baseDir.$testUpDir,
+    true));
 
 head("\$ftp->cd($baseDir:$testUpDir)");
 Var_Dump::display($ftp->cd($baseDir.$testUpDir));
@@ -157,7 +171,8 @@ head("\$ftp->cd(../../)");
 Var_Dump::display($ftp->cd('../../'));
 
 head("\$ftp->getRecursive($baseDir$testUpDir, $baseDir$testDownDir)");
-Var_Dump::display($ftp->getRecursive($baseDir.$testUpDir, $baseDir.$testDownDir, true));
+Var_Dump::display($ftp->getRecursive($baseDir.$testUpDir, $baseDir.$testDownDir,
+    true));
 
 head("\$ftp->rm($baseDir, true)");
 Var_Dump::display($ftp->rm($baseDir, true));
