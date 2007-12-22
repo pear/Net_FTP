@@ -495,30 +495,30 @@ define('NET_FTP_ERR_EXTFILELOAD_FAILED', -35);
  * string.
  *
  * @since 1.4.0a1
- * @name NET_FTP_ERR_SETDIRMATCH_ILLEGALPATTERN
+ * @name NET_FTP_ERR_ILLEGALPATTERN
  * @see Net_FTP::setDirMatcher()
  */
-define('NET_FTP_ERR_SETDIRMATCH_ILLEGALPATTERN', -36);
+define('NET_FTP_ERR_ILLEGALPATTERN', -36);
 
 /**
  * Error code to indicate that the directory listing matcher map provided is not an
  * array.
  *
  * @since 1.4.0a1
- * @name NET_FTP_ERR_SETDIRMATCH_ILLEGALMAP
+ * @name NET_FTP_ERR_ILLEGALMAP
  * @see Net_FTP::setDirMatcher()
  */
-define('NET_FTP_ERR_SETDIRMATCH_ILLEGALMAP', -37);
+define('NET_FTP_ERR_ILLEGALMAP', -37);
 
 /**
  * Error code to indicate that the directory listing matcher map provided contains
  * wrong values (ie: it contains non-numerical values)
  *
  * @since 1.4.0a1
- * @name NET_FTP_ERR_SETDIRMATCH_ILLEGALMAPVALUE
+ * @name NET_FTP_ERR_ILLEGALMAPVALUE
  * @see Net_FTP::setDirMatcher()
  */
-define('NET_FTP_ERR_SETDIRMATCH_ILLEGALMAPVALUE', -38);
+define('NET_FTP_ERR_ILLEGALMAPVALUE', -38);
 
 /**
  * Error code indicating that bad options were supplied to the
@@ -2038,25 +2038,25 @@ class Net_FTP extends PEAR
      * @access public
      * @return bool|PEAR_Error True if matcher set successfully, PEAR_Error
      *                         otherwise
-     * @see NET_FTP_ERR_SETDIRMATCH_ILLEGALPATTERN,
-     *      NET_FTP_ERR_SETDIRMATCH_ILLEGALMAP
-     *      NET_FTP_ERR_SETDIRMATCH_ILLEGALMAPVALUE
+     * @see NET_FTP_ERR_ILLEGALPATTERN,
+     *      NET_FTP_ERR_ILLEGALMAP
+     *      NET_FTP_ERR_ILLEGALMAPVALUE
      */
     function setDirMatcher($pattern, $matchmap)
     {
         if (!is_string($pattern)) {
             return $this->raiseError('The supplied pattern is not a string',
-                                     NET_FTP_ERR_SETDIRMATCH_ILLEGALPATTERN);
+                                     NET_FTP_ERR_ILLEGALPATTERN);
         }
         if (!is_array($matchmap)) {
             return $this->raiseError('The supplied pattern is not an array',
-                                     NET_FTP_ERR_SETDIRMATCH_ILLEGALMAP);
+                                     NET_FTP_ERR_ILLEGALMAP);
         } else {
             foreach ($matchmap AS $val) {
                 if (!is_numeric($val)) {
                     return $this->raiseError('The supplied pattern contains'.
                                              'invalid value '.$val,
-                                     NET_FTP_ERR_SETDIRMATCH_ILLEGALMAPVALUE);
+                                     NET_FTP_ERR_ILLEGALMAPVALUE);
                 }
             }
         }

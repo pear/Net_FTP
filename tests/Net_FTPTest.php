@@ -382,17 +382,19 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
         
         $res = $this->ftp->setDirMatcher(false, false);
         $this->assertTrue(PEAR::isError($res)
-            && $res->getCode() == NET_FTP_ERR_SETDIRMATCH_ILLEGALPATTERN,
-            'Result of setDirMatcher(boolean, boolean) should be an error');
+            && $res->getCode() == NET_FTP_ERR_ILLEGALPATTERN,
+            'Result of setDirMatcher(boolean, boolean) should give a '.
+            'NET_FTP_ERR_ILLEGALPATTERN error');
         
         $res = $this->ftp->setDirMatcher($pattern, false);
         $this->assertTrue(PEAR::isError($res)
-            && $res->getCode() == NET_FTP_ERR_SETDIRMATCH_ILLEGALMAP,
-            'Result of setDirMatcher(string, boolean) should be an error');
+            && $res->getCode() == NET_FTP_ERR_ILLEGALMAP,
+            'Result of setDirMatcher(string, boolean) should give a '.
+            'NET_FTP_ERR_ILLEGALMAP error');
         
         $res = $this->ftp->setDirMatcher($pattern, array('a' => 'b'));
         $this->assertTrue(PEAR::isError($res)
-            && $res->getCode() == NET_FTP_ERR_SETDIRMATCH_ILLEGALMAPVALUE,
+            && $res->getCode() == NET_FTP_ERR_ILLEGALMAPVALUE,
             'The items in a matcher map should only contain numeric values');
         
         $res = $this->ftp->setDirMatcher($pattern, $map);
