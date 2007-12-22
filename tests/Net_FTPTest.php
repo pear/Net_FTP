@@ -333,6 +333,54 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
     /**
      * Tests changes made to fix bug #9611
      * 
+     * @since 1.4.0a1
+     * @link http://pear.php.net/bugs/bug.php?id=9611
+     * @return void
+     */
+    public function testSetDirMatcher()
+    {
+        if ($this->ftp == null) {
+            $this->fail('This test requires a working FTP connection. Setup '.
+            'config.php with proper configuration parameters. ('.
+            $this->setupError.')');
+        }
+        
+        $pattern = '/(?:(d)|.)([rwxt-]+)\s+(\w+)\s+(\w+)\s+(\w+)\s(\w+\s+\d+\s+.+)'.
+            '\s+(.+)/';
+        $map     = array(
+            'is_dir' => 1,
+            'rights' => 2,
+            'user' => 3,
+            'group' => 4,
+            'size' => 5,
+            'date' => 6,
+            'name' => 7,
+        );
+        $dirlist = array('drwxrwxrwx   2 group        512 Aug  5  2004 0204');
+        
+        $res = $this->ftp->setDirMatcher(false, false);
+        $this->assertTrue(PEAR::isError($res)
+            && $res->getCode() == NET_FTP_ERR_SETDIRMATCH_ILLEGALPATTERN,
+            'Result of setDirMatcher(boolean, boolean) should be an error');
+        
+        $res = $this->ftp->setDirMatcher($pattern, false);
+        $this->assertTrue(PEAR::isError($res)
+            && $res->getCode() == NET_FTP_ERR_SETDIRMATCH_ILLEGALMAP,
+            'Result of setDirMatcher(string, boolean) should be an error');
+        
+        $res = $this->ftp->setDirMatcher($pattern, array('a' => 'b'));
+        $this->assertTrue(PEAR::isError($res)
+            && $res->getCode() == NET_FTP_ERR_SETDIRMATCH_ILLEGALMAPVALUE,
+            'The items in a matcher map should only contain numeric values');
+        
+        $res = $this->ftp->setDirMatcher($pattern, $map);
+        $this->assertFalse(PEAR::isError($res),
+            'A valid pattern and map should return no error');
+    }
+
+    /**
+     * Tests changes made to fix bug #9611
+     * 
      * @link http://pear.php.net/bugs/bug.php?id=9611
      * @return void
      */

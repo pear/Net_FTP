@@ -469,6 +469,36 @@ define('NET_FTP_ERR_PASSWORDNOSTRING', -34);
 define('NET_FTP_ERR_EXTFILELOAD_FAILED', -35);
 
 /**
+ * Error code to indicate that the directory listing pattern provided is not a
+ * string.
+ *
+ * @since 1.4.0a1
+ * @name NET_FTP_ERR_SETDIRMATCH_ILLEGALPATTERN
+ * @see Net_FTP::setDirMatcher()
+ */
+define('NET_FTP_ERR_SETDIRMATCH_ILLEGALPATTERN', -36);
+
+/**
+ * Error code to indicate that the directory listing matcher map provided is not an
+ * array.
+ *
+ * @since 1.4.0a1
+ * @name NET_FTP_ERR_SETDIRMATCH_ILLEGALMAP
+ * @see Net_FTP::setDirMatcher()
+ */
+define('NET_FTP_ERR_SETDIRMATCH_ILLEGALMAP', -37);
+
+/**
+ * Error code to indicate that the directory listing matcher map provided contains
+ * wrong values (ie: it contains non-numerical values)
+ *
+ * @since 1.4.0a1
+ * @name NET_FTP_ERR_SETDIRMATCH_ILLEGALMAPVALUE
+ * @see Net_FTP::setDirMatcher()
+ */
+define('NET_FTP_ERR_SETDIRMATCH_ILLEGALMAPVALUE', -38);
+
+/**
  * Class for comfortable FTP-communication
  *
  * This class provides comfortable communication with FTP-servers. You may do
@@ -1927,6 +1957,65 @@ class Net_FTP extends PEAR
 
         unset($this->_listeners[$observer->getId()]);
         return true;
+    }
+
+    /**
+     * Sets the directory listing matcher
+     *
+     * Use this method to set the directory listing matcher to a specific pattern.
+     * Indicate the pattern as a perl regular expression and give an array
+     * containing as keys the fields selected in the regular expression and as
+     * values the offset of the subpattern in the pattern.
+     *
+     * Example:
+     * $pattern = '/(?:(d)|.)([rwxt-]+)\s+(\w+)\s+([\w\d-]+)\s+([\w\d-]+)\s+(\w+)
+     *             \s+(\S+\s+\S+\s+\S+)\s+(.+)/',
+     * $matchmap = array(
+     *     'is_dir'        => 1,
+     *     'rights'        => 2,
+     *     'files_inside'  => 3,
+     *     'user'          => 4,
+     *     'group'         => 5,
+     *     'size'          => 6,
+     *     'date'          => 7,
+     *     'name'          => 8,
+     * )
+     *
+     * Make sure at least the is_dir and name keys are set. The is_dir key should
+     * point to a subpattern that is empty for non-directories and non-empty
+     * for directories.
+     *
+     * @param string $pattern  The new matcher pattern to use
+     * @param array  $matchmap An mapping from key to subpattern offset
+     *
+     * @since 1.4.0a1
+     * @access public
+     * @return bool|PEAR_Error True if matcher set successfully, PEAR_Error
+     *                         otherwise
+     * @see NET_FTP_ERR_SETDIRMATCH_ILLEGALPATTERN,
+     *      NET_FTP_ERR_SETDIRMATCH_ILLEGALMAP
+     *      NET_FTP_ERR_SETDIRMATCH_ILLEGALMAPVALUE
+     */
+    function setDirMatcher($pattern, $matchmap)
+    {
+        if (!is_string($pattern)) {
+            return $this->raiseError('The supplied pattern is not a string',
+                                     NET_FTP_ERR_SETDIRMATCH_ILLEGALPATTERN);
+        }
+        if (!is_array($matchmap)) {
+            return $this->raiseError('The supplied pattern is not an array',
+                                     NET_FTP_ERR_SETDIRMATCH_ILLEGALMAP);
+        } else {
+            foreach ($matchmap AS $val) {
+                if (!is_numeric($val)) {
+                    return $this->raiseError('The supplied pattern contains'.
+                                             'invalid value '.$val,
+                                     NET_FTP_ERR_SETDIRMATCH_ILLEGALMAPVALUE);
+                }
+            }
+        }
+        
+        $this->_matcher = array('pattern' => $pattern, 'map' => $map);
     }
 
     /**
