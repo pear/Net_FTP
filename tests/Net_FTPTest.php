@@ -353,10 +353,9 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests changes made to fix bug #9611
+     * Tests functionality of Net_FTP::setDirMatcher()
      * 
      * @since 1.4.0a1
-     * @link http://pear.php.net/bugs/bug.php?id=9611
      * @return void
      */
     public function testSetDirMatcher()
@@ -400,6 +399,34 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
         $res = $this->ftp->setDirMatcher($pattern, $map);
         $this->assertFalse(PEAR::isError($res),
             'A valid pattern and map should return no error');
+    }
+    
+    /**
+     * Tests changes made to fix bug #9611
+     * 
+     * @since 1.4.0a1
+     * @return void
+     */
+    public function testCheckRemoteDir()
+    {
+        if ($this->ftp == null) {
+            $this->fail('This test requires a working FTP connection. Setup '.
+            'config.php with proper configuration parameters. ('.
+            $this->setupError.')');
+        }
+        
+        $res = $this->ftp->_checkRemoteDir('test');
+        $this->assertFalse($res, 'test should not be a directory');
+        
+        $this->ftp->put('testfile.dat', 'test', FTP_BINARY);
+        $res = $this->ftp->_checkRemoteDir('test');
+        $this->assertFalse($res, 'test should not be a directory');
+        
+        $this->ftp->rm('test');
+        
+        $this->ftp->mkdir('test');
+        $res = $this->ftp->_checkRemoteDir('test');
+        $this->assertTrue($res, 'test should be a directory');
     }
 
     /**

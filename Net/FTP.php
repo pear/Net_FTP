@@ -122,7 +122,7 @@ define('NET_FTP_ERR_DIRCHANGE_FAILED', 2); // Compatibillity reasons!
 
 /**
  * Error code to indicate that Net_FTP could not determine the current path
- * The cwd() method failed and could not determine the path you currently reside
+ * The pwd() method failed and could not determine the path you currently reside
  * in on the FTP server.
  *
  * @since 1.3
@@ -1146,7 +1146,7 @@ class Net_FTP extends PEAR
     function mdtm($file, $format = null)
     {
         $file = $this->_constructPath($file);
-        if ($this->_checkDir($file)) {
+        if ($this->_checkRemoteDir($file) !== false) {
             return $this->raiseError("Filename '$file' seems to be a directory.",
                                      NET_FTP_ERR_MDTMDIR_UNSUPPORTED);
         }
@@ -1300,7 +1300,7 @@ class Net_FTP extends PEAR
     function rm($path, $recursive = false)
     {
         $path = $this->_constructPath($path);
-        if ($this->_checkDir($path)) {
+        if ($this->_checkRemoteDir($path) === true) {
             if ($recursive) {
                 return $this->_rmDirRecursive($path);
             } else {
@@ -1484,24 +1484,24 @@ class Net_FTP extends PEAR
                           $mode = null)
     {
         $remote_path = $this->_constructPath($remote_path);
-        if (!$this->_checkDir($remote_path)) {
+        if ($this->_checkRemoteDir($remote_path) !== true) {
             return $this->raiseError("Given remote-path '".$remote_path.
                                      "' seems not to be a directory.",
                                      NET_FTP_ERR_REMOTEPATHNODIR);
         }
-        if (!$this->_checkDir($local_path)) {
-            return $this->raiseError("Given local-path '".$local_path.
-                                     "' seems not to be a directory.",
-                                     NET_FTP_ERR_LOCALPATHNODIR);
-        }
 
-        if (!@is_dir($local_path)) {
+        if (!@file_exists($local_path)) {
             $res = @mkdir($local_path);
             if (!$res) {
                 return $this->raiseError("Could not create dir '$local_path'",
                                          NET_FTP_ERR_CREATELOCALDIR_FAILED);
             }
+        } elseif (!@is_dir($local_path)) {
+            return $this->raiseError("Given local-path '".$local_path.
+                                     "' seems not to be a directory.",
+                                     NET_FTP_ERR_LOCALPATHNODIR);
         }
+        
         $dir_list = array();
         $dir_list = $this->ls($remote_path, NET_FTP_DIRS_ONLY);
         foreach ($dir_list as $dir_entry) {
@@ -1562,12 +1562,12 @@ class Net_FTP extends PEAR
                           $mode = null)
     {
         $remote_path = $this->_constructPath($remote_path);
-        if (!$this->_checkDir($local_path) || !is_dir($local_path)) {
+        if (!file_exists($local_path) || !is_dir($local_path)) {
             return $this->raiseError("Given local-path '".$local_path.
                                      "' seems not to be a directory.",
                                      NET_FTP_ERR_LOCALPATHNODIR);
         }
-        if (!$this->_checkDir($remote_path)) {
+        if ($this->_checkRemoteDir($remote_path) !== true) {
             return $this->raiseError("Given remote-path '".$remote_path.
                                      "' seems not to be a directory.",
                                      NET_FTP_ERR_REMOTEPATHNODIR);
@@ -2105,20 +2105,25 @@ class Net_FTP extends PEAR
     }
 
     /**
-     * Checks, whether a given string is a directory-path (ends with "/") or not.
+     * Checks whether the given path is a remote directory by trying to
+     * chdir() into it (and back out)
      *
      * @param string $path Path to check
      *
      * @access private
-     * @return bool True if $path is a directory, otherwise false
+     * @return mixed True if $path is a directory, otherwise false, PEAR_Error
+     *               when an error occurs in determining path type
      */
-    function _checkDir($path)
+    function _checkRemoteDir($path)
     {
-        if (!empty($path) && substr($path, (strlen($path) - 1), 1) == "/") {
-            return true;
-        } else {
-            return false;
+        $pwd = $this->pwd();
+        if ($this->isError($pwd)) {
+            return $pwd;
         }
+        $res = $this->cd($path);
+        $this->cd($pwd);
+        
+        return $this->isError($res, NET_FTP_ERR_DIRCHANGE_FAILED) === false; 
     }
 
     /**
