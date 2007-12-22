@@ -23,8 +23,8 @@ for example the view of a progress bar.</description>
   <email>toby@php.net</email>
   <active>no</active>
  </lead>
- <date>2007-12-22</date>
- <time>20:23:23</time>
+ <date>2007-12-23</date>
+ <time>00:09:16</time>
  <version>
   <release>1.4.0a1</release>
   <api>1.4.0</api>
@@ -35,10 +35,9 @@ for example the view of a progress bar.</description>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>* Fixed bug #6754: Add method to set directory list matcher explicitly
-* Fixed Bug #7102: Add ability to disable use of ftp_nb_put(), can sometimes bevery slow
+* Fixed Bug #7102: Add ability to disable use of ftp_nb_put(), can sometimes be very slow
 
-* Improved detection of remote directories. It is slower than before, but does not
-rely on simply detecting if the given path ends with a slash.</notes>
+* Improved detection of remote directories. It is slower than before, but does  not rely on simply detecting if the given path ends with a slash.</notes>
  <contents>
   <dir baseinstalldir="/" name="/">
    <dir name="example">
@@ -207,13 +206,12 @@ rely on simply detecting if the given path ends with a slash.</notes>
     <release>alpha</release>
     <api>stable</api>
    </stability>
-   <date>2007-12-22</date>
+   <date>2007-12-23</date>
    <license uri="http://www.php.net/license">PHP License</license>
    <notes>* Fixed bug #6754: Add method to set directory list matcher explicitly
-* Fixed Bug #7102: Add ability to disable use of ftp_nb_put(), can sometimes bevery slow
+* Fixed Bug #7102: Add ability to disable use of ftp_nb_put(), can sometimes be very slow
 
-* Improved detection of remote directories. It is slower than before, but does not
-rely on simply detecting if the given path ends with a slash.</notes>
+* Improved detection of remote directories. It is slower than before, but does  not rely on simply detecting if the given path ends with a slash.</notes>
   </release>
  </changelog>
 </package>

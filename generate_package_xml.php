@@ -57,11 +57,11 @@ for example the view of a progress bar.';
 
 $current_notes =
 '* Fixed bug #6754: Add method to set directory list matcher explicitly
-* Fixed Bug #7102: Add ability to disable use of ftp_nb_put(), can sometimes be'.
+* Fixed Bug #7102: Add ability to disable use of ftp_nb_put(), can sometimes be '.
 'very slow
 
-* Improved detection of remote directories. It is slower than before, but does not
-rely on simply detecting if the given path ends with a slash.';
+* Improved detection of remote directories. It is slower than before, but does '.
+' not rely on simply detecting if the given path ends with a slash.';
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
 
