@@ -42,8 +42,8 @@ function dumpError($err)
 $cvsdir     = '/cvs/pear/';
 $packagedir = $cvsdir . 'Net_FTP/';
 
-$current_version   = '1.3.4';
-$current_stability = 'stable';
+$current_version   = '1.4.0a1';
+$current_stability = 'alpha';
 
 $summary =
 'Net_FTP provides an OO interface to the PHP FTP functions plus some additions';
@@ -56,7 +56,12 @@ dircreation and chmodding. It also implements an observer pattern to allow
 for example the view of a progress bar.';
 
 $current_notes =
-'* Fixed Bug #12639: _constructPath() prevents _checkDir() from working correctly';
+'* Fixed bug #6754: Add method to set directory list matcher explicitly
+* Fixed Bug #7102: Add ability to disable use of ftp_nb_put(), can sometimes be'.
+'very slow
+
+* Improved detection of remote directories. It is slower than before, but does not
+rely on simply detecting if the given path ends with a slash.';
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
 
@@ -92,7 +97,7 @@ $p2->addGlobalReplacement('package-info', '@package_version@', 'version');
 $p2->generateContents();
 
 $p2->setReleaseVersion($current_version);
-$p2->setAPIVersion('1.0.0');
+$p2->setAPIVersion('1.4.0');
 $p2->setReleaseStability($current_stability);
 $p2->setAPIStability('stable');
 
