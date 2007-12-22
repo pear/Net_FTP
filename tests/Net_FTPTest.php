@@ -235,6 +235,28 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests functionality of Net_FTP::put()
+     * 
+     * @return void
+     * @see Net_FTP::put()
+     */
+    public function testPut()
+    {
+        if ($this->ftp == null) {
+            $this->fail('This test requires a working FTP connection. Setup '.
+            'config.php with proper configuration parameters. ('.
+            $this->setupError.')');
+        }
+        $res = $this->ftp->put('testfile.dat', 'testfile.dat', true, FTP_ASCII,
+            NET_FTP_BLOCKING | NET_FTP_NONBLOCKING);
+        $this->assertTrue(PEAR::isError($res), 'No error return while it should');
+        if (PEAR::isError($res)) {
+            $this->assertEquals($res->getCode(), NET_FTP_ERR_BADOPTIONS,
+                'Bad error code returned');
+        }
+    }
+
+    /**
      * Tests functionality of Net_FTP::_makeDirPermissions()
      * 
      * @return void

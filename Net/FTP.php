@@ -67,6 +67,28 @@ define('NET_FTP_DIRS_FILES', 2, true);
 define('NET_FTP_RAWLIST', 3, true);
 
 /**
+ * Option to indicate that non-blocking features should not be used in
+ * put(). This will also disable the listener functionality as a side effect.
+ *
+ * @since 1.4a1
+ * @name NET_FTP_BLOCKING
+ * @see Net_FTP::put()
+ */
+define('NET_FTP_BLOCKING', 1, true);
+
+/**
+ * Option to indicate that non-blocking features should be used if available in
+ * put(). This will also enable the listener functionality.
+ *
+ * This is the default behaviour.
+ *
+ * @since 1.4a1
+ * @name NET_FTP_NONBLOCKING
+ * @see Net_FTP::put()
+ */
+define('NET_FTP_NONBLOCKING', 2, true);
+
+/**
  * Error code to indicate a failed connection
  * This error code indicates, that the connection you tryed to set up
  * could not be established. Check your connection settings (host & port)!
@@ -497,6 +519,16 @@ define('NET_FTP_ERR_SETDIRMATCH_ILLEGALMAP', -37);
  * @see Net_FTP::setDirMatcher()
  */
 define('NET_FTP_ERR_SETDIRMATCH_ILLEGALMAPVALUE', -38);
+
+/**
+ * Error code indicating that bad options were supplied to the
+ * put() method.
+ *
+ * @since 1.4a1
+ * @name NET_FTP_ERR_BADOPTIONS
+ * @see Net_FTP::put()
+ */
+define('NET_FTP_ERR_BADOPTIONS', -39);
 
 /**
  * Class for comfortable FTP-communication
@@ -1360,15 +1392,29 @@ class Net_FTP extends PEAR
      *                            upload to
      * @param bool   $overwrite   (optional) Whether to overwrite existing file
      * @param int    $mode        (optional) Either FTP_ASCII or FTP_BINARY
+     * @param int    $options     (optional) Flags describing the behaviour of this
+     *                            function. Currently NET_FTP_BLOCKING and 
+     *                            NET_FTP_NONBLOCKING are supported, of which
+     *                            NET_FTP_NONBLOCKING is the default.
      *
      * @access public
      * @return mixed True on success, otherwise PEAR::Error
      * @see NET_FTP_ERR_LOCALFILENOTEXIST,
      *      NET_FTP_ERR_OVERWRITEREMOTEFILE_FORBIDDEN,
-     *      NET_FTP_ERR_UPLOADFILE_FAILED
+     *      NET_FTP_ERR_UPLOADFILE_FAILED, NET_FTP_NONBLOCKING, NET_FTP_BLOCKING
      */
-    function put($local_file, $remote_file, $overwrite = false, $mode = null)
+    function put($local_file, $remote_file, $overwrite = false, $mode = null,
+        $options = 0)
     {
+        if ($options & (NET_FTP_BLOCKING | NET_FTP_NONBLOCKING) === 
+            (NET_FTP_BLOCKING | NET_FTP_NONBLOCKING)) {
+            return $this->raiseError('Bad options given: NET_FTP_NONBLOCKING and '.
+                                     'NET_FTP_BLOCKING can\'t both be set',
+                                     NET_FTP_ERR_BADOPTIONS);
+        }
+        
+        $usenb = ! ($options & (NET_FTP_BLOCKING == NET_FTP_BLOCKING));
+        
         if (!isset($mode)) {
             $mode = $this->checkFileExtension($local_file);
         }
@@ -1385,7 +1431,7 @@ class Net_FTP extends PEAR
         }
 
         ftp_alloc($this->_handle, filesize($local_file));
-        if (function_exists('ftp_nb_put')) {
+        if ($usenb && function_exists('ftp_nb_put')) {
             $res = @ftp_nb_put($this->_handle, $remote_file, $local_file, $mode);
             while ($res == FTP_MOREDATA) {
                 $this->_announce('nb_put');
