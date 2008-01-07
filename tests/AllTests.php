@@ -20,7 +20,7 @@
  * @category  Networking
  * @package   FTP
  * @author    Tobias Schlitt <toby@php.net>
- * @copyright 1997-2007 The PHP Group
+ * @copyright 1997-2008 The PHP Group
  * @license   http://www.php.net/license/3_0.txt  PHP License 3.0
  * @version   CVS: $Id$
  * @link      http://pear.php.net/package/Net_FTP
@@ -44,7 +44,7 @@ require_once 'Net_FTPTest.php';
  * @category  Networking
  * @package   FTP
  * @author    Jorrit Schippers <jschippers@php.net>
- * @copyright 1997-2007 The PHP Group
+ * @copyright 1997-2008 The PHP Group
  * @license   http://www.php.net/license/3_0.txt  PHP License 3.0
  * @version   Release: @package_version@
  * @link      http://pear.php.net/package/Net_FTP
