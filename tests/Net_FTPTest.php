@@ -430,12 +430,12 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests changes made to fix bug #9611
+     * Tests _determineOSMatch
      * 
-     * @link http://pear.php.net/bugs/bug.php?id=9611
      * @return void
+     * @see Net_FTP::_determineOSMatch()
      */
-    public function testBug9611()
+    public function testDetermineOSMatch()
     {
         if ($this->ftp == null) {
             $this->fail('This test requires a working FTP connection. Setup '.
@@ -443,7 +443,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             $this->setupError.')');
         }
         $dirlist = array(
-            'drwxr-xr-x  75 upload   (?)          3008 Oct 30 21:09 ftp1'
+        	'drwxrwsr-x  75 upload   (?)          3008 Oct 30 21:09 ftp1',
         );
         
         $res = $this->ftp->_determineOSMatch($dirlist);
