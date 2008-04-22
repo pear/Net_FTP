@@ -1506,6 +1506,9 @@ class Net_FTP extends PEAR
         
         $dir_list = array();
         $dir_list = $this->ls($remote_path, NET_FTP_DIRS_ONLY);
+        if (PEAR::isError($dir_list)) {
+            return $dir_list;
+        }
         foreach ($dir_list as $dir_entry) {
             if ($dir_entry['name'] != '.' && $dir_entry['name'] != '..') {
                 $remote_path_new = $remote_path.$dir_entry["name"]."/";
@@ -1519,6 +1522,9 @@ class Net_FTP extends PEAR
         }
         $file_list = array();
         $file_list = $this->ls($remote_path, NET_FTP_FILES_ONLY);
+        if (PEAR::isError($file_list)) {
+            return $file_list;
+        }
         foreach ($file_list as $file_entry) {
             $remote_file = $remote_path.$file_entry["name"];
             $local_file  = $local_path.$file_entry["name"];
