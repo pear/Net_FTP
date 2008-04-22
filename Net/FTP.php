@@ -1036,7 +1036,7 @@ class Net_FTP extends PEAR
             $mode     = NET_FTP_DIRS_ONLY;
             $dir_list = $this->ls($remote_path, $mode);
             foreach ($dir_list as $dir_entry) {
-                if ($dir_entry == '.' || $dir_entry == '..') {
+                if ($dir_entry['name'] == '.' || $dir_entry['name'] == '..') {
                     continue;
                 }
                 
@@ -1584,8 +1584,8 @@ class Net_FTP extends PEAR
         $this->cd($old_path);
         $dir_list = $this->_lsLocal($local_path);
         foreach ($dir_list["dirs"] as $dir_entry) {
-            $remote_path_new = $remote_path.$dir_entry."/";
-            $local_path_new  = $local_path.$dir_entry."/";
+            $remote_path_new = $remote_path.$dir_entry['name']."/";
+            $local_path_new  = $local_path.$dir_entry['name']."/";
             $result          = $this->putRecursive($local_path_new,
                                $remote_path_new, $overwrite, $mode);
             if ($this->isError($result)) {

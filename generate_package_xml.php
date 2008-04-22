@@ -57,7 +57,9 @@ for example the view of a progress bar.';
 
 $current_notes =
 '* Fixed Bug #13496: set bit not supported
-* Fixed Bug #13689: . in file owner or group name breaks _ls_match';
+* Fixed Bug #13689: . in file owner or group name breaks _ls_match
+* Fixed Bug #13690: getRecursive does not work because of \'.\' and \'..\' '.
+'directories';
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
 
