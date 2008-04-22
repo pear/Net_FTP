@@ -99,13 +99,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
         }
         
         $this->ftp = new Net_FTP(FTPHOST, FTPPORT, 30);
-        $res       = $this->ftp->connect();
-        
-        if (PEAR::isError($res)) {
-            $this->setupError = 'Could not connect to the FTP server';
-            $this->ftp        = null;
-            return;
-        }
         
         $res = $this->ftp->login(FTPUSER, FTPPASSWORD);
         

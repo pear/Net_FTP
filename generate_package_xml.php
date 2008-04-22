@@ -60,7 +60,8 @@ $current_notes =
 * Fixed Bug #13689: . in file owner or group name breaks _ls_match
 * Fixed Bug #13690: getRecursive does not work because of \'.\' and \'..\' '.
 'directories
-* Fixed Bug #13114: Error check in $FTP->getRecursive(...)';
+* Fixed Bug #13114: Error check in $FTP->getRecursive(...)
+* Implemented Request #13104: connect() <> $this->handle in login()';
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
 

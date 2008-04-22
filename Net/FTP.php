@@ -602,10 +602,13 @@ class Net_FTP extends PEAR
     /**
      * This holds the handle for the ftp-connection
      *
+     * If null, the connection hasn't been setup yet. If false, the connection
+     * attempt has failed. Else, it contains an ftp resource.
+     *
      * @access  private
      * @var     resource
      */
-    var $_handle;
+    var $_handle = null;
 
     /**
      * Contains the timeout for FTP operations
@@ -743,6 +746,7 @@ class Net_FTP extends PEAR
         $handle = @ftp_connect($this->getHostname(), $this->getPort(),
                                $this->_timeout);
         if (!$handle) {
+            $this->_handle = false;
             return $this->raiseError("Connection to host failed",
                                      NET_FTP_ERR_CONNECT_FAILED);
         } else {
@@ -764,6 +768,7 @@ class Net_FTP extends PEAR
             return PEAR::raiseError('Disconnect failed.',
                                     NET_FTP_ERR_DISCONNECT_FAILED);
         }
+        $this->_handle = null;
         return true;
     }
 
@@ -771,6 +776,8 @@ class Net_FTP extends PEAR
      * This logs you into the ftp-server. You are free to specify username and
      * password in this method. If you specify it, the values will be taken into 
      * the corresponding attributes, if do not specify, the attributes are taken.
+     *
+     * If connect() has not been called yet, a connection will be setup
      *
      * @param string $username (optional) The username to use 
      * @param string $password (optional) The password to use
@@ -781,6 +788,13 @@ class Net_FTP extends PEAR
      */
     function login($username = null, $password = null)
     {
+        if ($this->_handle === null) {
+            $res = $this->connect();
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+        }
+        
         if (!isset($username)) {
             $username = $this->getUsername();
         } else {
