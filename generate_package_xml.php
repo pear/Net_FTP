@@ -42,7 +42,7 @@ function dumpError($err)
 $cvsdir     = '/cvs/pear/';
 $packagedir = $cvsdir . 'Net_FTP/';
 
-$current_version   = '1.4.0a1';
+$current_version   = '1.4.0a2';
 $current_stability = 'alpha';
 
 $summary =
@@ -56,12 +56,7 @@ dircreation and chmodding. It also implements an observer pattern to allow
 for example the view of a progress bar.';
 
 $current_notes =
-'* Fixed bug #6754: Add method to set directory list matcher explicitly
-* Fixed Bug #7102: Add ability to disable use of ftp_nb_put(), can sometimes be '.
-'very slow
-
-* Improved detection of remote directories. It is slower than before, but does '.
-' not rely on simply detecting if the given path ends with a slash.';
+'* Fixed Bug #13496: set bit not supported';
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
 
