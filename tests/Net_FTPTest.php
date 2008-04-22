@@ -443,7 +443,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             $this->setupError.')');
         }
         $dirlist = array(
-        	'drwxrwsr-x  75 upload   (?)          3008 Oct 30 21:09 ftp1',
+        	'drwxrwsr-x  75 upload.  (?).         3008 Oct 30 21:09 ftp1',
         );
         
         $res = $this->ftp->_determineOSMatch($dirlist);
