@@ -5,7 +5,7 @@
  * Net_FTP test suite file
  *
  * To run the tests execute this from the top directory for a CVS checkout
- * $ pear run-tests -p
+ * $ pear run-tests -ur
  * or this if you've installed the package
  * $ pear run-tests -pu Net_FTP
  *
