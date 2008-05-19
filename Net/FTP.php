@@ -1589,11 +1589,7 @@ class Net_FTP extends PEAR
                                      "' seems not to be a directory.",
                                      NET_FTP_ERR_LOCALPATHNODIR);
         }
-        if ($this->_checkRemoteDir($remote_path) !== true) {
-            return $this->raiseError("Given remote-path '".$remote_path.
-                                     "' seems not to be a directory.",
-                                     NET_FTP_ERR_REMOTEPATHNODIR);
-        }
+        // try to create directory if it doesn't exist
         $old_path = $this->pwd();
         if ($this->isError($this->cd($remote_path))) {
             $res = $this->mkdir($remote_path);
@@ -1602,10 +1598,16 @@ class Net_FTP extends PEAR
             }
         }
         $this->cd($old_path);
+        if ($this->_checkRemoteDir($remote_path) !== true) {
+            return $this->raiseError("Given remote-path '".$remote_path.
+                                     "' seems not to be a directory.",
+                                     NET_FTP_ERR_REMOTEPATHNODIR);
+        }
         $dir_list = $this->_lsLocal($local_path);
         foreach ($dir_list["dirs"] as $dir_entry) {
-            $remote_path_new = $remote_path.$dir_entry['name']."/";
-            $local_path_new  = $local_path.$dir_entry['name']."/";
+            // local directories do not have arrays as entry
+            $remote_path_new = $remote_path.$dir_entry."/";
+            $local_path_new  = $local_path.$dir_entry."/";
             $result          = $this->putRecursive($local_path_new,
                                $remote_path_new, $overwrite, $mode);
             if ($this->isError($result)) {

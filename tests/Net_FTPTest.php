@@ -37,6 +37,8 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
 }
 
 require_once 'PHPUnit/Framework.php';
+require_once 'System.php';
+
 if (substr(dirname(__FILE__), -6) == DIRECTORY_SEPARATOR.'tests') {
     include_once '../Net/FTP.php';
 } else {
@@ -225,6 +227,55 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
         
         $this->assertEquals($list1, $list2, 'Directory listing before creation and'.
             ' after creation are not equal');
+    }
+
+    /**
+     * Tests functionality of Net_FTP::putRecursive()
+     *
+     * @return void
+     * @see Net_FTP::putRecursive()
+     */
+    public function testPutRecursive()
+    {
+        if ($this->ftp == null) {
+            $this->fail('This test requires a working FTP connection. Setup '.
+            'config.php with proper configuration parameters. ('.
+            $this->setupError.')');
+        }
+        
+        $tmpdir    = array();
+        $tmpfile   = array();
+        $tmpdir[]  = System::mktemp(array('-d', 'pearnetftptest'));
+        $tmpdir[]  = System::mktemp(array('-t', $tmpdir[0], '-d'));
+        $tmpdir[]  = System::mktemp(array('-t', $tmpdir[1], '-d'));
+        $tmpfile[] = System::mktemp(array('-t', $tmpdir[0]));
+        $tmpfile[] = System::mktemp(array('-t', $tmpdir[1]));
+        $tmpfile[] = System::mktemp(array('-t', $tmpdir[2]));
+        
+        $local  = $tmpdir[0].DIRECTORY_SEPARATOR;
+        $remote = './'.$this->_getLastPart($tmpdir[0]).'/';
+        
+        $ret = $this->ftp->putRecursive($local, $remote);
+        $this->assertFalse(PEAR::isError($ret));
+        
+        for ($i = 0; $i < 3; $i++) {
+            $ret = $this->ftp->cd($this->_getLastPart($tmpdir[$i]).'/');
+            $this->assertFalse(PEAR::isError($ret));
+            
+            $dirlist = $this->ftp->ls();
+            $this->assertFalse(PEAR::isError($dirlist));
+          
+            $dirlist   = $this->_getNames($dirlist);
+            $dirlistok = array($this->_getLastPart($tmpfile[$i]), '.', '..');
+            if ($i < 2) {
+                $dirlistok[] = $this->_getLastPart($tmpdir[$i+1]);
+            }
+            
+            sort($dirlist);
+            sort($dirlistok);
+            
+            $this->assertEquals($dirlist, $dirlistok);
+        }
     }
 
     /**
@@ -436,7 +487,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             $this->setupError.')');
         }
         $dirlist = array(
-        	'drwxrwsr-x  75 upload.  (?).         3008 Oct 30 21:09 ftp1',
+            'drwxrwsr-x  75 upload.  (?).         3008 Oct 30 21:09 ftp1',
         );
         
         $res = $this->ftp->_determineOSMatch($dirlist);
@@ -446,6 +497,35 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($res['pattern'],
             $this->ftp->_ls_match['unix']['pattern'],
             'The input should be parsed by the unix pattern');
+    }
+    
+    /**
+     * Return all name keys in the elements of an array
+     *
+     * @param array $in Multidimensional array
+     *
+     * @return array Array containing name keys
+     */
+    function _getNames($in)
+    {
+        $return = array();
+        foreach ($in as $v) {
+            $return[] = $v['name'];
+        }
+        return $return;
+    }
+     
+    /**
+     * Return the last element of a local path
+     *
+     * @param string $in Path
+     *
+     * @return array Last part of path
+     */
+    function _getLastPart($in)
+    {
+        $start = strrpos($in, DIRECTORY_SEPARATOR) + 1;
+        return substr($in, $start);
     }
 }
 
