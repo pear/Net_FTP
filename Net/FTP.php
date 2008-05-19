@@ -1483,6 +1483,9 @@ class Net_FTP extends PEAR
      * determine the transfer mode by checking your mode-directory for the file
      * extension. If the extension is not inside the mode-directory, it will get
      * your default mode.
+     * 
+     * Since 1.4 no error will be returned when a file exists while $overwrite is 
+     * set to false. 
      *
      * @param string $remote_path The path to download
      * @param string $local_path  The path to download to
@@ -1545,7 +1548,8 @@ class Net_FTP extends PEAR
             $remote_file = $remote_path.$file_entry["name"];
             $local_file  = $local_path.$file_entry["name"];
             $result      = $this->get($remote_file, $local_file, $overwrite, $mode);
-            if ($this->isError($result)) {
+            if ($this->isError($result) &&
+                $result->getCode() != NET_FTP_ERR_OVERWRITELOCALFILE_FORBIDDEN) {
                 return $result;
             }
         }

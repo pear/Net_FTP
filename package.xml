@@ -24,7 +24,7 @@ for example the view of a progress bar.</description>
   <active>no</active>
  </lead>
  <date>2008-05-19</date>
- <time>20:33:45</time>
+ <time>21:38:41</time>
  <version>
   <release>1.4.0a2</release>
   <api>1.4.0</api>
@@ -39,7 +39,10 @@ for example the view of a progress bar.</description>
 * Fixed Bug #13690: getRecursive does not work because of &apos;.&apos; and &apos;..&apos; directories
 * Fixed Bug #13114: Error check in $FTP-&gt;getRecursive(...)
 * Implemented Request #13104: connect() &lt;&gt; $this-&gt;handle in login()
-* Fixed Bug #13917: putRecursive always return PEAR::Error</notes>
+* Fixed Bug #13917: putRecursive always return PEAR::Error
+* Fixed Bug #13850: inclusion of Net/FTP.php in tests doesn&apos;t always work
+* Implemented Request #2271: New flag for _rm_dir_recursive to leave directory structure intact
+* Implemented Request #6806 Allow recursive up-/download with only adding newer files</notes>
  <contents>
   <dir baseinstalldir="/" name="/">
    <dir name="example">
@@ -231,7 +234,10 @@ for example the view of a progress bar.</description>
 * Fixed Bug #13690: getRecursive does not work because of &apos;.&apos; and &apos;..&apos; directories
 * Fixed Bug #13114: Error check in $FTP-&gt;getRecursive(...)
 * Implemented Request #13104: connect() &lt;&gt; $this-&gt;handle in login()
-* Fixed Bug #13917: putRecursive always return PEAR::Error</notes>
+* Fixed Bug #13917: putRecursive always return PEAR::Error
+* Fixed Bug #13850: inclusion of Net/FTP.php in tests doesn&apos;t always work
+* Implemented Request #2271: New flag for _rm_dir_recursive to leave directory structure intact
+* Implemented Request #6806 Allow recursive up-/download with only adding newer files</notes>
   </release>
  </changelog>
 </package>

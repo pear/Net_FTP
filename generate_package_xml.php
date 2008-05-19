@@ -65,7 +65,9 @@ $current_notes =
 * Fixed Bug #13917: putRecursive always return PEAR::Error
 * Fixed Bug #13850: inclusion of Net/FTP.php in tests doesn\'t always work
 * Implemented Request #2271: New flag for _rm_dir_recursive to leave directory '.
-'structure intact';
+'structure intact
+* Implemented Request #6806 Allow recursive up-/download with only adding newer '.
+'files';
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
 
