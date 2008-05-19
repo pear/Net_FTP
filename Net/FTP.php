@@ -1304,19 +1304,21 @@ class Net_FTP extends PEAR
      * actual selected directory.
      *
      * @param string $path      The absolute or relative path to the file/directory.
-     * @param bool   $recursive (optional)
+     * @param bool   $recursive Recursively delete everything in $path
+     * @param bool   $filesonly When deleting recursively, only delete files so the
+     *                          directory structure is preserved
      *
      * @access public
      * @return mixed True on success, otherwise PEAR::Error
      * @see NET_FTP_ERR_DELETEFILE_FAILED, NET_FTP_ERR_DELETEDIR_FAILED,
      *      NET_FTP_ERR_REMOTEPATHNODIR
      */
-    function rm($path, $recursive = false)
+    function rm($path, $recursive = false, $filesonly = false)
     {
         $path = $this->_constructPath($path);
         if ($this->_checkRemoteDir($path) === true) {
             if ($recursive) {
-                return $this->_rmDirRecursive($path);
+                return $this->_rmDirRecursive($path, $filesonly);
             } else {
                 return $this->_rmDir($path);
             }
@@ -2206,13 +2208,15 @@ class Net_FTP extends PEAR
     /**
      * This will remove a dir and all subdirs and -files
      *
-     * @param string $dir The dir to delete recursively
+     * @param string $dir       The dir to delete recursively
+     * @param bool   $filesonly Only delete files so the directory structure is
+     *                          preserved 
      *
      * @access private
      * @return mixed True on success, otherwise PEAR::Error
      * @see NET_FTP_ERR_REMOTEPATHNODIR, NET_FTP_ERR_DELETEDIR_FAILED
      */
-    function _rmDirRecursive($dir)
+    function _rmDirRecursive($dir, $filesonly = false)
     {
         if (substr($dir, (strlen($dir) - 1), 1) != "/") {
             return $this->raiseError("Directory name '".$dir.
@@ -2233,12 +2237,14 @@ class Net_FTP extends PEAR
                 continue;
             }
             $new_dir = $dir.$new_dir["name"]."/";
-            $res     = $this->_rmDirRecursive($new_dir);
+            $res     = $this->_rmDirRecursive($new_dir, $filesonly);
             if ($this->isError($res)) {
                 return $res;
             }
         }
-        $res = $this->_rmDir($dir);
+        if (!$filesonly) {
+            $res = $this->_rmDir($dir);
+        }
         if (PEAR::isError($res)) {
             return $res;
         } else {

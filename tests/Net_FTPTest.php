@@ -228,6 +228,28 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
         
         $this->assertEquals($list1, $list2, 'Directory listing before creation and'.
             ' after creation are not equal');
+        
+        $this->ftp->mkdir('dir1');
+        $this->ftp->cd('dir1');
+        $this->ftp->mkdir('dir1');
+        $this->ftp->mkdir('dir2');
+        $this->ftp->mkdir('dir3');
+        $this->ftp->put('testfile.dat', 'testfile.dat', FTP_ASCII);
+        
+        $this->ftp->cd('..');
+        
+        $this->ftp->rm('dir1/', true, true);
+        
+        $this->ftp->cd('dir1');
+        
+        $list = $this->_getNames($this->ftp->ls());
+        $dirs = array('.', '..', 'dir1', 'dir2', 'dir3');
+        
+        sort($list);
+        sort($dirs);
+        
+        $this->assertEquals($list, $dirs, 'The resulting directory listing is not '.
+            'correct');
     }
 
     /**
