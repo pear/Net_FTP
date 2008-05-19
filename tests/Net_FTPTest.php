@@ -39,6 +39,7 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
 require_once 'PHPUnit/Framework.php';
 require_once 'System.php';
 
+chdir(dirname(__FILE__));
 if (substr(dirname(__FILE__), -6) == DIRECTORY_SEPARATOR.'tests') {
     include_once '../Net/FTP.php';
 } else {

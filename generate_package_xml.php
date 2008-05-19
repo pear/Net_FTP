@@ -62,7 +62,8 @@ $current_notes =
 'directories
 * Fixed Bug #13114: Error check in $FTP->getRecursive(...)
 * Implemented Request #13104: connect() <> $this->handle in login()
-* Fixed Bug #13917: putRecursive always return PEAR::Error';
+* Fixed Bug #13917: putRecursive always return PEAR::Error
+* Fixed Bug #13850: inclusion of Net/FTP.php in tests doesn\'t always work';
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
 
