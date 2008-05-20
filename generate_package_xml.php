@@ -42,7 +42,7 @@ function dumpError($err)
 $cvsdir     = '/cvs/pear/';
 $packagedir = $cvsdir . 'Net_FTP/';
 
-$current_version   = '1.4.0a2';
+$current_version   = '1.4.0a3';
 $current_stability = 'alpha';
 
 $summary =
@@ -56,18 +56,7 @@ dircreation and chmodding. It also implements an observer pattern to allow
 for example the view of a progress bar.';
 
 $current_notes =
-'* Fixed Bug #13496: set bit not supported
-* Fixed Bug #13689: . in file owner or group name breaks _ls_match
-* Fixed Bug #13690: getRecursive does not work because of \'.\' and \'..\' '.
-'directories
-* Fixed Bug #13114: Error check in $FTP->getRecursive(...)
-* Implemented Request #13104: connect() <> $this->handle in login()
-* Fixed Bug #13917: putRecursive always return PEAR::Error
-* Fixed Bug #13850: inclusion of Net/FTP.php in tests doesn\'t always work
-* Implemented Request #2271: New flag for _rm_dir_recursive to leave directory '.
-'structure intact
-* Implemented Request #6806: Allow recursive up-/download with only adding newer '.
-'files';
+'* Fixed Bug #13946: Test Failed : testPutRecursive';
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
 

@@ -243,7 +243,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
         $this->ftp->cd('dir1');
         
         $list = $this->_getNames($this->ftp->ls());
-        $dirs = array('.', '..', 'dir1', 'dir2', 'dir3');
+        $dirs = array('dir1', 'dir2', 'dir3');
         
         sort($list);
         sort($dirs);
@@ -289,7 +289,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             $this->assertFalse(PEAR::isError($dirlist));
           
             $dirlist   = $this->_getNames($dirlist);
-            $dirlistok = array($this->_getLastPart($tmpfile[$i]), '.', '..');
+            $dirlistok = array($this->_getLastPart($tmpfile[$i]));
             if ($i < 2) {
                 $dirlistok[] = $this->_getLastPart($tmpdir[$i+1]);
             }
@@ -523,7 +523,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * Return all name keys in the elements of an array
+     * Return all name keys in the elements of an array, leaving out . and ..
      *
      * @param array $in Multidimensional array
      *
@@ -533,7 +533,9 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
     {
         $return = array();
         foreach ($in as $v) {
-            $return[] = $v['name'];
+            if ($v['name'] != '.' && $v['name'] != '..') {
+                $return[] = $v['name'];
+            }
         }
         return $return;
     }

@@ -1,3 +1,6 @@
+1.4.0a3 - 2008-??-??
+* Fixed Bug #13946: Test Failed : testPutRecursive
+
 1.4.0a2 - 2008-05-19
 * Fixed Bug #13496: set bit not supported
 * Fixed Bug #13689: . in file owner or group name breaks _ls_match
