@@ -977,7 +977,8 @@ class Net_FTP extends PEAR
                     return $res;
                 } // end if isError
             } // end for i < count($target)
-
+            
+            return true;
         } else {
 
             $res = $this->site("CHMOD " . $permissions . " " . $target);
@@ -1133,7 +1134,7 @@ class Net_FTP extends PEAR
             // Read permission is set but execute not yet
             if ((int)$permissions{$i} & 4 and !((int)$permissions{$i} & 1)) {
                 // Adding execute flag
-                (int)$permissions{$i} = (int)$permissions{$i} + 1;
+                $permissions{$i} = (int)$permissions{$i} + 1;
             }
         }
 
@@ -1712,6 +1713,7 @@ class Net_FTP extends PEAR
                    NET_FTP_ERR_USERNAMENOSTRING);
         }
         $this->_username = $user;
+        return true;
     }
 
     /**
@@ -1720,7 +1722,7 @@ class Net_FTP extends PEAR
      * @param string $password The password to set
      *
      * @access private
-     * @return void
+     * @return mixed True on success, otherwise PEAR::Error
      * @see NET_FTP_ERR_PASSWORDNOSTRING
      */
     function setPassword($password)
@@ -1730,6 +1732,7 @@ class Net_FTP extends PEAR
                                     NET_FTP_ERR_PASSWORDNOSTRING);
         }
         $this->_password = $password;
+        return true;
     }
 
     /**
@@ -1888,13 +1891,13 @@ class Net_FTP extends PEAR
         $this->_file_extensions = array();
         
         if (isset($exts['ASCII'])) {
-            foreach ($exts['ASCII'] as $ext => $bogus) {
+            foreach (array_keys($exts['ASCII']) as $ext) {
                 $this->_file_extensions[$ext] = FTP_ASCII;
             }
         }
         
         if (isset($exts['BINARY'])) {
-            foreach ($exts['BINARY'] as $ext => $bogus) {
+            foreach (array_keys($exts['BINARY']) as $ext) {
                 $this->_file_extensions[$ext] = FTP_BINARY;
             }
         }
@@ -2091,7 +2094,9 @@ class Net_FTP extends PEAR
             }
         }
         
-        $this->_matcher = array('pattern' => $pattern, 'map' => $map);
+        $this->_matcher = array('pattern' => $pattern, 'map' => $matchmap);
+        
+        return true;
     }
 
     /**
@@ -2106,8 +2111,8 @@ class Net_FTP extends PEAR
      */
     function _announce($event)
     {
-        foreach ($this->_listeners as $id => $listener) {
-            $this->_listeners[$id]->notify($event);
+        foreach ($this->_listeners as $listener) {
+            $listener->notify($event);
         }
     }
 
@@ -2363,6 +2368,7 @@ class Net_FTP extends PEAR
             }
         }
         foreach ($dir_list as $entry) {
+            $m = array();
             if (!preg_match($this->_matcher['pattern'], $entry, $m)) {
                 continue;
             }
@@ -2400,7 +2406,7 @@ class Net_FTP extends PEAR
     function _determineOSMatch(&$dir_list)
     {
         foreach ($dir_list as $entry) {
-            foreach ($this->_ls_match as $os => $match) {
+            foreach ($this->_ls_match as $match) {
                 if (preg_match($match['pattern'], $entry)) {
                     return $match;
                 }
@@ -2468,6 +2474,7 @@ class Net_FTP extends PEAR
     function _parseDate($date)
     {
         // Sep 10 22:06 => Sep 10, <year> 22:06
+        $res = array();
         if (preg_match('/([A-Za-z]+)[ ]+([0-9]+)[ ]+([0-9]+):([0-9]+)/', $date,
                        $res)) {
             $year    = date('Y');

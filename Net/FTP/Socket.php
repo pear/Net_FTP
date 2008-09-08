@@ -78,6 +78,9 @@ function &ftp_connect($host, $port = 21, $timeout = 90)
         return $false;
     }
 
+    $iError = 0;
+    $sError = '';
+
     $control                        = @fsockopen($host, $port, $iError, $sError,
         $timeout);
     $GLOBALS['_NET_FTP']['timeout'] = $timeout;
@@ -346,7 +349,7 @@ function ftp_pasv(&$control, $pasv)
     }
 
     // Since we are here, we are suppost to create passive data connection.
-    $i = fputs($control, 'PASV' ."\r\n");
+    fputs($control, 'PASV' ."\r\n");
 
     $content = array();
     do {
@@ -369,6 +372,8 @@ function ftp_pasv(&$control, $pasv)
     $port = ($array[4] << 8)+$array[5];
 
     // Our data connection
+    $iError = 0;
+    $sError = '';
     $data = fsockopen($ip, $port, $iError, $sError,
         $GLOBALS['_NET_FTP']['timeout']);
 
@@ -451,7 +456,7 @@ function ftp_rawlist(&$control, $pwd, $recursive = false)
 
     $data = $GLOBALS['_NET_FTP']['DATA'] = null;
 
-    $f = fgets($control, 1024);
+    fgets($control, 1024);
     return $content;
 }
 
@@ -652,7 +657,6 @@ function ftp_get(&$control, $local, $remote, $mode, $resume = 0)
             !is_resource($GLOBALS['_NET_FTP'][ 'DATA'])) {
         ftp_pasv($control, $GLOBALS['_NET_FTP']['USE_PASSIVE']);
     }
-    $data = &$GLOBALS['NET_FTP']['DATA'];
 
     fputs($control, 'TYPE '.$types[$mode]."\r\n");
     $line = fgets($control, 256);
@@ -665,6 +669,8 @@ function ftp_get(&$control, $local, $remote, $mode, $resume = 0)
         $fp = null;
         return false;
     }
+    
+    return true;
 }
 
 /**

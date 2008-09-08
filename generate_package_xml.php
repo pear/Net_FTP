@@ -35,8 +35,6 @@ function dumpError($err)
 {
     echo $err->getMessage();
     exit;
-    var_dump($err);
-    die();
 }
 
 $cvsdir     = '/cvs/pear/';

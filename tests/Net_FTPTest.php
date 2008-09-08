@@ -76,7 +76,7 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
         include_once 'PHPUnit/TextUI/TestRunner.php';
 
         $suite  = new PHPUnit_Framework_TestSuite('Net_FTPTest');
-        $result = PHPUnit_TextUI_TestRunner::run($suite);
+        PHPUnit_TextUI_TestRunner::run($suite);
     }
 
     /**
@@ -444,7 +444,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             'date' => 6,
             'name' => 7,
         );
-        $dirlist = array('drwxrwxrwx   2 group        512 Aug  5  2004 0204');
         
         $res = $this->ftp->setDirMatcher(false, false);
         $this->assertTrue(PEAR::isError($res)
