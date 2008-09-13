@@ -1,5 +1,6 @@
 1.4.0a3 - 2008-??-??
 * Fixed Bug #13946: Test Failed : testPutRecursive
+* Fixed Bug #14513: Timestamp when using the LS function
 
 1.4.0a2 - 2008-05-19
 * Fixed Bug #13496: set bit not supported

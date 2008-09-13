@@ -711,13 +711,12 @@ class Net_FTP extends PEAR
                 )
             ),
             'windows' => array(
-                'pattern' => '/([0-9\-]+)\s+([0-9:APM]+)\s+((<DIR>)|\d+)\s+(.+)/',
+                'pattern' => '/([0-9\-]+\s+[0-9:APM]+)\s+((<DIR>)|\d+)\s+(.+)/',
                 'map'     => array(
                     'date'   => 1,
-                    'time'   => 2,
-                    'size'   => 3,
-                    'is_dir' => 4,
-                    'name'   => 5,
+                    'size'   => 2,
+                    'is_dir' => 3,
+                    'name'   => 4,
                 )
             )
         );

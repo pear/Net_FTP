@@ -23,10 +23,10 @@ for example the view of a progress bar.</description>
   <email>toby@php.net</email>
   <active>no</active>
  </lead>
- <date>2008-05-19</date>
- <time>21:43:50</time>
+ <date>2008-09-13</date>
+ <time>21:27:40</time>
  <version>
-  <release>1.4.0a2</release>
+  <release>1.4.0a3</release>
   <api>1.4.0</api>
  </version>
  <stability>
@@ -34,15 +34,8 @@ for example the view of a progress bar.</description>
   <api>stable</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
- <notes>* Fixed Bug #13496: set bit not supported
-* Fixed Bug #13689: . in file owner or group name breaks _ls_match
-* Fixed Bug #13690: getRecursive does not work because of &apos;.&apos; and &apos;..&apos; directories
-* Fixed Bug #13114: Error check in $FTP-&gt;getRecursive(...)
-* Implemented Request #13104: connect() &lt;&gt; $this-&gt;handle in login()
-* Fixed Bug #13917: putRecursive always return PEAR::Error
-* Fixed Bug #13850: inclusion of Net/FTP.php in tests doesn&apos;t always work
-* Implemented Request #2271: New flag for _rm_dir_recursive to leave directory structure intact
-* Implemented Request #6806: Allow recursive up-/download with only adding newer files</notes>
+ <notes>* Fixed Bug #13946: Test Failed : testPutRecursive
+* Fixed Bug #14513: Timestamp when using the LS function</notes>
  <contents>
   <dir baseinstalldir="/" name="/">
    <dir name="example">
@@ -238,6 +231,20 @@ for example the view of a progress bar.</description>
 * Fixed Bug #13850: inclusion of Net/FTP.php in tests doesn&apos;t always work
 * Implemented Request #2271: New flag for _rm_dir_recursive to leave directory structure intact
 * Implemented Request #6806: Allow recursive up-/download with only adding newer files</notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0a3</release>
+    <api>1.4.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>stable</api>
+   </stability>
+   <date>2008-09-13</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>* Fixed Bug #13946: Test Failed : testPutRecursive
+* Fixed Bug #14513: Timestamp when using the LS function</notes>
   </release>
  </changelog>
 </package>

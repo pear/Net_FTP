@@ -54,7 +54,8 @@ dircreation and chmodding. It also implements an observer pattern to allow
 for example the view of a progress bar.';
 
 $current_notes =
-'* Fixed Bug #13946: Test Failed : testPutRecursive';
+'* Fixed Bug #13946: Test Failed : testPutRecursive
+* Fixed Bug #14513: Timestamp when using the LS function';
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
 
