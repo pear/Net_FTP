@@ -23,8 +23,8 @@ for example the view of a progress bar.</description>
   <email>toby@php.net</email>
   <active>no</active>
  </lead>
- <date>2008-09-13</date>
- <time>21:27:40</time>
+ <date>2008-10-15</date>
+ <time>17:06:31</time>
  <version>
   <release>1.4.0a3</release>
   <api>1.4.0</api>
@@ -35,7 +35,8 @@ for example the view of a progress bar.</description>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>* Fixed Bug #13946: Test Failed : testPutRecursive
-* Fixed Bug #14513: Timestamp when using the LS function</notes>
+* Fixed Bug #14513: Timestamp when using the LS function
+* Implemented Request #14773: setPassive possible before connecting</notes>
  <contents>
   <dir baseinstalldir="/" name="/">
    <dir name="example">
@@ -241,10 +242,11 @@ for example the view of a progress bar.</description>
     <release>alpha</release>
     <api>stable</api>
    </stability>
-   <date>2008-09-13</date>
+   <date>2008-10-15</date>
    <license uri="http://www.php.net/license">PHP License</license>
    <notes>* Fixed Bug #13946: Test Failed : testPutRecursive
-* Fixed Bug #14513: Timestamp when using the LS function</notes>
+* Fixed Bug #14513: Timestamp when using the LS function
+* Implemented Request #14773: setPassive possible before connecting</notes>
   </release>
  </changelog>
 </package>

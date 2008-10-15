@@ -750,6 +750,9 @@ class Net_FTP extends PEAR
                                      NET_FTP_ERR_CONNECT_FAILED);
         } else {
             $this->_handle =& $handle;
+            if ($this->_passv) {
+                $this->setPassive();
+            }
             return true;
         }
     }
@@ -1764,7 +1767,9 @@ class Net_FTP extends PEAR
     function setPassive()
     {
         $this->_passv = true;
-        @ftp_pasv($this->_handle, true);
+        if ($this->_handle != null) {
+            @ftp_pasv($this->_handle, true);
+        }
     }
 
     /**
@@ -1776,7 +1781,9 @@ class Net_FTP extends PEAR
     function setActive()
     {
         $this->_passv = false;
-        @ftp_pasv($this->_handle, false);
+        if ($this->_handle != null) {
+            @ftp_pasv($this->_handle, false);
+        }
     }
 
     /**

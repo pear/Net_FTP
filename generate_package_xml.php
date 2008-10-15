@@ -55,7 +55,8 @@ for example the view of a progress bar.';
 
 $current_notes =
 '* Fixed Bug #13946: Test Failed : testPutRecursive
-* Fixed Bug #14513: Timestamp when using the LS function';
+* Fixed Bug #14513: Timestamp when using the LS function
+* Implemented Request #14773: setPassive possible before connecting';
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dumpError');
 
