@@ -586,10 +586,12 @@ class Net_FTP extends PEAR
     /**
      * Determine whether to use passive-mode (true) or active-mode (false)
      *
+     * Is null when it hasn't been explicitly set
+     *
      * @access  private
      * @var     bool
      */
-    var $_passv;
+    var $_passv = null;
 
     /**
      * The standard mode for ftp-transfer
@@ -666,6 +668,16 @@ class Net_FTP extends PEAR
      * @since   1.3
      */
     var $_listeners = array();
+
+    /**
+     * Is true when a login has been performed
+     * and was successful
+     *
+     * @access  private
+     * @var     boolean
+     * @since   1.4
+     */
+    var $_loggedin = false;
 
     /**
      * This generates a new FTP-Object. The FTP-connection will not be established,
@@ -808,13 +820,20 @@ class Net_FTP extends PEAR
 
         $res = @ftp_login($this->_handle, $username, $password);
 
-        if (!$this->_passv) {
-            $this->setPassive();
-        }
-
         if (!$res) {
             return $this->raiseError("Unable to login", NET_FTP_ERR_LOGIN_FAILED);
         } else {
+            $this->_loggedin = true;
+
+            // distinguish between null and false, null means this setting wasn't
+            // explicitly changed, so we only change it when setPassive or
+            // setActive was called by the user
+            if ($this->_passv === true) {
+                $this->setPassive();
+            } elseif ($this->_passv === false) {
+                $this->setActive();
+            }
+
             return true;
         }
     }
@@ -1768,7 +1787,7 @@ class Net_FTP extends PEAR
     function setPassive()
     {
         $this->_passv = true;
-        if ($this->_handle != null) {
+        if ($this->_handle != null && $this->_loggedin) {
             @ftp_pasv($this->_handle, true);
         }
     }
@@ -1782,7 +1801,7 @@ class Net_FTP extends PEAR
     function setActive()
     {
         $this->_passv = false;
-        if ($this->_handle != null) {
+        if ($this->_handle != null && $this->_loggedin) {
             @ftp_pasv($this->_handle, false);
         }
     }
