@@ -750,9 +750,6 @@ class Net_FTP extends PEAR
                                      NET_FTP_ERR_CONNECT_FAILED);
         } else {
             $this->_handle =& $handle;
-            if ($this->_passv) {
-                $this->setPassive();
-            }
             return true;
         }
     }
@@ -810,6 +807,10 @@ class Net_FTP extends PEAR
         }
 
         $res = @ftp_login($this->_handle, $username, $password);
+
+        if (!$this->_passv) {
+            $this->setPassive();
+        }
 
         if (!$res) {
             return $this->raiseError("Unable to login", NET_FTP_ERR_LOGIN_FAILED);
