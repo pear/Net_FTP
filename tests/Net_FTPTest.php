@@ -62,7 +62,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
 {
     protected $ftp;
     protected $ftpdir;
-    protected $setupError;
     
     /**
      * Runs the test methods of this class.
@@ -89,16 +88,14 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         if (!file_exists('config.php')) {
-            $this->setupError = 'config.php does not exist in '.getcwd();
-            return;
+            $this->markTestSkipped('config.php does not exist in '.getcwd());
         }
         
         include_once 'config.php';
         
         if (!defined('FTPHOST') || !defined('FTPPORT') || !defined('FTPUSER')
             || !defined('FTPPASSWORD')) {
-            $this->setupError = 'Some required constants are not defined';
-            return;
+            $this->markTestSkipped('Some required constants are not defined');
         }
         
         $this->ftp = new Net_FTP(FTPHOST, FTPPORT, 30);
@@ -106,27 +103,21 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
         $res = $this->ftp->login(FTPUSER, FTPPASSWORD);
         
         if (PEAR::isError($res)) {
-            $this->setupError = 'Could not login to the FTP server';
-            $this->ftp        = null;
-            return;
+            $this->markTestSkipped('Could not login to the FTP server');
         }
         
         if (defined('FTPDIR') && '' !== FTPDIR) {
             $res = $this->ftp->cd(FTPDIR);
             
             if (PEAR::isError($res)) {
-                $this->setupError = 'Could switch to directory '.FTPDIR;
-                $this->ftp        = null;
-                return;
+                $this->markTestSkipped('Could switch to directory '.FTPDIR);
             }
         }
         
         $res = $this->ftp->pwd();
         
         if (PEAR::isError($res)) {
-            $this->setupError = 'Could not get current directory';
-            $this->ftp        = null;
-            return;
+            $this->markTestSkipped('Could not get current directory');
         }
         
         $this->ftpdir = $res;
@@ -134,17 +125,13 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
         $res = $this->ftp->mkdir('test');
         
         if (PEAR::isError($res)) {
-            $this->setupError = 'Could not create a test directory';
-            $this->ftp        = null;
-            return;
+            $this->markTestSkipped('Could not create a test directory');
         }
         
         $res = $this->ftp->cd('test');
         
         if (PEAR::isError($res)) {
-            $this->setupError = 'Could not change to the test directory';
-            $this->ftp        = null;
-            return;
+            $this->markTestSkipped('Could not change to the test directory');
         }
     }
 
@@ -164,7 +151,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
             
             $this->ftpdir     = null;
             $this->ftp        = null;
-            $this->setupError = null;
         }
     }
     
@@ -176,11 +162,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     public function testMkdir()
     {
-        if ($this->ftp == null) {
-            $this->fail('This test requires a working FTP connection. Setup '.
-            'config.php with proper configuration parameters. ('.
-            $this->setupError.')');
-        }
         $this->ftp->mkdir('dir1', false);
         $this->ftp->mkdir('dir1/dir2/dir3/dir4', true);
         $this->assertTrue($this->ftp->cd('dir1/dir2/dir3/dir4'));
@@ -194,11 +175,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     public function testRename()
     {
-        if ($this->ftp == null) {
-            $this->fail('This test requires a working FTP connection. Setup '.
-            'config.php with proper configuration parameters. ('.
-            $this->setupError.')');
-        }
         $this->ftp->put('testfile.dat', 'testfile.dat', FTP_ASCII);
         $this->assertTrue($this->ftp->rename('testfile.dat', 'testfile2.dat'));
     }
@@ -211,11 +187,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     public function testRm()
     {
-        if ($this->ftp == null) {
-            $this->fail('This test requires a working FTP connection. Setup '.
-            'config.php with proper configuration parameters. ('.
-            $this->setupError.')');
-        }
         $list1 = $this->ftp->ls();
         
         $this->ftp->put('testfile.dat', 'testfile.dat', FTP_ASCII);
@@ -260,12 +231,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     public function testPutRecursive()
     {
-        if ($this->ftp == null) {
-            $this->fail('This test requires a working FTP connection. Setup '.
-            'config.php with proper configuration parameters. ('.
-            $this->setupError.')');
-        }
-        
         $tmpdir    = array();
         $tmpfile   = array();
         $tmpdir[]  = System::mktemp(array('-d', 'pearnetftptest'));
@@ -309,11 +274,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     public function testPut()
     {
-        if ($this->ftp == null) {
-            $this->fail('This test requires a working FTP connection. Setup '.
-            'config.php with proper configuration parameters. ('.
-            $this->setupError.')');
-        }
         $res = $this->ftp->put('testfile.dat', 'testfile.dat', true, FTP_ASCII,
             NET_FTP_BLOCKING | NET_FTP_NONBLOCKING);
         $this->assertTrue(PEAR::isError($res), 'No error return while it should');
@@ -331,11 +291,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     public function testMakeDirPermissions()
     {
-        if ($this->ftp == null) {
-            $this->fail('This test requires a working FTP connection. Setup '.
-            'config.php with proper configuration parameters. ('.
-            $this->setupError.')');
-        }
         $tests = array(
             '111' => '111',
             '110' => '110',
@@ -361,11 +316,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     public function testSize()
     {
-        if ($this->ftp == null) {
-            $this->fail('This test requires a working FTP connection. Setup '.
-            'config.php with proper configuration parameters. ('.
-            $this->setupError.')');
-        }
         // upload in binary to avoid addition/removal of characters
         $this->ftp->put('testfile.dat', 'testfile.dat', FTP_BINARY);
         $this->assertEquals($this->ftp->size('testfile.dat'),
@@ -382,11 +332,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     public function testExtensions()
     {
-        if ($this->ftp == null) {
-            $this->fail('This test requires a working FTP connection. Setup '.
-            'config.php with proper configuration parameters. ('.
-            $this->setupError.')');
-        }
         $this->ftp->setMode(FTP_ASCII);
         $this->ftp->addExtension(FTP_BINARY, 'tst');
         $this->assertEquals($this->ftp->checkFileExtension('test.tst'), FTP_BINARY);
@@ -404,11 +349,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     public function testGetExtensionsFile()
     {
-        if ($this->ftp == null) {
-            $this->fail('This test requires a working FTP connection. Setup '.
-            'config.php with proper configuration parameters. ('.
-            $this->setupError.')');
-        }
         $res = $this->ftp->getExtensionsFile('extensions.ini');
         $this->assertFalse(PEAR::isError($res), 'Test extensions file could be'.
             'loaded');
@@ -427,12 +367,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     public function testSetDirMatcher()
     {
-        if ($this->ftp == null) {
-            $this->fail('This test requires a working FTP connection. Setup '.
-            'config.php with proper configuration parameters. ('.
-            $this->setupError.')');
-        }
-        
         $pattern = '/(?:(d)|.)([rwxt-]+)\s+(\w+)\s+(\w+)\s+(\w+)\s(\w+\s+\d+\s+.+)'.
             '\s+(.+)/';
         $map     = array(
@@ -475,12 +409,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     public function testCheckRemoteDir()
     {
-        if ($this->ftp == null) {
-            $this->fail('This test requires a working FTP connection. Setup '.
-            'config.php with proper configuration parameters. ('.
-            $this->setupError.')');
-        }
-        
         $res = $this->ftp->_checkRemoteDir('test');
         $this->assertFalse($res, 'test should not be a directory');
         
@@ -503,11 +431,6 @@ class Net_FTPTest extends PHPUnit_Framework_TestCase
      */
     public function testDetermineOSMatch()
     {
-        if ($this->ftp == null) {
-            $this->fail('This test requires a working FTP connection. Setup '.
-            'config.php with proper configuration parameters. ('.
-            $this->setupError.')');
-        }
         $dirlist = array(
             'drwxrwsr-x  75 upload.  (?).         3008 Oct 30 21:09 ftp1',
         );
