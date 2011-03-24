@@ -36,7 +36,7 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'Net_FTPTest::main');
 }
 
-require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Framework/TestCase.php';
 require_once 'System.php';
 
 chdir(dirname(__FILE__));
