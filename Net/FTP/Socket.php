@@ -26,8 +26,6 @@
  * @since     File available since Release 0.0.1
  */
 
-error_reporting(E_ALL);
-
 /**
 * Default FTP extension constants
 */
