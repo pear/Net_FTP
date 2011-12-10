@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.7.2" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
-    http://pear.php.net/dtd/tasks-1.0.xsd
-    http://pear.php.net/dtd/package-2.0
-    http://pear.php.net/dtd/package-2.0.xsd">
+<package packagerversion="1.9.4" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0     http://pear.php.net/dtd/tasks-1.0.xsd     http://pear.php.net/dtd/package-2.0     http://pear.php.net/dtd/package-2.0.xsd">
  <name>Net_FTP</name>
  <channel>pear.php.net</channel>
  <summary>Net_FTP provides an OO interface to the PHP FTP functions plus some additions</summary>
@@ -23,8 +20,8 @@ for example the view of a progress bar.</description>
   <email>toby@php.net</email>
   <active>no</active>
  </lead>
- <date>2008-10-15</date>
- <time>17:06:31</time>
+ <date>2011-12-11</date>
+ <time>00:30:29</time>
  <version>
   <release>1.4.0a3</release>
   <api>1.4.0</api>
@@ -34,59 +31,58 @@ for example the view of a progress bar.</description>
   <api>stable</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
- <notes>* Fixed Bug #13946: Test Failed : testPutRecursive
+ <notes>
+* Fixed Bug #13946: Test Failed : testPutRecursive
 * Fixed Bug #14513: Timestamp when using the LS function
-* Implemented Request #14773: setPassive possible before connecting</notes>
+* Implemented Request #14773: setPassive possible before connecting
+* Use markTestSkipped, not fail()
+* Fatal error: Cannot redeclare ftp_connect() in ./Net_FTP/Net/FTP/Socket.php
+* remove error_reporting (for PEAR QA team)
+ </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
-   <dir name="example">
-    <file baseinstalldir="/" name="extensions.ini" role="doc">
-     <tasks:replace from="@package_version@" to="version" type="package-info" />
-    </file>
-    <file baseinstalldir="/" name="index.php" role="doc">
-     <tasks:replace from="@package_version@" to="version" type="package-info" />
-    </file>
-    <file baseinstalldir="/" name="observer.php" role="doc">
-     <tasks:replace from="@package_version@" to="version" type="package-info" />
-    </file>
-    <file baseinstalldir="/" name="socket.php" role="doc">
-     <tasks:replace from="@package_version@" to="version" type="package-info" />
-    </file>
-   </dir> <!-- /example -->
-   <dir name="Net">
-    <dir name="FTP">
-     <file baseinstalldir="/" name="Observer.php" role="php">
-      <tasks:replace from="@package_version@" to="version" type="package-info" />
-     </file>
-     <file baseinstalldir="/" name="Socket.php" role="php">
-      <tasks:replace from="@package_version@" to="version" type="package-info" />
-     </file>
-    </dir> <!-- /Net/FTP -->
-    <file baseinstalldir="/" name="FTP.php" role="php">
-     <tasks:replace from="@package_version@" to="version" type="package-info" />
-    </file>
-   </dir> <!-- /Net -->
-   <dir name="tests">
-    <file baseinstalldir="/" name="AllTests.php" role="test">
-     <tasks:replace from="@package_version@" to="version" type="package-info" />
-    </file>
-    <file baseinstalldir="/" name="config.php.dist" role="test">
-     <tasks:replace from="@package_version@" to="version" type="package-info" />
-    </file>
-    <file baseinstalldir="/" name="extensions.ini" role="test">
-     <tasks:replace from="@package_version@" to="version" type="package-info" />
-    </file>
-    <file baseinstalldir="/" name="Net_FTPTest.php" role="test">
-     <tasks:replace from="@package_version@" to="version" type="package-info" />
-    </file>
-    <file baseinstalldir="/" name="testfile.dat" role="test">
-     <tasks:replace from="@package_version@" to="version" type="package-info" />
-    </file>
-   </dir> <!-- /tests -->
-   <file baseinstalldir="/" name="CHANGELOG" role="data">
+   <file baseinstalldir="/" md5sum="0aeb3b3be1fdfe7fccbe704581d36f3f" name="example/extensions.ini" role="doc">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
-  </dir> <!-- / -->
+   <file baseinstalldir="/" md5sum="1ef53670db4708aed6434ed5ff1fd2d7" name="example/index.php" role="doc">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" md5sum="84ea266a291f626ea8b3b871fbf1357a" name="example/observer.php" role="doc">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" md5sum="3c4298bba8a4dff7400f32433e19b446" name="example/socket.php" role="doc">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" md5sum="01b24904b57bf9db2a153bf74c711277" name="Net/FTP.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" md5sum="dd70ffe3db4531bbd0582b74c7047fdf" name="Net/FTP/Observer.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" md5sum="c4546acfaf4c5a9193c5efa13a5bc6fa" name="Net/FTP/Socket.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" md5sum="b5fd1e3b744f872054e406d469a9f180" name="tests/AllTests.php" role="test">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" md5sum="5ad4de0cea84996184062e903bc799a3" name="tests/config.php.dist" role="test">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" md5sum="0aeb3b3be1fdfe7fccbe704581d36f3f" name="tests/extensions.ini" role="test">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" md5sum="cdd983ca1f3db398de65dd946d3b5d48" name="tests/Net_FTPTest.php" role="test">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" md5sum="d41d8cd98f00b204e9800998ecf8427e" name="tests/testfile.dat" role="test">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" md5sum="e9769218aff870162a5e9421d4e242df" name="CHANGELOG" role="data">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" md5sum="d5abfcbc8ca6ebd431486467e3772d5e" name="generate_package_xml.php" role="php" />
+   <file baseinstalldir="/" md5sum="16fccd2f80a0f9111c14514504ddcada" name="README" role="data" />
+  </dir>
  </contents>
  <dependencies>
   <required>
@@ -123,11 +119,13 @@ for example the view of a progress bar.</description>
    </stability>
    <date>2005-03-31</date>
    <license uri="http://www.php.net/license">PHP License</license>
-   <notes>- Updated year.
+   <notes>
+- Updated year.
 - Updated docblocks regarding the new standard.
 - Fixed whitespace issues.
 - Fixed bug 3362: bug in Net_FTP::_rm_file.
-- Added PEAR 1.4 compatible package2.xml (package.xml version 2.0).</notes>
+- Added PEAR 1.4 compatible package2.xml (package.xml version 2.0).
+   </notes>
   </release>
   <release>
    <version>
@@ -140,9 +138,11 @@ for example the view of a progress bar.</description>
    </stability>
    <date>2005-04-07</date>
    <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fix bug #3778 &quot;Notice of Uninitialized string offset in function _rm_dir_recursive&quot;
+   <notes>
+* Fix bug #3778 &quot;Notice of Uninitialized string offset in function _rm_dir_recursive&quot;
 * Fix bug #4008 &quot;_list_and_parse tries to determine OS on an empty list&quot;
-* Fix bug #4009 &quot;_determine_os_match doesn&apos;t take into account numbered users and groups&quot;</notes>
+* Fix bug #4009 &quot;_determine_os_match doesn&apos;t take into account numbered users and groups&quot;
+   </notes>
   </release>
   <release>
    <version>
@@ -155,12 +155,14 @@ for example the view of a progress bar.</description>
    </stability>
    <date>2006-02-11</date>
    <license>PHP License</license>
-   <notes>* Fixed Bug #4102: Problem detecting os method ls().
+   <notes>
+* Fixed Bug #4102: Problem detecting os method ls().
 * Fixed Bug #5337: _list_and_parse behavior with an empty remote directory.
 * Fixed Bug #4836: Off-by-one error in regex for Windows directory listings.
 * Fixed Bug #4749: ls() fails when connection is closed.
 * Fixed Bug #4969: Recursive rm ends in endless loop.
-* Fixed Bug #5895: Recursive chmod ends in endless loop.</notes>
+* Fixed Bug #5895: Recursive chmod ends in endless loop.
+   </notes>
   </release>
   <release>
    <version>
@@ -173,7 +175,8 @@ for example the view of a progress bar.</description>
    </stability>
    <date>2007-12-06</date>
    <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fixed Bug #7146: Recursive mkdir() broken on Windows
+   <notes>
+* Fixed Bug #7146: Recursive mkdir() broken on Windows
 * Fixed Bug #7270: Recursive rmdir() broken
 * Fixed Bug #7527: ls fails if there are no files and a total line
 * Fixed Bug #8102: Loading file extension and checking extension gives binary for ascii files
@@ -181,7 +184,8 @@ for example the view of a progress bar.</description>
 * Fixed Bug #10237: put() doesn&apos;t run ftp_alloc to allocate space
 * PEAR Coding Style Valid
 * Removed package.xml version 1.0
-* Added some unit tests</notes>
+* Added some unit tests
+   </notes>
   </release>
   <release>
    <version>
@@ -194,7 +198,9 @@ for example the view of a progress bar.</description>
    </stability>
    <date>2007-12-10</date>
    <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fixed Bug #12639: _constructPath() prevents _checkDir() from working correctly</notes>
+   <notes>
+* Fixed Bug #12639: _constructPath() prevents _checkDir() from working correctly
+   </notes>
   </release>
   <release>
    <version>
@@ -207,10 +213,12 @@ for example the view of a progress bar.</description>
    </stability>
    <date>2007-12-23</date>
    <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fixed bug #6754: Add method to set directory list matcher explicitly
+   <notes>
+* Fixed bug #6754: Add method to set directory list matcher explicitly
 * Fixed Bug #7102: Add ability to disable use of ftp_nb_put(), can sometimes be very slow
 
-* Improved detection of remote directories. It is slower than before, but does  not rely on simply detecting if the given path ends with a slash.</notes>
+* Improved detection of remote directories. It is slower than before, but does  not rely on simply detecting if the given path ends with a slash.
+   </notes>
   </release>
   <release>
    <version>
@@ -223,7 +231,8 @@ for example the view of a progress bar.</description>
    </stability>
    <date>2008-05-19</date>
    <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fixed Bug #13496: set bit not supported
+   <notes>
+* Fixed Bug #13496: set bit not supported
 * Fixed Bug #13689: . in file owner or group name breaks _ls_match
 * Fixed Bug #13690: getRecursive does not work because of &apos;.&apos; and &apos;..&apos; directories
 * Fixed Bug #13114: Error check in $FTP-&gt;getRecursive(...)
@@ -231,7 +240,8 @@ for example the view of a progress bar.</description>
 * Fixed Bug #13917: putRecursive always return PEAR::Error
 * Fixed Bug #13850: inclusion of Net/FTP.php in tests doesn&apos;t always work
 * Implemented Request #2271: New flag for _rm_dir_recursive to leave directory structure intact
-* Implemented Request #6806: Allow recursive up-/download with only adding newer files</notes>
+* Implemented Request #6806: Allow recursive up-/download with only adding newer files
+   </notes>
   </release>
   <release>
    <version>
@@ -242,11 +252,16 @@ for example the view of a progress bar.</description>
     <release>alpha</release>
     <api>stable</api>
    </stability>
-   <date>2008-10-15</date>
+   <date>2011-12-11</date>
    <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fixed Bug #13946: Test Failed : testPutRecursive
+   <notes>
+* Fixed Bug #13946: Test Failed : testPutRecursive
 * Fixed Bug #14513: Timestamp when using the LS function
-* Implemented Request #14773: setPassive possible before connecting</notes>
+* Implemented Request #14773: setPassive possible before connecting
+* Use markTestSkipped, not fail()
+* Fatal error: Cannot redeclare ftp_connect() in ./Net_FTP/Net/FTP/Socket.php
+* remove error_reporting (for PEAR QA team)
+   </notes>
   </release>
  </changelog>
 </package>
