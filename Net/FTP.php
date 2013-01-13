@@ -1515,7 +1515,11 @@ class Net_FTP extends PEAR
      * @param bool   $overwrite   (optional) Whether to overwrite existing files
      *                            (true) or not (false, standard).
      * @param int    $mode        (optional) The transfermode (either FTP_ASCII or
-     * FTP_BINARY).
+     *                            FTP_BINARY).
+     * @param array  $excluded_paths (optional) List of remote files or directories to
+     *                               exclude from the transfer. All files and 
+     *                               directories must be stated as absolute paths.
+     *                               Note: You must include a trailing slash on directory names.
      *
      * @access public
      * @return mixed True on succes, otherwise PEAR::Error
@@ -1525,7 +1529,7 @@ class Net_FTP extends PEAR
      * NET_FTP_ERR_CREATELOCALDIR_FAILED
      */
     function getRecursive($remote_path, $local_path, $overwrite = false,
-                          $mode = null)
+                          $mode = null, $excluded_paths = array())
     {
         $remote_path = $this->_constructPath($remote_path);
         if ($this->_checkRemoteDir($remote_path) !== true) {
@@ -1555,10 +1559,14 @@ class Net_FTP extends PEAR
             if ($dir_entry['name'] != '.' && $dir_entry['name'] != '..') {
                 $remote_path_new = $remote_path.$dir_entry["name"]."/";
                 $local_path_new  = $local_path.$dir_entry["name"]."/";
-                $result          = $this->getRecursive($remote_path_new,
+
+                // Check whether the directory should be excluded
+                if (!in_array($remote_path_new, $excluded_paths)) {
+                    $result = $this->getRecursive($remote_path_new,
                                    $local_path_new, $overwrite, $mode);
-                if ($this->isError($result)) {
-                    return $result;
+                    if ($this->isError($result)) {
+                        return $result;
+                    }
                 }
             }
         }
@@ -1570,10 +1578,14 @@ class Net_FTP extends PEAR
         foreach ($file_list as $file_entry) {
             $remote_file = $remote_path.$file_entry["name"];
             $local_file  = $local_path.$file_entry["name"];
-            $result      = $this->get($remote_file, $local_file, $overwrite, $mode);
-            if ($this->isError($result) &&
-                $result->getCode() != NET_FTP_ERR_OVERWRITELOCALFILE_FORBIDDEN) {
-                return $result;
+
+            // Check whether the file should be excluded
+            if (!in_array($remote_file, $excluded_paths)) {
+                $result = $this->get($remote_file, $local_file, $overwrite, $mode);
+                if ($this->isError($result) &&
+                    $result->getCode() != NET_FTP_ERR_OVERWRITELOCALFILE_FORBIDDEN) {
+                    return $result;
+                }
             }
         }
         return true;
@@ -1595,12 +1607,17 @@ class Net_FTP extends PEAR
      * the extension is not inside the mode-directory, it will get your default
      * mode.
      *
-     * @param string $local_path  The path to download to
-     * @param string $remote_path The path to download
-     * @param bool   $overwrite   (optional) Whether to overwrite existing files
-     *                            (true) or not (false, standard).
-     * @param int    $mode        (optional) The transfermode (either FTP_ASCII or
-     *                            FTP_BINARY).
+     * @param string $local_path     The path to download to
+     * @param string $remote_path    The path to download
+     * @param bool   $overwrite      (optional) Whether to overwrite existing files
+     *                               (true) or not (false, standard).
+     * @param int    $mode           (optional) The transfermode (either FTP_ASCII or
+     *                               FTP_BINARY).
+     * @param array  $excluded_paths (optional) List of local files or directories to
+     *                               exclude from the transfer. All files and 
+     *                               directories must be stated as absolute paths.
+     *                               Note: You must include a trailing slash on 
+     *                               directory names.
      *
      * @access public
      * @return mixed True on succes, otherwise PEAR::Error
@@ -1610,7 +1627,7 @@ class Net_FTP extends PEAR
      *      NET_FTP_ERR_REMOTEPATHNODIR
      */
     function putRecursive($local_path, $remote_path, $overwrite = false,
-                          $mode = null)
+                          $mode = null, $excluded_paths = array())
     {
         $remote_path = $this->_constructPath($remote_path);
         if (!file_exists($local_path) || !is_dir($local_path)) {
@@ -1637,19 +1654,28 @@ class Net_FTP extends PEAR
             // local directories do not have arrays as entry
             $remote_path_new = $remote_path.$dir_entry."/";
             $local_path_new  = $local_path.$dir_entry."/";
-            $result          = $this->putRecursive($local_path_new,
-                               $remote_path_new, $overwrite, $mode);
-            if ($this->isError($result)) {
-                return $result;
+
+            // Check whether the directory should be excluded
+            if (!in_array($local_path_new, $excluded_paths)) {
+                $result          = $this->putRecursive($local_path_new,
+                                   $remote_path_new, $overwrite, $mode,
+                                   $excluded_paths);
+                if ($this->isError($result)) {
+                    return $result;
+                }
             }
         }
 
         foreach ($dir_list["files"] as $file_entry) {
             $remote_file = $remote_path.$file_entry;
             $local_file  = $local_path.$file_entry;
-            $result      = $this->put($local_file, $remote_file, $overwrite, $mode);
-            if ($this->isError($result)) {
-                return $result;
+
+            // Check whether the file should be excluded
+            if (!in_array($local_file, $excluded_paths)) {
+                $result = $this->put($local_file, $remote_file, $overwrite, $mode);
+                if ($this->isError($result)) {
+                    return $result;
+                }
             }
         }
         return true;
