@@ -1,0 +1,36 @@
+{
+    "authors": [
+        {
+            "email": "jschippers@php.net",
+            "name": "Jorrit Schippers",
+            "role": "Lead"
+        },
+        {
+            "email": "toby@php.net",
+            "name": "Tobias Schlitt",
+            "role": "Lead"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Net": "./"
+        }
+    },
+    "description": "More info available on: http://pear.php.net/package/Net_FTP",
+    "include-path": [
+        "./"
+    ],
+    "license": "PHP License",
+    "name": "pear/net_ftp",
+    "support": {
+        "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Net_FTP",
+        "source": "https://github.com/pear/Net_FTP"
+    },
+    "type": "library",
+    "require": {
+        "pear/pear_exception": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    }
+}
