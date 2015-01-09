@@ -531,6 +531,16 @@ define('NET_FTP_ERR_ILLEGALMAPVALUE', -38);
 define('NET_FTP_ERR_BADOPTIONS', -39);
 
 /**
+ * Error code indicating that SSL connection is not supported as either the
+ * ftp module or OpenSSL support is not statically built into php.
+ *
+ * @since 1.4a2
+ * @name NET_FTP_ERR_NOSSL
+ * @see Net_FTP::setSsl()
+ */
+define('NET_FTP_ERR_NOSSL', -40);
+
+/**
  * Class for comfortable FTP-communication
  *
  * This class provides comfortable communication with FTP-servers. You may do
@@ -582,6 +592,16 @@ class Net_FTP extends PEAR
      * @var     string
      */
     var $_password;
+
+    /**
+     * Determine whether to connect through secure SSL connection or not
+     *
+     * Is null when it hasn't been explicitly set
+     *
+     * @access  private
+     * @var     bool
+     */
+    var $_ssl;
 
     /**
      * Determine whether to use passive-mode (true) or active-mode (false)
@@ -740,12 +760,13 @@ class Net_FTP extends PEAR
      *
      * @param string $host (optional) The Hostname
      * @param int    $port (optional) The Port
+     * @param bool   $ssl  (optional) Whether to connect through secure SSL connection
      *
      * @access public
      * @return mixed True on success, otherwise PEAR::Error
      * @see NET_FTP_ERR_CONNECT_FAILED
      */
-    function connect($host = null, $port = null)
+    function connect($host = null, $port = null, $ssl = null)
     {
         $this->_matcher = null;
         if (isset($host)) {
@@ -754,8 +775,16 @@ class Net_FTP extends PEAR
         if (isset($port)) {
             $this->setPort($port);
         }
-        $handle = @ftp_connect($this->getHostname(), $this->getPort(),
-                               $this->_timeout);
+        if (isset($ssl) && is_bool($ssl) && $ssl) {
+            $this->setSsl();
+        }
+        if ($this->getSsl()) {
+            $handle = @ftp_ssl_connect($this->getHostname(), $this->getPort(),
+                                       $this->_timeout);
+        } else {
+            $handle = @ftp_connect($this->getHostname(), $this->getPort(),
+                                   $this->_timeout);
+        }
         if (!$handle) {
             $this->_handle = false;
             return $this->raiseError("Connection to host failed",
@@ -1746,6 +1775,22 @@ class Net_FTP extends PEAR
     }
 
     /**
+     * Set to connect through secure SSL connection
+     *
+     * @access public
+     * @return bool True on success, otherwise PEAR::Error
+     */
+    function setSsl()
+    {
+        if (!function_exists('ftp_ssl_connect')) {
+            return PEAR::raiseError('SSL connection not supported. Function ftp_ssl_connect does not exist.',
+                   NET_FTP_ERR_NOSSL);
+        }
+        $this->_ssl = true;
+        return true;
+    }
+
+    /**
      * Set the Username
      *
      * @param string $user The username to set
@@ -1977,6 +2022,17 @@ class Net_FTP extends PEAR
     function getPort()
     {
         return $this->_port;
+    }
+
+    /**
+     * Returns whether to connect through secure SSL connection
+     *
+     * @access public
+     * @return bool True if with SSL, false if without SSL
+     */
+    function getSsl()
+    {
+        return $this->_ssl;
     }
 
     /**
