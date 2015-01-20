@@ -1126,6 +1126,10 @@ class Net_FTP extends PEAR
             $file_list = array();
             $mode      = NET_FTP_FILES_ONLY;
             $file_list = $this->ls($remote_path, $mode);
+    
+            if (PEAR::isError($file_list)) {
+                return $file_list;
+            }
 
             foreach ($file_list as $file_entry) {
 
