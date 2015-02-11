@@ -644,13 +644,12 @@ class Net_FTP extends PEAR
     /**
      * Saves file-extensions for ascii- and binary-mode
      *
-     * The array contains 2 sub-arrays ("ascii" and "binary"), which both contain
-     * file-extensions without the "." (".php" = "php").
+     * The array is built like this: 'php' => FTP_ASCII, 'png' => FTP_BINARY
      *
      * @access  private
      * @var     array
      */
-    var $_file_extensions;
+    var $_file_extensions = array();
 
     /**
      * ls match
@@ -724,8 +723,6 @@ class Net_FTP extends PEAR
             $this->setPort($port);
         }
         $this->_timeout                     = $timeout;
-        $this->_file_extensions[FTP_ASCII]  = array();
-        $this->_file_extensions[FTP_BINARY] = array();
         
         $this->_ls_match = array(
             'unix'    => array(
