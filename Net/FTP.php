@@ -2342,6 +2342,10 @@ class Net_FTP extends PEAR
                                      NET_FTP_ERR_REMOTEPATHNODIR);
         }
         $file_list = $this->_lsFiles($dir);
+        if (PEAR::isError($file_list)) {
+            return $file_list;
+        }
+        
         foreach ($file_list as $file) {
             $file = $dir.$file["name"];
             $res  = $this->rm($file);
@@ -2349,7 +2353,12 @@ class Net_FTP extends PEAR
                 return $res;
             }
         }
+        
         $dir_list = $this->_lsDirs($dir);
+        if (PEAR::isError($dir_list)) {
+            return $dir_list;
+        }
+        
         foreach ($dir_list as $new_dir) {
             if ($new_dir["name"] == '.' || $new_dir["name"] == '..') {
                 continue;
