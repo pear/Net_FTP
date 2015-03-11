@@ -30,7 +30,7 @@ for example the view of a progress bar.</description>
   <release>alpha</release>
   <api>stable</api>
  </stability>
- <license uri="http://www.php.net/license">PHP License</license>
+ <license uri="http://www.opensource.org/licenses/bsd-license.html">BSD License</license>
  <notes>
 * Fixed Bug #13946: Test Failed : testPutRecursive
 * Fixed Bug #14513: Timestamp when using the LS function
