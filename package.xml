@@ -20,24 +20,24 @@ for example the view of a progress bar.</description>
   <email>toby@php.net</email>
   <active>no</active>
  </lead>
- <date>2011-12-11</date>
- <time>00:30:29</time>
+   <date>2015-03-11</date>
+ <time>13:50:29</time>
  <version>
-  <release>1.4.0a3</release>
+  <release>1.4.0</release>
   <api>1.4.0</api>
  </version>
  <stability>
-  <release>alpha</release>
+  <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.html">BSD License</license>
  <notes>
-* Fixed Bug #13946: Test Failed : testPutRecursive
-* Fixed Bug #14513: Timestamp when using the LS function
-* Implemented Request #14773: setPassive possible before connecting
-* Use markTestSkipped, not fail()
-* Fatal error: Cannot redeclare ftp_connect() in ./Net_FTP/Net/FTP/Socket.php
-* remove error_reporting (for PEAR QA team)
+ * Feature Request 20317: Switch to BSD License.
+ * Fixed Bug 20096: Package doesn't install because of conflict.
+ * Fixed Bug 20088: Missing file config.php.
+ * Validate return of _lsFiles() and _lsDirs() during _rmDirRecursive().
+ * Handle failed ls() command during chmodRecursive().
+ * $_file_extensions is prepped with invalid data.
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
@@ -261,6 +261,25 @@ for example the view of a progress bar.</description>
 * Fatal error: Cannot redeclare ftp_connect() in ./Net_FTP/Net/FTP/Socket.php
 * remove error_reporting (for PEAR QA team)
    </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0</release>
+    <api>1.4.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2015-03-11</date>
+ <license uri="http://www.opensource.org/licenses/bsd-license.html">BSD License</license>
+ <notes>
+ * Feature Request 20317: Switch to BSD License.
+ * Fixed Bug 20096: Package doesn't install because of conflict.
+ * Validate return of _lsFiles() and _lsDirs() during _rmDirRecursive().
+ * Handle failed ls() command during chmodRecursive().
+ * $_file_extensions is prepped with invalid data.
+ </notes>
   </release>
  </changelog>
 </package>
