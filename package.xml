@@ -53,13 +53,13 @@ for example the view of a progress bar.</description>
    <file baseinstalldir="/" md5sum="3c4298bba8a4dff7400f32433e19b446" name="example/socket.php" role="doc">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
-   <file baseinstalldir="/" md5sum="01b24904b57bf9db2a153bf74c711277" name="Net/FTP.php" role="php">
+   <file baseinstalldir="/" md5sum="6e9e1a5346f4c56980a35c01dcda4e45" name="Net/FTP.php" role="php">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
-   <file baseinstalldir="/" md5sum="dd70ffe3db4531bbd0582b74c7047fdf" name="Net/FTP/Observer.php" role="php">
+   <file baseinstalldir="/" md5sum="94569d3acbee386dcf982eceb586ba9a" name="Net/FTP/Observer.php" role="php">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
-   <file baseinstalldir="/" md5sum="c4546acfaf4c5a9193c5efa13a5bc6fa" name="Net/FTP/Socket.php" role="php">
+   <file baseinstalldir="/" md5sum="bb5da8457e4bf5f38e3c0a2ca2f82ff5" name="Net/FTP/Socket.php" role="php">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
    <file baseinstalldir="/" md5sum="b5fd1e3b744f872054e406d469a9f180" name="tests/AllTests.php" role="test">
@@ -71,7 +71,7 @@ for example the view of a progress bar.</description>
    <file baseinstalldir="/" md5sum="0aeb3b3be1fdfe7fccbe704581d36f3f" name="tests/extensions.ini" role="test">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
-   <file baseinstalldir="/" md5sum="cdd983ca1f3db398de65dd946d3b5d48" name="tests/Net_FTPTest.php" role="test">
+   <file baseinstalldir="/" md5sum="df66abe542c07b2f6703bd5123be760e" name="tests/Net_FTPTest.php" role="test">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
    <file baseinstalldir="/" md5sum="d41d8cd98f00b204e9800998ecf8427e" name="tests/testfile.dat" role="test">
@@ -80,7 +80,6 @@ for example the view of a progress bar.</description>
    <file baseinstalldir="/" md5sum="e9769218aff870162a5e9421d4e242df" name="CHANGELOG" role="data">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
-   <file baseinstalldir="/" md5sum="d5abfcbc8ca6ebd431486467e3772d5e" name="generate_package_xml.php" role="php" />
    <file baseinstalldir="/" md5sum="16fccd2f80a0f9111c14514504ddcada" name="README" role="data" />
   </dir>
  </contents>
