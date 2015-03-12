@@ -1092,6 +1092,10 @@ class Net_FTP extends PEAR
             $dir_list = array();
             $mode     = NET_FTP_DIRS_ONLY;
             $dir_list = $this->ls($remote_path, $mode);
+            if (PEAR::isError($dir_list)) {
+                return $dir_list;
+            }
+
             foreach ($dir_list as $dir_entry) {
                 if ($dir_entry['name'] == '.' || $dir_entry['name'] == '..') {
                     continue;
