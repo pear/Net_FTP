@@ -707,7 +707,7 @@ class Net_FTP extends PEAR
      * @return void
      * @see Net_FTP::setHostname(), Net_FTP::setPort(), Net_FTP::connect()
      */
-    function Net_FTP($host = null, $port = null, $timeout = 90)
+    function __construct($host = null, $port = null, $timeout = 90)
     {
         $this->PEAR();
         if (isset($host)) {
@@ -720,8 +720,8 @@ class Net_FTP extends PEAR
         
         $this->_ls_match = array(
             'unix'    => array(
-                'pattern' => '/(?:(d)|.)([rwxts-]{9})\s+(\w+)\s+([\w\d-()?.]+)\s+'.
-                             '([\w\d-()?.]+)\s+(\w+)\s+(\S+\s+\S+\s+\S+)\s+(.+)/',
+                'pattern' => '/(?:(d)|.)([rwxts\-]{9})\s+(\w+)\s+([\w\d\-()?.]+)\s+'.
+                             '([\w\d\-()?.]+)\s+(\w+)\s+(\S+\s+\S+\s+\S+)\s+(.+)/',
                 'map'     => array(
                     'is_dir'        => 1,
                     'rights'        => 2,
