@@ -20,10 +20,10 @@ for example the view of a progress bar.</description>
   <email>toby@php.net</email>
   <active>no</active>
  </lead>
-   <date>2015-03-11</date>
- <time>13:50:29</time>
+   <date>2020-09-24</date>
+ <time>22:22:29</time>
  <version>
-  <release>1.4.0</release>
+  <release>1.4.1</release>
   <api>1.4.0</api>
  </version>
  <stability>
@@ -32,12 +32,7 @@ for example the view of a progress bar.</description>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.html">BSD License</license>
  <notes>
- * Feature Request 20317: Switch to BSD License.
- * Fixed Bug 20096: Package doesn't install because of conflict.
- * Fixed Bug 20088: Missing file config.php.
- * Validate return of _lsFiles() and _lsDirs() during _rmDirRecursive().
- * Handle failed ls() command during chmodRecursive().
- * $_file_extensions is prepped with invalid data.
+ * Fix regex for lsMatch on unix
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
@@ -279,6 +274,21 @@ for example the view of a progress bar.</description>
  * Validate return of _lsFiles() and _lsDirs() during _rmDirRecursive().
  * Handle failed ls() command during chmodRecursive().
  * $_file_extensions is prepped with invalid data.
+ </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.1</release>
+    <api>1.4.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2020-09-24</date>
+ <license uri="http://www.opensource.org/licenses/bsd-license.html">BSD License</license>
+ <notes>
+ * Fix regex for lsMatch on unix
  </notes>
   </release>
  </changelog>

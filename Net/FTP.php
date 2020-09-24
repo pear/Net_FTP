@@ -699,7 +699,7 @@ class Net_FTP extends PEAR
      * and the $port will be left at 21. You have to set the $host manualy before
      * trying to connect or with the connect() method.
      *
-     * @param string $host    (optional) The hostname 
+     * @param string $host    (optional) The hostname
      * @param int    $port    (optional) The port
      * @param int    $timeout (optional) Sets the standard timeout
      *
@@ -716,12 +716,16 @@ class Net_FTP extends PEAR
         if (isset($port)) {
             $this->setPort($port);
         }
-        $this->_timeout                     = $timeout;
-        
+        $this->_timeout = $timeout;
+
         $this->_ls_match = array(
             'unix'    => array(
-                'pattern' => '/(?:(d)|.)([rwxts-]{9})\s+(\w+)\s+([\w\d-()?.]+)\s+'.
-                             '([\w\d-()?.]+)\s+(\w+)\s+(\S+\s+\S+\s+\S+)\s+(.+)/',
+                /*
+                 * Fix regex - based on MehrAlsNix/php-ftp-client@9cd5d0b via
+                 * https://github.com/phingofficial/phing/issues/1224
+                 */
+                'pattern' => '/(?:(d)|.)([rwxts-]{9})\s+(\w+)\s+([\w\-()?.]+)\s+'.
+                             '([\w\-()?.]+)\s+(\w+)\s+(\S+\s+\S+\s+\S+)\s+(.+)/',
                 'map'     => array(
                     'is_dir'        => 1,
                     'rights'        => 2,
