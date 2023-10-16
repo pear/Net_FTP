@@ -707,7 +707,7 @@ class Net_FTP extends PEAR
      * @return void
      * @see Net_FTP::setHostname(), Net_FTP::setPort(), Net_FTP::connect()
      */
-    function Net_FTP($host = null, $port = null, $timeout = 90)
+    function __construct($host = null, $port = null, $timeout = 90)
     {
         $this->PEAR();
         if (isset($host)) {
@@ -724,7 +724,7 @@ class Net_FTP extends PEAR
                  * Fix regex - based on MehrAlsNix/php-ftp-client@9cd5d0b via
                  * https://github.com/phingofficial/phing/issues/1224
                  */
-                'pattern' => '/(?:(d)|.)([rwxts-]{9})\s+(\w+)\s+([\w\-()?.]+)\s+'.
+                'pattern' => '/(?:(d)|.)([rwxts\-]{9})\s+(\w+)\s+([\w\-()?.]+)\s+'.
                              '([\w\-()?.]+)\s+(\w+)\s+(\S+\s+\S+\s+\S+)\s+(.+)/',
                 'map'     => array(
                     'is_dir'        => 1,
